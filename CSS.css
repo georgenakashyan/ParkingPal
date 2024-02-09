@@ -1,0 +1,53 @@
+.container {
+    height: 16em;
+    width: 16em;
+    border: 1px solid #333;
+    box-shadow: 8px 8px 5px #444;
+    padding: 10px 22px;
+    background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+    
+   margin: auto;
+   margin-top: 150px;
+
+}
+
+
+
+.container2 {
+    height: 25em;
+    width: 22em;
+    border: 1px solid #333;
+    box-shadow: 8px 8px 5px #444;
+    padding: 10px 22px;
+    background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+    
+   margin: auto;
+   margin-top: 120px;
+
+}
+
+.user{
+    margin-left: 40px;
+    margin-top: 20px;
+    margin-bottom: 20px
+}
+
+.pword{
+    margin-left: 40px;
+    margin-bottom: 40px;
+}
+
+button{
+    margin-left: 80px;
+    margin-bottom: 35px;
+    height: 45px;
+    width: 90px;
+    font-weight: bold;
+    
+}
+
+.signup{
+    margin-left: 40px;
+}
+
+
