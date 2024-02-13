@@ -6,6 +6,7 @@ function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(userCredential => {
         const user = userCredential.user;
+        mainPage();
     })
     .catch(console.log)
 }
@@ -16,6 +17,7 @@ function emailAndPasswordLogin() {
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
         const user = userCredential.user;
+        mainPage();
     })
     .catch((error) => {
         var errorCode = error.code;
@@ -23,3 +25,9 @@ function emailAndPasswordLogin() {
         console.log(errorcode + " --- " + errorMessage)
     });
 }
+
+function mainPage(){
+    location.href="Parking-Pal.html";
+}
+
+
