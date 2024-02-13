@@ -1,10 +1,10 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
-
+import { initializeApp } from 'http://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword
+} from 'http://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { collection, getDocs, getFirestore } from 'http://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
 // TODO: Replace the following with your app's Firebase project configuration
-const firebaseConfig = {
+const config = {
     apiKey: "AIzaSyCTwAbnxplZU5_kHiXl5JQV808UMGl7OoE",
     authDomain: "csc490-parkingpal.firebaseapp.com",
     projectId: "csc490-parkingpal",
@@ -14,24 +14,20 @@ const firebaseConfig = {
     measurementId: "G-RH52ZTPFXY"
   };
 
-const firebaseapp = initializeApp(firebaseConfig);
-const auth = getAuth;
-const db = getFirestore;
-db.collection('Todos').getDocs();
-const todosCol = collection(db, 'Todos');
-const snapshot = await getDocs(todosCol);
-
-auth.onAuthStateChanged((user) => {
-
-});
-onAuthStateChanged(auth, (user) => {
-    if (user =! null) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/auth.user
-      const uid = user.uid;
-      // ...
-    } else {
-      // User is signed out
-      // ...
-    }
+  const app = initializeApp(config);
+  //const auth = app.getAuth;
+  const auth = getAuth;
+  const db = getFirestore;
+  const email = "murie@farmingdale.edu";
+  const password = "123456"
+  
+  signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorCode+" "+errorMessage)
   });
