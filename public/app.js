@@ -9,3 +9,17 @@ function googleLogin() {
     })
     .catch(console.log)
 }
+
+function emailAndPasswordLogin() {
+    let email = document.getElementById("email").value
+    let password = document.getElementById("password").value;
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+        const user = userCredential.user;
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorcode + " --- " + errorMessage)
+    });
+}
