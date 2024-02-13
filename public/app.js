@@ -11,7 +11,7 @@ function googleLogin() {
 }
 
 function emailAndPasswordLogin() {
-    let email = document.getElementById("email").value
+    let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
