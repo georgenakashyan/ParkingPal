@@ -43,12 +43,33 @@
       to avoid connecting the SDK to running emulators.
     -->
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <script src="app.js"></script>
+
     <h1>Parking-Pal</h1>
-    <button onclick="googleLogin()">
-      Login with Google
-    </button>
+
+    <div class="container">
+      <div class="email">
+        <label>Enter your Email: </label>
+        <input type="text" id="email" placeholder="Email" />
+      </div>
+
+      <div class="pword">
+        <label>Enter your password: </label>
+        <input type="password" id="password" placeholder="Password" />
+      </div>
+
+      <div class="btn">
+        <button type="button" onclick="emailAndPasswordLogin()">Sign-In</button>
+      </div>
+
+      <div class="signup">
+        <a href="SignUp.html">Need a account? Click Here</a>
+      </div>
+    </div>
+
+
   </body>
 </html>
