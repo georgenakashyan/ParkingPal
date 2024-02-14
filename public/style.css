@@ -26,6 +26,23 @@
 
 }
 
+.login-text{
+    display: block;
+    margin-top: 20px;
+    margin-left: 140px;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.instruction-text{
+    display: block;
+    margin-left: 80px;
+    margin-top: 30px;
+    font-weight: bold;
+    font-size: 15px;
+
+}
+
 .email{
     margin-left: 40px;
     margin-top: 20px;
