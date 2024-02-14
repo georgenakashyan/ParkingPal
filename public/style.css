@@ -49,6 +49,11 @@
     margin-bottom: 20px
 }
 
+.email-textbox{
+    height: 35px;
+    width: 300px;
+}
+
 .pword{
     margin-left: 40px;
     margin-bottom: 40px;
