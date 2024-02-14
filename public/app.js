@@ -15,9 +15,7 @@ function googleLogin() {
     });
 }
 
-function emailAndPasswordLogin() {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
+function emailAndPasswordLogin(email, password) {
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
         const user = userCredential.user;
