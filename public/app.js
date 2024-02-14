@@ -11,7 +11,7 @@ function googleLogin() {
     .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(errorcode + " --- " + errorMessage)
+        console.log(errorcode + " --- " + errorMessage);
     });
 }
 
@@ -26,7 +26,22 @@ function emailAndPasswordLogin() {
     .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(errorcode + " --- " + errorMessage)
+        console.log(errorcode + " --- " + errorMessage);
+    });
+}
+
+function resetPassword(email) {
+    const user = firebase.auth().currentUser;
+    if (user) {
+        let email = user.email;
+    }
+    firebase.auth().sendPasswordResetEmail(email)
+    .then(() => {
+        // Password reset email sent!
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
     });
 }
 
