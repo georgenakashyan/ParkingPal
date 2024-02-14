@@ -72,8 +72,8 @@
 
 }
 
-.signup {
-    margin-left: 40px;
+.signup-text , .signup-link{
+    display: inline-block;
 }
 
 
