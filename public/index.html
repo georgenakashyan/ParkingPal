@@ -65,9 +65,13 @@
       </div>
 
       <div class="btn">
-        <button type="button" class="sign-in-button" onclick="emailAndPasswordLogin()">Sign-In</button>
+        <button type="button" class="sign-in-button" onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)"
+        >Sign-In</button>
+      </div>
 
-        
+      <div class="signup">
+        <button type="button" onclick="resetPassword(document.getElementById('email').value)">Forgot Password?</button>
+
       </div>
       <label class="or-label"> ----- or -----</label>
       
