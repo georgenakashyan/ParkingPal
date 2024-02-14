@@ -62,7 +62,15 @@
       </div>
 
       <div class="btn">
-        <button type="button" onclick="emailAndPasswordLogin()">Sign-In</button>
+        <button type="button" onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)">Sign-In</button>
+      </div>
+
+      <div class="btn">
+        <button type="button" onclick="googleLogin()">Continue with Google</button>
+      </div>
+
+      <div class="signup">
+        <button type="button" onclick="resetPassword(document.getElementById('email').value)">Forgot Password?</button>
       </div>
 
       <div class="signup">
