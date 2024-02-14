@@ -59,7 +59,12 @@
     margin-bottom: 40px;
 }
 
-button{
+.password-textbox{
+    height: 35px;
+    width: 300px;
+}
+
+.sign-in-button{
     margin-left: 80px;
     margin-bottom: 35px;
     height: 45px;
