@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ParkingPal</title>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
-    <!-- 
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ParkingPal</title>
+
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
+  <!-- 
         initialize the SDK after all desired features are loaded, set useEmulator to false
         to avoid connecting the SDK to running emulators.
       -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <script src="app.js"></script>
-    <h1>Parking-Pal</h1>
-    <div class="container">
-      <div><label class="login-text">Login</label></div>
-      <div><label class="instruction-text">Enter your Email and Password </label></div>
-      <div>
-        <input type="text" class="email-textbox" id="email" placeholder="Email" />
-      </div>
-      <div>
-        <input type="password" class="password-textbox" id="password" placeholder="Password" />
-      </div>
-      <div class="reset-link">
-        <a href="PasswordReset.html" >Forgot password?</a>
-      </div>
-      <div>
-        <button type="button" class="sign-in-button"
-          onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)">Sign-In</button>
-      </div>
-      <div class = "signup-box">
-        <label class="signup-text">Don't have an account?</label>
-        <a class = "signup-link" href="SignUp.html">Sign up</a>
-      </div> 
-      <div>
-        <label> ----- or -----</label>
-      </div>
-      <div><button type="button" class="google-sign-in-button" onclick="googleLogin()">Sign in with Google</button>
-      </div>
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <script src="app.js"></script>
+  <h1>Parking-Pal</h1>
+  <div class="container">
+    <div><label class="login-text">Login</label></div>
+    <div><label class="instruction-text">Enter your Email and Password </label></div>
+    <div>
+      <input type="text" class="email-textbox" id="email" placeholder="Email" />
     </div>
-  </body>
+    <div>
+      <input type="password" class="password-textbox" id="password" placeholder="Password" />
+    </div>
+    <div class="reset-link">
+      <a href="PasswordReset.html">Forgot password?</a>
+    </div>
+    <div>
+      <button type="button" class="sign-in-button"
+        onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)">Sign-In</button>
+    </div>
+    <div class="signup-box">
+      <label class="signup-text">Don't have an account?</label>
+      <a class="signup-link" href="SignUp.html">Sign up</a>
+    </div>
+    <div>
+      <label> ----- or -----</label>
+    </div>
+    <div><button type="button" class="google-sign-in-button" onclick="googleLogin()">Sign in with Google</button>
+    </div>
+  </div>
+</body>
+
 </html>
