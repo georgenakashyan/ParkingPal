@@ -43,7 +43,7 @@ function resetPassword(email) {
     });
 }
 
-function mainPage(){
+function mainPage() {
     location.href="Parking-Pal.html";
 }
 
