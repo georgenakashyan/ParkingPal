@@ -22,9 +22,23 @@ function emailAndPasswordLogin(email, password) {
         mainPage();
     })
     .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorcode + " --- " + errorMessage);
+        switch (error.code) {
+            case 'auth/email-already-in-use':
+              console.log(`Email address ${this.state.email} already in use.`);
+              break;
+            case 'auth/invalid-email':
+              console.log(`Email address ${this.state.email} is invalid.`);
+              break;
+            case 'auth/operation-not-allowed':
+              console.log(`Error during sign up.`);
+              break;
+            case 'auth/weak-password':
+              console.log('Password is not strong enough. Add additional characters including special characters and numbers.');
+              break;
+            default:
+              console.log(error.message);
+              break;
+          }
     });
 }
 
@@ -40,6 +54,7 @@ function resetPassword(email) {
     .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
+        console.log(errorCode + " --- " + errorMessage);
     });
 }
 
@@ -65,7 +80,7 @@ function makeAccountEmailAndPassword(email, firstName, lastName, password) {
     .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(errorMessage);
+        console.log(errorCode + " --- " + errorMessage);
     });
 }
 
