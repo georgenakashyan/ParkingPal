@@ -42,9 +42,6 @@ function emailAndPasswordLogin(email, password) {
             case 'auth/operation-not-allowed':
                 errorField.innerHTML = "Error during sign up.";
                 break;
-            case 'auth/weak-password':
-                errorField.innerHTML = "Password is not strong enough. Add additional characters including special characters and numbers.";
-                break;
             default:
                 console.log(error.message);
                 break;
