@@ -1,77 +1,78 @@
 /*Sign-in page*/
 
-.container {
-    height: 30em;
-    width: 22em;
+.globalFont {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+h1 {
+    display: block;
+    font-size: 3em;
+}
+
+.login-popup {
+    height: 30rem;
+    width: 22rem;
     border: 1px solid #333;
     box-shadow: 8px 8px 5px #444;
     padding: 10px 22px;
     background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
-
     margin: auto;
-    margin-top: 100px;
+    margin-top: 5rem;
 }
 
-body{
-    font-size: 1.1rem;
-    font-weight: 500;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-}
-
-.container div {
+.login-popup > * {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
 }
 
-.Title-text {
-    display: block;
-    font-size: 30px;
+.login-popup > form{
+    display: grid;
+    grid-template-columns: 90%;
+    grid-auto-rows: 3.5rem;
+    margin-bottom: -1rem;
+}
+
+.login-popup > form > input {
+    margin-bottom: 1rem;
+    border-radius: 0.3rem;
+    border-width:  1px;
+    border-color: rgb(219, 219, 219);
+    padding-left: 2%;
 }
 
 .instruction-text {
     display: block;
     margin-bottom: 1rem;
     font-size: 1rem;
-    font-weight: bold;
-}
-
-.email {
-    margin-left: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px
-}
-
-.email-textbox {
-    height: 35px;
-    width: 300px;
-}
-
-.pword {
-    margin-left: 20px;
-    margin-bottom: 40px;
-}
-
-.password-textbox {
-    height: 35px;
-    width: 300px;
 }
 
 .sign-in-button {
-    height: 45px;
-    width: 300px;
+    display: table-cell;
+    border-radius: 0.3rem;
+    border-width: 0px;
+    width: 90%;
+    margin-left: 5%;
+    height: 2.5rem;
     font-weight: bold;
-
+    text-align: center;
+    background-color: #0291bd;
+    color: white;
 }
+
+.sign-in-button:hover {
+    background-color: #006e90;
+    -webkit-transition: all 130ms ease-in-out;
+    -moz-transition: all 130ms ease-in-out;
+    -o-transition: all 130ms ease-in-out;
+    transition: all 130ms ease-in-out;
+}
+
 .reset-link {
-    font-size: 0.9rem;
+    float: left;
+    margin-left: 5%;
+    font-size: 0.8rem;
 }
-
-.signup-text , .signup-link{
-    font-size: 0.9rem;
-    display: inline-block;
-}
-
 
 .google-sign-in-button {
     cursor: pointer;
@@ -128,12 +129,7 @@ body{
     justify-content: center;
     margin-bottom: 1rem;   
 }
-.signup-text{
-    display: block;
-    font-weight: bold;
-    font-size: 1rem;
 
-}
 .create-button{
     height: 2.5rem;
     width: 45rem;
