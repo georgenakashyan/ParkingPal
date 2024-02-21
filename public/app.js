@@ -21,25 +21,26 @@ function googleLogin() {
 }
 
 function emailAndPasswordLogin(email, password) {
-    var error = document.getElementById("notification-text");
+    var errorField = document.getElementById("notification-text");
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
         const user = userCredential.user;
+        errorField.innerHTML = "";
         mainPage();
     })
     .catch((error) => {
         switch (error.code) {
-            case 'auth/email-already-in-use':
-                error.innerHTML = "Email address is already in use.";
+            case 'auth/invalid-credential':
+                errorField.innerHTML = "Email or password is incorrect.";
                 break;
             case 'auth/invalid-email':
-                error.innerHTML = "Email address is invalid.";
+                errorField.innerHTML = "Email address is invalid.";
                 break;
             case 'auth/operation-not-allowed':
-                error.innerHTML = "Error during sign up.";
+                errorField.innerHTML = "Error during sign up.";
                 break;
             case 'auth/weak-password':
-                error.innerHTML = "Password is not strong enough. Add additional characters including special characters and numbers.";
+                errorField.innerHTML = "Password is not strong enough. Add additional characters including special characters and numbers.";
                 break;
             default:
                 console.log(error.message);
@@ -49,30 +50,28 @@ function emailAndPasswordLogin(email, password) {
 }
 
 function resetPassword(email) {
-    var error = document.getElementById("notification-text");
+    var errorField = document.getElementById("notification-text");
     const user = firebase.auth().currentUser;
     if (user) {
         let email = user.email;
     }
     firebase.auth().sendPasswordResetEmail(email)
     .then(() => {
-        // Password reset email sent!
+        errorField.innerHTML = "";
     })
     .catch((error) => {
         switch (error.code) {
-            case 'auth/email-already-in-use':
-                error.innerHTML = "Email address is already in use.";
-                break;
+            case 'auth/missing-email':
+                        errorField.innerHTML = "Enter your email.";
+                        break;
             case 'auth/invalid-email':
-                error.innerHTML = "Email address is invalid.";
+                errorField.innerHTML = "Email address is invalid.";
                 break;
             case 'auth/operation-not-allowed':
-                error.innerHTML = "Error during sign up.";
-                break;
-            case 'auth/weak-password':
-                error.innerHTML = "Password is not strong enough. Add additional characters including special characters and numbers.";
+                errorField.innerHTML = "Error during sign up.";
                 break;
             default:
+                errorField.innerHTML = "";
                 console.log(error.message);
                 break;
         }
@@ -84,35 +83,43 @@ function mainPage() {
 }
 
 function makeAccountEmailAndPassword(email, firstName, lastName, password, retypePassword) {
-    var error = document.getElementById("notification-text");
+    var errorField = document.getElementById("notification-text");
     if (inputNullOrEmpty(firstName)) {
-        error.innerHTML = "Please enter your first name";
+        errorField.innerHTML = "Please enter your first name";
     } else if (inputNullOrEmpty(lastName)) {
-        error.innerHTML = "Please enter your last name";
+        errorField.innerHTML = "Please enter your last name";
     } else if (password != retypePassword) {
-        error.innerHTML = "Your passwords do not match";
+        errorField.innerHTML = "Your passwords do not match";
     } else {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 console.log("Auth Account successfully created");
                 createAccountDocument(userCredential, email, firstName, lastName);
+                errorField.innerHTML = "";
                 mainPage();
             })
             .catch((error) => {
                 switch (error.code) {
+                    case 'auth/missing-email':
+                        errorField.innerHTML = "Enter your email.";
+                        break;
                     case 'auth/email-already-in-use':
-                        error.innerHTML = "Email address is already in use.";
+                        errorField.innerHTML = "Email address is already in use.";
+                        break;
+                    case 'auth/invalid-credential':
+                        errorField.innerHTML = "Email or password is incorrect.";
                         break;
                     case 'auth/invalid-email':
-                        error.innerHTML = "Email address is invalid.";
+                        errorField.innerHTML = "Email address is invalid.";
                         break;
                     case 'auth/operation-not-allowed':
-                        error.innerHTML = "Error during sign up.";
+                        errorField.innerHTML = "Error during sign up.";
                         break;
                     case 'auth/weak-password':
-                        error.innerHTML = "Password is not strong enough. Add additional characters including special characters and numbers.";
+                        errorField.innerHTML = "Password is not strong enough. Add additional characters including special characters and numbers.";
                         break;
                     default:
+                        errorField.innerHTML = "";
                         console.log(error.message);
                         break;
                 }
