@@ -263,8 +263,13 @@ h3 {
 }
 
 .reset-btn {
-    height: 45px;
-    width: 300px;
+    display: table-cell;
+    border-radius: 0.3rem;
+    border-width: 0px;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 1rem;
+    height: 2.5rem;
     font-weight: bold;
 }
 
