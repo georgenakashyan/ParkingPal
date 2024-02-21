@@ -67,17 +67,21 @@ function mainPage() {
     location.href="Parking-Pal.html";
 }
 
-function makeAccountEmailAndPassword(email, firstName, lastName, password) {
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-        console.log("Auth Account successfully created");
-        createAccountDocument(userCredential, email, firstName, lastName);
-    })
-    .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode + " --- " + errorMessage);
-    });
+function makeAccountEmailAndPassword(email, firstName, lastName, password, retypePassword) {
+    if (password == retypePassword) {
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            console.log("Auth Account successfully created");
+            createAccountDocument(userCredential, email, firstName, lastName);
+        })
+        .catch((error) => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode + " --- " + errorMessage);
+        });
+    } else {
+        console.log("Mismatch password")
+    }
 }
 
 function createAccountDocument(userCredential, email, firstName, lastName) {
