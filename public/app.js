@@ -65,15 +65,25 @@ function mainPage() {
 function makeAccountEmailAndPassword(email, firstName, lastName, password) {
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
-        console.log("Account successfully created")
-        var user = userCredential.user;
-        var newAccount = {
-            Email: email,
-            FirstName: "TestFirst",
-            LastName: "TestLast",
-            Profile: "",
-            Type_ID: "Unfinished",
-        }
+        console.log("Auth Account successfully created");
+        createAccountDocument(userCredential, email, firstName, lastName);
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode + " --- " + errorMessage);
+    });
+}
+
+function createAccountDocument(userCredential, email, firstName, lastName) {
+    var user = userCredential.user;
+    var newAccount = {
+        Email: email,
+        FirstName: firstName,
+        LastName: lastName,
+        Profile: "",
+        Type_ID: "Unfinished",
+    }
         console.log(newAccount);
         firebase.firestore().collection("Account").doc(user.uid).set(newAccount).then(() => console.log("Account document successfully written"));
     })
