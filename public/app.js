@@ -4,14 +4,19 @@ document.addEventListener("DOMContentLoaded", event => {
   
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
     firebase.auth().signInWithPopup(provider).then(userCredential => {
         const user = userCredential.user;
+        const accountExists = firebase.firestore().collection("Account").doc(user.uid);
+        if (accountExists != null) {
+            createAccountDocument(userCredential, user.email, "Anonymous", "Customer");
+        }
         mainPage();
     })
     .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(errorcode + " --- " + errorMessage);
+        console.log(errorCode + " --- " + errorMessage);
     });
 }
 
@@ -84,14 +89,7 @@ function createAccountDocument(userCredential, email, firstName, lastName) {
         Profile: "",
         Type_ID: "Unfinished",
     }
-        console.log(newAccount);
-        firebase.firestore().collection("Account").doc(user.uid).set(newAccount).then(() => console.log("Account document successfully written"));
-    })
-    .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode + " --- " + errorMessage);
-    });
+    firebase.firestore().collection("Account").doc(user.uid).set(newAccount);
 }
 
 function isCustomerExist() {
