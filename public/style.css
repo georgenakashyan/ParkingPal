@@ -28,6 +28,7 @@
 .instruction-text {
     display: block;
     margin-bottom: 1rem;
+    font-size: 1rem;
     font-weight: bold;
 }
 
