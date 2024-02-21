@@ -32,12 +32,13 @@
     <h1>ParkingPal</h1>
     <div><label class="instruction-text">Never get stuck searching for parking again</label></div>
     <form>
-      <input type="text" id="email" placeholder="Email"/>
-      <input type="password" id="password" placeholder="Password"/>
+      <input type="text" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
     </form>
     <a class="reset-link" href="PasswordReset.html">Forgot password?</a>
     <button type="button" class="sign-in-button"
-    onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)">Log In
+      onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)">Log
+      In
     </button>
     <button type="button" class="google-sign-in-button" onclick="googleLogin()">Continue with Google</button>
     <hr style="width: 50%;">
@@ -45,10 +46,6 @@
       <label>Don't have an account?&nbsp;</label>
       <a class="signup-link" href="SignUp.html">Sign up</a>
     </div>
-    <label>----- or -----</label>
-    <div><button type="button" class="google-sign-in-button" onclick="googleLogin()">Sign in with Google</button>
-    </div>
-  </div>
 </body>
 
 </html>
