@@ -80,15 +80,16 @@ a:hover {
 }
 
 .notification-text {
+    color: red;
     display: block;
     float: left !important;
-    margin-left: 7%;
+    margin-left: 6%;
     font-size: 0.8rem;
 }
 
 .reset-link {
-    float: left;
-    margin-left: 7%;
+    display: block;
+    margin-left: 6%;
     font-size: 0.8rem;
 }
 
