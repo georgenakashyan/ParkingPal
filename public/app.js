@@ -103,6 +103,9 @@ function makeAccountEmailAndPassword(email, firstName, lastName, password, retyp
                     case 'auth/missing-email':
                         errorField.innerHTML = "Enter your email.";
                         break;
+                    case 'auth/missing-password':
+                        errorField.innerHTML = "Enter your password.";
+                        break;
                     case 'auth/email-already-in-use':
                         errorField.innerHTML = "Email address is already in use.";
                         break;
