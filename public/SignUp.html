@@ -1,0 +1,69 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <div class="header">
+
+        <title>Parking-Pal</title>
+
+    </div>
+
+
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
+    <!-- 
+        initialize the SDK after all desired features are loaded, set useEmulator to false
+        to avoid connecting the SDK to running emulators.
+        -->
+    <script defer src="/__/firebase/init.js?useEmulator=false"></script>
+</head>
+
+
+
+<body class="globalFont">
+    <script src="app.js"></script>
+
+    <div class="login-signup-prompt" style="margin-top: 5rem">
+        <h1 class="title">Sign Up</h1>
+
+        <div><label class="signup-text">Enter the following information:</label></div>
+        <form> 
+            <input type="text" id="email" placeholder="Email">
+            <input type="text" id="fn" placeholder="First Name">
+            <input type="text" id="ln" placeholder="Last Name">
+            <input type="password" id="pw" placeholder="Password">
+            <input type="password" id="pw2" placeholder="Re-Type your Password">
+        </form>
+            
+
+        <button class="long-main-button" 
+                onclick="makeAccountEmailAndPassword(document.getElementById('email').value
+                                                    , document.getElementById('fn').value
+                                                    , document.getElementById('ln').value
+                                                    , document.getElementById('pw').value
+                                                    , document.getElementById('pw2').value
+                                                    , document.getElementById('pw2').value)">
+                                                    Create Account</button>
+        <button type="button" class="google-sign-in-button" onclick="googleLogin()">Sign in with Google</button>
+        <hr style="width: 50%;">
+        <a class="returnLink" href="index.html">Return to Login</a>
+    </div>
+</body>
+
+
+</html>
