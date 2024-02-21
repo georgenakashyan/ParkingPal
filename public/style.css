@@ -60,6 +60,9 @@
     font-weight: bold;
 
 }
+.reset-link {
+    font-size: 0.9rem;
+}
 
 .signup-text , .signup-link{
     display: inline-block;
