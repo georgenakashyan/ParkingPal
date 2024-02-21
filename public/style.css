@@ -273,4 +273,13 @@ h3 {
     font-weight: bold;
 }
 
+.reset-btn:hover {
+    background-color: #006e90;
+    -webkit-transition: all 130ms ease-in-out;
+    -moz-transition: all 130ms ease-in-out;
+    -o-transition: all 130ms ease-in-out;
+    transition: all 130ms ease-in-out;
+}
+
+
 /*Main page*/
