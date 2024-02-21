@@ -218,6 +218,13 @@ h2{
         0 2px 4px rgba(0, 0, 0, .25),
         0 0 0 3px #c8dafc;
 }
+
+.returnLink {
+    float: left;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #0291bd;
+}
 /*reset password page*/
 .container3 {
     height: 15em;
