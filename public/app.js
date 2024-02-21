@@ -141,5 +141,5 @@ function isManagerExist() {
 }
 
 function inputNullOrEmpty(input) {
-    return (input == null || input == "");
+    return (input == null || input === "");
 }
