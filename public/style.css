@@ -139,7 +139,7 @@ h2{
     font-size: 3em; 
 }
 
-.container2 div {
+.signup-popup>* {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
