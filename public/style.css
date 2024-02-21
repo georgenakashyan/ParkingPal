@@ -123,11 +123,11 @@ a:hover {
 }
 
 /*Sign-up page*/
-.container2 {
-    height: 30em;
-    width: 22em;
-    border: 1px solid #333;
-    box-shadow: 8px 8px 5px #444;
+.signup-popup {
+    border-radius: 0.5rem;
+    width: 22rem;
+    border: 0px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.29), 0px 3px 10px 0px rgba(0, 0, 0, 0.5);
     padding: 10px 22px;
     background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
 
