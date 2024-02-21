@@ -169,6 +169,9 @@ h2{
     height: 2.5rem;
     width: 45rem;
     font-weight: bold;
+    text-align: center;
+    background-color: #0291bd;
+    color: white;
 }
 
 .container2 input {
