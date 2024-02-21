@@ -174,9 +174,12 @@ h2{
     color: white;
 }
 
-.container2 input {
-    height: 2rem;
-    width: 300em;
+.create-button:hover {
+    background-color: #006e90;
+    -webkit-transition: all 130ms ease-in-out;
+    -moz-transition: all 130ms ease-in-out;
+    -o-transition: all 130ms ease-in-out;
+    transition: all 130ms ease-in-out;
 }
 
 
