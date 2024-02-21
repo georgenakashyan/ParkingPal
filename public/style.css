@@ -161,6 +161,11 @@ h2{
 }
 
 .create-button {
+    display: table-cell;
+    border-radius: 0.3rem;
+    border-width: 0px;
+    width: 90%;
+    margin-left: 5%;
     height: 2.5rem;
     width: 45rem;
     font-weight: bold;
