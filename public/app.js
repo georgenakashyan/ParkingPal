@@ -36,6 +36,9 @@ function emailAndPasswordLogin(email, password) {
             case 'auth/invalid-email':
                 errorField.innerHTML = "Email address is invalid.";
                 break;
+            case 'auth/missing-password':
+                errorField.innerHTML = "Enter your password.";
+                break;
             case 'auth/operation-not-allowed':
                 errorField.innerHTML = "Error during sign up.";
                 break;
