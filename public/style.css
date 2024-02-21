@@ -134,6 +134,9 @@ a:hover {
     margin-top: 4rem;
 }
 
+h2{
+    display: block;
+    font-size: 3em; 
 }
 
 .container2 div {
