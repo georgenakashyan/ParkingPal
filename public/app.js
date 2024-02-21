@@ -73,6 +73,7 @@ function makeAccountEmailAndPassword(email, firstName, lastName, password, retyp
         .then((userCredential) => {
             console.log("Auth Account successfully created");
             createAccountDocument(userCredential, email, firstName, lastName);
+            mainPage();
         })
         .catch((error) => {
             var errorCode = error.code;
@@ -80,7 +81,7 @@ function makeAccountEmailAndPassword(email, firstName, lastName, password, retyp
             console.log(errorCode + " --- " + errorMessage);
         });
     } else {
-        console.log("Mismatch password")
+        console.log("Mismatch password");
     }
 }
 
