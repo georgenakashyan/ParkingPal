@@ -271,6 +271,9 @@ h3 {
     margin-top: 1rem;
     height: 2.5rem;
     font-weight: bold;
+    text-align: center;
+    background-color: #0291bd;
+    color: white;
 }
 
 .reset-btn:hover {
