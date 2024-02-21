@@ -14,30 +14,30 @@ h1 {
     height: 30rem;
     width: 22rem;
     border: 0px;
-    box-shadow: 0px 0px 20px rgba(0,0,0,0.29), 0px 3px 10px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.29), 0px 3px 10px 0px rgba(0, 0, 0, 0.5);
     padding: 10px 22px;
-    background-color:#ececec;
+    background-color: #ececec;
     margin: auto;
     margin-top: 5rem;
 }
 
-.login-popup > * {
+.login-popup>* {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
 }
 
-.login-popup > form{
+.login-popup>form {
     display: grid;
     grid-template-columns: 90%;
     grid-auto-rows: 3.5rem;
     margin-bottom: -1rem;
 }
 
-.login-popup > form > input {
+.login-popup>form>input {
     margin-bottom: 1rem;
     border-radius: 0.3rem;
-    border-width:  1px;
+    border-width: 1px;
     border-color: rgb(219, 219, 219);
     padding-left: 2%;
 }
@@ -125,26 +125,26 @@ h1 {
 
 }
 
-.container2 div{
+.container2 div {
     display: flex;
     justify-content: center;
-    margin-bottom: 1rem;   
+    margin-bottom: 1rem;
 }
 
-.create-button{
+.create-button {
     height: 2.5rem;
     width: 45rem;
     font-weight: bold;
 }
 
-.container2 input{
-    height:2rem;
+.container2 input {
+    height: 2rem;
     width: 300em;
 }
 
 
 /*reset password page*/
-.container3{
+.container3 {
     height: 15em;
     width: 22em;
     border: 1px solid #333;
@@ -163,7 +163,7 @@ h1 {
     margin-bottom: 1rem;
 }
 
-.reset-password-text{
+.reset-password-text {
     display: block;
     font-weight: bold;
     font-size: 30px;
@@ -174,7 +174,7 @@ h1 {
     width: 300px;
 }
 
-.reset-btn{
+.reset-btn {
     height: 45px;
     width: 300px;
     font-weight: bold;
