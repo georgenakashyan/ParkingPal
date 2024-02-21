@@ -35,7 +35,10 @@
       <input type="text" id="email" placeholder="Email" />
       <input type="password" id="password" placeholder="Password" />
     </form>
-    <a class="reset-link" href="PasswordReset.html">Forgot password?</a>
+    <div class="reset-link"><a href="PasswordReset.html">Forgot password?</a></div>
+    <div></div>
+    <div><label class="notification-text" id="notification-text"></label></div>
+    
     <button type="button" class="long-main-button"
       onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)">Log
       In
