@@ -247,11 +247,11 @@ h3 {
     justify-content: center;
     margin-bottom: 1rem;
 }
-
-.reset-password-text {
-    display: block;
-    font-weight: bold;
-    font-size: 30px;
+.resetpw-popup>form {
+    display: grid;
+    grid-template-columns: 90%;
+    grid-auto-rows: 3.5rem;
+    margin-bottom: -1rem;
 }
 
 .reset-email-textbox {
