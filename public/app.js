@@ -8,8 +8,8 @@ function googleLogin() {
     firebase.auth().signInWithPopup(provider).then(userCredential => {
         const user = userCredential.user;
         const accountExists = firebase.firestore().collection("Account").doc(user.uid);
-        if (accountExists != null) {
-            createAccountDocument(userCredential, user.email, "Anonymous", "Customer");
+        if (accountExists == null) {
+            createAccountDocument(user, user.email, "Anonymous", "Customer");
         }
         mainPage();
     })
@@ -57,13 +57,14 @@ function resetPassword(email) {
     }
     firebase.auth().sendPasswordResetEmail(email)
     .then(() => {
-        errorField.innerHTML = "";
+        errorField.style.setProperty("color", "green");
+        errorField.innerHTML = "Sent password reset email";
     })
     .catch((error) => {
         switch (error.code) {
             case 'auth/missing-email':
-                        errorField.innerHTML = "Enter your email.";
-                        break;
+                errorField.innerHTML = "Enter your email.";
+                break;
             case 'auth/invalid-email':
                 errorField.innerHTML = "Email address is invalid.";
                 break;
@@ -93,8 +94,9 @@ function makeAccountEmailAndPassword(email, firstName, lastName, password, retyp
     } else {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
+                const user = userCredential.user;
                 console.log("Auth Account successfully created");
-                createAccountDocument(userCredential, email, firstName, lastName);
+                createAccountDocument(user, email, firstName, lastName);
                 errorField.innerHTML = "";
                 mainPage();
             })
