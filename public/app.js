@@ -130,16 +130,23 @@ function makeAccountEmailAndPassword(email, firstName, lastName, password, retyp
     }
 }
 
-function createAccountDocument(userCredential, email, firstName, lastName) {
-    var user = userCredential.user;
+function createAccountDocument(user, email, firstName, lastName) {
     var newAccount = {
         Email: email,
         FirstName: firstName,
         LastName: lastName,
         Profile: "",
-        Type_ID: "Unfinished",
-    }
-    firebase.firestore().collection("Account").doc(user.uid).set(newAccount);
+        Type_ID: "Unfinished"
+    };
+    firebase.firestore().collection("Account").doc(user.uid).set(newAccount)
+    .then(() => {
+        console.log("document created");
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode + " --- " + errorMessage);
+    });
 }
 
 function isCustomerExist() {
