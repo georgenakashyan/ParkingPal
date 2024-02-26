@@ -132,3 +132,8 @@ a:hover {
 }
 
 /*Main page*/
+/*CustomerView*/
+#map {
+    height: 400px;
+    width: 400px;
+}

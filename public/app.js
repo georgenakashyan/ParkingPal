@@ -80,7 +80,7 @@ function resetPassword(email) {
 }
 
 function mainPage() {
-    location.href="Parking-Pal.html";
+    location.href="CustomerView.html";
 }
 
 function makeAccountEmailAndPassword(email, firstName, lastName, password, retypePassword) {
@@ -161,4 +161,35 @@ function isManagerExist() {
 
 function inputNullOrEmpty(input) {
     return (input == null || input === "");
+}
+
+function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: {lat: 37.7749, lng: -122.4194} // Default to San Francisco
+    });
+
+    // Add fictional parking garages as markers
+    var parkingGarages = [
+        {name: 'Fictional Parking Garage 1', location: {lat: 37.7706, lng: -122.4244}},
+        {name: 'Fictional Parking Garage 2', location: {lat: 37.7809, lng: -122.4057}},
+        // Add more fictional parking garages as needed
+    ];
+
+    parkingGarages.forEach(function(parkingGarage) {
+        var marker = new google.maps.Marker({
+            position: parkingGarage.location,
+            map: map,
+            title: parkingGarage.name
+        });
+
+        var infoWindow = new google.maps.InfoWindow({
+            content: '<div><strong>' + parkingGarage.name + '</strong><br>' +
+                    'Some information about the garage</div>'
+        });
+
+        marker.addListener('click', function() {
+            infoWindow.open(map, marker);
+        });
+    });
 }
