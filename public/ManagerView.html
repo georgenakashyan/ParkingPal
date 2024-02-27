@@ -6,8 +6,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parking Pal - Manager Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden; 
+            display: flex;
+        }
+        .profile-pane, .garage-pane {
+            padding: 20px;
+            position: relative; 
+        }
+        .profile-pane::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: -1px; 
+            width: 1px; 
+            background-color: #ccc;
+        }
+        .garage-pane {
+            padding: 30px;
+            margin-left: 20px; 
+        }
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-picture {
+            width: 150px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .garages {
+            column-count: 2; 
+            column-gap: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+        .garage-item {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="profile-pane">
+            <h2>Manager Profile</h2>
+            <div class="profile-info">
+                <img src="profile-picture.jpg" alt="Profile Picture" class="profile-picture">
+                <p><strong>Name:</strong> Manager Name</p>
+                <p><strong>Email:</strong> manager@example.com</p>
+                <p><strong>Phone:</strong> +1234567890</p>
+                <p><strong>Address:</strong> 123 Main St, New York, USA</p>
+            </div>
+        </div>
+        <div class="garage-pane">
+            <h2>Properties</h2>
+            <ul class="garages">
+                <li class="garage-item">
+                    <h3>Garage 1</h3>
+                    <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
+                    <p><strong>Price:</strong> $400,000</p>
+                    <p><strong>Description:</strong> Garage Description</p>
+                </li>
+                <li class="garage-item">
+                    <h3>Garage 2</h3>
+                    <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
+                    <p><strong>Price:</strong> $500,000</p>
+                    <p><strong>Description:</strong> Garage Description</p>
+                </li>
+                <li class="garage-item">
+                    <h3>Garage 3</h3>
+                    <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
+                    <p><strong>Price:</strong> $600,000</p>
+                    <p><strong>Description:</strong> Garage Description</p>
+                </li>
+                <li class="garage-item">
+                    <h3>Garage 4</h3>
+                    <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
+                    <p><strong>Price:</strong> $700,000</p>
+                    <p><strong>Description:</strong> Garage Description</p>
+                </li>
+                <!-- Add more garage items as needed -->
+            </ul>
+        </div>
+    </div>
     <a href="index.html">Back to Login</a>
 </body>
 </html>
