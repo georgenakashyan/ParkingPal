@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", event => {
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('profile');
-    firebase.auth().signInWithPopup(provider).then(userCredential => {
+    firebase.auth().signInWithPopup(provider)
+    .then(userCredential => {
         const user = userCredential.user;
         const accountExists = firebase.firestore().collection("Account").doc(user.uid);
         if (accountExists == null) {
@@ -25,7 +26,6 @@ function emailAndPasswordLogin(email, password) {
     var errorField = document.getElementById("notification-text");
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-        const user = userCredential.user;
         errorField.innerHTML = "";
         mainPage();
     })
@@ -85,7 +85,18 @@ function resetPassword(email) {
 }
 
 function mainPage() {
-    location.href="CustomerView.html";
+    const accType = getAccountType();
+    switch (accType) {
+        case "Customer":
+            location.href="CustomerView.html";
+            break;
+        case "Manager":
+            location.href="ManagerView.html";
+            break;
+        default:
+            location.href="AccountSetup.html";
+            break;
+    }
 }
 
 function makeAccountEmailAndPassword(email, firstName, lastName, password, retypePassword) {
