@@ -50,6 +50,10 @@ function emailAndPasswordLogin(email, password) {
     });
 }
 
+function logOut() {
+    firebase.auth().signOut();
+}
+
 function resetPassword(email) {
     var errorField = document.getElementById("notification-text");
     const user = firebase.auth().currentUser;
