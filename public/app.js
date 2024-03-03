@@ -1,11 +1,12 @@
+var userLocation = [40.78343000, -73.96625000];
 document.addEventListener("DOMContentLoaded", event => {
     const app = firebase.app();
 });
-  
+
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('profile');
-    firebase.auth().signInWithPopup(provider).then(userCredential => {
+    firebase.auth().signInWithRedirect(provider).then(userCredential => {
         const user = userCredential.user;
         const accountExists = firebase.firestore().collection("Account").doc(user.uid);
         if (accountExists == null) {
@@ -164,19 +165,73 @@ function inputNullOrEmpty(input) {
 }
 
 function initMap() {
+    setLocation();
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 12,
-        center: {lat: 37.7749, lng: -122.4194} // Default to San Francisco
+        streetViewControl: false,
+        mapTypeControl: false,
+        center: {lat: userLocation[0], lng: userLocation[1]}
     });
+    removedPOI = [
+        {featureType: "poi.business", stylers: [{ visibility: "off" }],},
+        {elementType: "labels.icon", stylers: [{ visibility: "off" }],}
+    ];
+    map.setOptions({styles: removedPOI});
 
     // Add fictional parking garages as markers
-    var parkingGarages = [
-        {name: 'Fictional Parking Garage 1', location: {lat: 37.7706, lng: -122.4244}},
-        {name: 'Fictional Parking Garage 2', location: {lat: 37.7809, lng: -122.4057}},
-        // Add more fictional parking garages as needed
-    ];
+    //TODO: add areaCode based on latitude and longitude (probably with google maps API)
+    var areaCode = 10024;
+    var garageList = findGarages(areaCode);
+    fillGarages(map, garageList);
+}
 
-    parkingGarages.forEach(function(parkingGarage) {
+async function findGarages(areaCode) {
+    try {
+        // Query Firestore collection "Garage" for documents with matching areaCode
+        firebase.firestore().collection("Garage").where("AreaCode", "==", areaCode)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    console.log(doc.id + " => " + doc.data());
+                });
+            })
+            .catch((error) => {
+                console.log("Error getting garages: " + error);
+            });
+    
+        // Array to store matching documents
+        const matchingGarages = [];
+    
+        // Iterate through query results and add documents to matchingGarages array
+        querySnapshot.forEach((doc) => {
+          matchingGarages.push({ id: doc.id, data: doc.data() });
+        });
+    
+        // Return array of matching documents
+        return matchingGarages;
+    } catch (error) {
+        // Handle errors
+        console.error("Error searching garages:", error);
+        return []; // Return empty array in case of error
+    }
+}
+
+function setLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setCoordinates, setDefaultCoordinates)
+    }
+}
+
+function setCoordinates(position) {
+    userLocation = [position.coords.latitude, position.coords.longitude];
+}
+
+function setDefaultCoordinates() {
+    userLocation = [40.78343000, -73.96625000];
+}
+
+function fillGarages(map, garageList) {
+    garageList.forEach(function(parkingGarage) {
         var marker = new google.maps.Marker({
             position: parkingGarage.location,
             map: map,
