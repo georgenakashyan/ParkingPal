@@ -58,3 +58,33 @@ function displayGarage(profileLink){
         console.log('Document data:',doc.data());
     }
 }
+
+/**
+ * this will add garages to the firebase database
+ */
+function addGarage(){
+    const user=firebase.auth().currentUser;
+    var address=doc.getElementById(/*put in HTML references*/);
+    var AreaCode=doc.getElementById(/*put in HTML references*/);
+    var CloseTime=firebase.firestore.Timestamp.fromDate(new Date(doc.getElementById(/*put in HTML references*/)));
+    var Manager=user.uid;
+    var Name=doc.getElementById(/*put in HTML references*/);
+    var OpenTime=firebase.firestore.Timestamp.fromDate(new Date(doc.getElementById(/*put in HTML references*/)));
+    var garageData={
+        Address: address,
+        AreaCode: AreaCode,
+        CloseTime: CloseTime,
+        Manager: Manager,
+        Name: Name,
+        OpenTime: OpenTime
+    };
+    firebase.firestore().collection("Garage").add(garageData)
+    .then(() => {
+        console.log("document created");
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode + " --- " + errorMessage);
+    });
+}
