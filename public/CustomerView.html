@@ -14,17 +14,22 @@
     <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
     <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-    <script src="app.js"></script>
     <script loading=async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEw4uAP37UWhAS8P9RHrx_PrA-08vutk"></script>
     <link rel="stylesheet" href="output.css" />
-    <title>ParkingPal</title>
+    <title>ParkingPal Home</title>
 </head>
 <body class="globalFont" onload="initMap();">
+    <script src="app.js"></script>
     <!-- <a href="index.html">Log Out</a> -->
-    <div class="p-0 h-screen w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
-        <div class="min-h-full col-span-full row-span-1 grid p-7 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">Garage Cards Here
+    <div class="bg-slate-700 h-screen w-screen">
+        <div class="bg-red-500 h-1/6">Header
+
         </div>
-        <div class="min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full" id="map">Map</div>
+        <div class="p-0 h-5/6 w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
+            <div class="min-h-full col-span-full row-span-1 grid p-7 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">Garage Cards Here
+            </div>
+            <div class="min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full" id="map">Map</div>
+        </div>
     </div>
 </body>
 </html>

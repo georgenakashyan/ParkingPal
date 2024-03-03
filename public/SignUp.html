@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
@@ -19,8 +18,6 @@
     <title>ParkingPal</title>
 </head>
 
-
-
 <body class="globalFont">
     <script src="app.js"></script>
     <div class="login-signup-prompt" style="margin-top: 5rem">
@@ -34,12 +31,13 @@
             <input type="password" id="pw2" placeholder="Re-Type your Password">
         </form>
         <label class="notification-text" id="notification-text"></label>
-        <button class="long-main-button" onclick="makeAccountEmailAndPassword(document.getElementById('email').value
-                                                    , document.getElementById('fn').value
-                                                    , document.getElementById('ln').value
-                                                    , document.getElementById('pw').value
-                                                    , document.getElementById('pw2').value
-                                                    , document.getElementById('pw2').value)">
+        <button class="long-main-button" onclick="makeAccountEmailAndPassword(
+            document.getElementById('email').value
+            , document.getElementById('fn').value
+            , document.getElementById('ln').value
+            , document.getElementById('pw').value
+            , document.getElementById('pw2').value
+            , document.getElementById('pw2').value)">
             Create Account</button>
         <button type="button" class="google-sign-in-button" onclick="googleLogin()">Sign in with Google</button>
         <hr style="width: 50%;">

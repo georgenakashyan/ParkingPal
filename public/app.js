@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", event => {
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('profile');
-    firebase.auth().signInWithRedirect(provider).then(userCredential => {
+    firebase.auth().signInWithPopup(provider).then(userCredential => {
         const user = userCredential.user;
         const accountExists = firebase.firestore().collection("Account").doc(user.uid);
         if (accountExists == null) {
