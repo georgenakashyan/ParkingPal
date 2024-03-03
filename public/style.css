@@ -131,4 +131,98 @@ a:hover {
         0 0 0 3px #c8dafc;
 }
 
-/*Main page*/
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.container {
+    max-width: 80rem;
+    height: 40rem;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 2%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    display: flex;
+}
+.profile-pane, .garage-pane {
+    padding: 2rem;
+    position: relative;/*adds a line*/ 
+}
+.profile-pane::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -1px; 
+    width: 1px; 
+    background-color: #ccc;
+}
+.garage-pane {
+    display:flex;
+    padding: 20px;
+    overflow-y: auto;
+    height: 35rem;
+    margin-top: 2.5rem;
+}
+.profile-info {
+    margin-bottom: 20px;
+}
+.profile-picture {
+    width: 150px;
+    border-radius: 50%;
+    margin-top: 8rem;
+    margin-bottom: 5rem;
+}
+
+.garage-item {
+    width: 45rem;
+    margin-left: 4rem;
+    margin-right: 6rem;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+.garage-item:hover {
+    background-color: #e0e0e0;
+    color: #333; 
+}
+.garage-item:active {
+    background-color: #20c8db;
+    color: #bdb5b5; 
+}
+
+.add{
+    position: fixed;
+    width: 5rem;
+    height: 1.5rem;
+    top: 8%;
+    right: 12%;
+  }
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+.form label{
+    padding: 5px;
+    margin-right: 1rem;
+}
+.form span{
+    padding: 5px;
+    margin-top:-1.8rem;
+    margin-left: 3rem ;
+}
+.edit{
+    width: 90%;
+    margin-left: 0.2rem;
+    margin-top: 2.6rem;
+    height: 2.5rem;
+
+}
