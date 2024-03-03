@@ -4,6 +4,19 @@
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <script src="firebase.js"></script>
+    <script src="app.js"></script>
     <title>Parking Pal - Manager Home</title>
     <style>
         body {
@@ -62,19 +75,17 @@
         }
     </style>
 </head>
-<body>
+<body onload="main()">
     <a href="index.html">Back to Login</a>
     <div class="container">
         <div class="profile-pane">
-                        
             <div class="profile-info">
                 <img src="https://cdn.pixabay.com/photo/2014/04/02/10/45/parking-304464_1280.png" alt="Profile Picture" class="profile-picture">
                 <form class="form">
-                    <label>Name:</label> <span>"Jorge pedro"</span>
-                    <label>Email:</label> <span>jorgep@gmail.com</span>
+                    <label id = "name">Name:</label> <span>"Jorge pedro"</span>
+                    <label id = "email">Email:</label> <span>jorgep@gmail.com</span>
                 </form>
                 <button>Edit Profile</button>
-                
             </div>
         </div>
         <div class="garage-pane">
@@ -103,6 +114,10 @@
                     <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
                     <p><strong>Price:</strong> $700,000</p>
                     <p><strong>Description:</strong> Garage Description</p>
+                </li>
+                <li class="garage-item">
+                    <h3>Add Garage</h3>
+                    <p>+</p>
                 </li>
                 <!-- Add more garage items as needed -->
             </ul>
