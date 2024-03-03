@@ -63,6 +63,7 @@ function displayGarage(profileLink){
  * this will add garages to the firebase database
  */
 function addGarage(){
+    //gets info about garage
     const user=firebase.auth().currentUser;
     var address=doc.getElementById(/*put in HTML references*/);
     var AreaCode=doc.getElementById(/*put in HTML references*/);
@@ -78,13 +79,45 @@ function addGarage(){
         Name: Name,
         OpenTime: OpenTime
     };
-    firebase.firestore().collection("Garage").add(garageData)
-    .then(() => {
-        console.log("document created");
-    })
-    .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode + " --- " + errorMessage);
-    });
+    //double check that there is no existing garage
+    const dbReference=db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
+    var errorField = document.getElementById("notification-text");
+    if(dbReference.empty){
+        //puts info into database
+        addDocument("Garage",garageData);
+        /*insert code here to add doc name to manager array list*/
+    }
+    else{
+        //reports if something is already in database
+        errorField.innerHTML="Garage Already In Use";
+    }
+}
+
+/**
+ * adds documents to collections
+ * @param {*} Collection 
+ * @param {*} addDocument 
+ */
+function addDocument(Collection, addDocument){
+    var errorField = document.getElementById("notification-text");
+    firebase.firestore().collection(Collection).add(addDocument)
+        .then(() => {
+            errorField.innerHTML= Collection+" Added";
+        })
+        .catch((error) => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode + " --- " + errorMessage);
+        });
+}
+
+/**
+ * STILL UNDER PRODUCTION DO NOT USE
+ * this will delete any existing garages from the database
+ */
+function deleteGarage(){
+    //code to get input
+
+    //code to delete document
+    const begone=db.collection('Garage').doc(/*enter doc id*/).delete();
 }
