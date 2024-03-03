@@ -1,6 +1,12 @@
 var userLocation = [40.78343000, -73.96625000];
 document.addEventListener("DOMContentLoaded", event => {
     const app = firebase.app();
+    const auth = firebase.auth();
+    auth.onAuthStateChanged((user) => {
+        if (!user && location.href.indexOf("index.html") == -1 && location.href.indexOf("SignUp.html") == -1 && location.href.indexOf("PasswordReset.html") == -1) {
+            location.href = "index.html";
+        }
+    });
 });
 
 function googleLogin() {
