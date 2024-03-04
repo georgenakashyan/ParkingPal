@@ -37,37 +37,39 @@ function googleLogin() {
         mainPage();
     })
     .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode + " --- " + errorMessage);
+        console.log("Error in googleLogin");
     });
 }
 
 function emailAndPasswordLogin(email, password) {
-    var errorField = document.getElementById("notification-text");
-    firebase.auth().signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-        errorField.innerHTML = "";
-        mainPage();
-    })
-    .catch((error) => {
-        switch (error.code) {
-            case 'auth/invalid-credential':
-                errorField.innerHTML = "Email or password is incorrect.";
-                break;
-            case 'auth/invalid-email':
-                errorField.innerHTML = "Email address is invalid.";
-                break;
-            case 'auth/missing-password':
-                errorField.innerHTML = "Enter your password.";
-                break;
-            case 'auth/operation-not-allowed':
-                errorField.innerHTML = "Error during sign up.";
-                break;
-            default:
-                console.log(error.message);
-                break;
-        }
+    return new Promise((resolve, reject) => {
+        var errorField = document.getElementById("notification-text");
+        firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            errorField.innerHTML = "";
+            mainPage();
+            resolve("Login successful");
+        })
+        .catch((error) => {
+            switch (error.code) {
+                case 'auth/invalid-credential':
+                    errorField.innerHTML = "Email or password is incorrect.";
+                    break;
+                case 'auth/invalid-email':
+                    errorField.innerHTML = "Email address is invalid.";
+                    break;
+                case 'auth/missing-password':
+                    errorField.innerHTML = "Enter your password.";
+                    break;
+                case 'auth/operation-not-allowed':
+                    errorField.innerHTML = "Error during sign up.";
+                    break;
+                default:
+                    console.error(error.message);
+                    break;
+            }
+            reject(error);
+        });
     });
 }
 
@@ -107,23 +109,26 @@ function resetPassword(email) {
 }
 
 function mainPage() {
-    getAccountType().then((accType) => {
-        switch (accType) {
-            case "Customer":
-                location.href="CustomerView.html";
-                break;
-            case "Manager":
-                location.href="ManagerView.html";
-                break;
-            default:
-                location.href="AccountSetup.html";
-                break;
-        }
-    })
-    .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode + " --- " + errorMessage);
+    return new Promise((resolve, reject) => {
+        getAccountType()
+        .then((accType) => {
+            switch (accType) {
+                case "Customer":
+                    location.href = "CustomerView.html";
+                    break;
+                case "Manager":
+                    location.href = "ManagerView.html";
+                    break;
+                default:
+                    location.href = "AccountSetup.html";
+                    break;
+            }
+            resolve();
+        })
+        .catch((error) => {
+            console.error("Error in mainPage:", error);
+            reject(error);
+        });
     });
 }
 
@@ -191,7 +196,7 @@ function createAccountDocument(user, email, firstName, lastName) {
     .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(errorCode + " --- " + errorMessage);
+        console.log("Error in createAccountDocument");
     });
 }
 
@@ -270,19 +275,17 @@ function getAccountType() {
             reject("User not logged in");
             return;
         }
-
         const db = firebase.firestore();
         const accountDoc = db.collection("Account").doc(user.uid);
-
         accountDoc.get().then((doc) => {
             if (doc.exists) {
-                const profile = doc.data().Type_ID;
-                if (profile.includes("Customer")) {
+                const typeID = doc.data().Type_ID;
+                if (typeID.includes("Customer")) {
                     resolve("Customer");
-                } else if (profile.includes("Manager")) {
+                } else if (typeID.includes("Manager")) {
                     resolve("Manager");
                 } else {
-                    reject("Unknown account type");
+                    resolve("Unfinished");
                 }
             } else {
                 reject("Account document does not exist");
