@@ -3,11 +3,20 @@ document.addEventListener("DOMContentLoaded", event => {
     const app = firebase.app();
     const auth = firebase.auth();
     auth.onAuthStateChanged((user) => {
-        if (!user && location.href.indexOf("index.html") == -1 && location.href.indexOf("SignUp.html") == -1 && location.href.indexOf("PasswordReset.html") == -1) {
-            location.href = "index.html";
-        }
+        console.log("auth state changed")
+        checkUserPageRequest();
     });
 });
+
+function checkUserPageRequest() {
+    const user = firebase.auth().currentUser;
+    if (!user && location.href.indexOf("index.html") == -1 && location.href.indexOf("SignUp.html") == -1 && location.href.indexOf("PasswordReset.html") == -1) {
+        location.href = "index.html";
+    } else if (user && (location.href.indexOf("index.html") > -1 || location.href.indexOf("SignUp.html") > -1 || location.href.indexOf("PasswordReset.html") > -1)) {
+        mainPage();
+        }
+}
+
 
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
