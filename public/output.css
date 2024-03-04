@@ -544,14 +544,6 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
-.right-full {
-  right: 100%;
-}
-
-.-right-full {
-  right: -100%;
-}
-
 .col-span-full {
   grid-column: 1 / -1;
 }
@@ -566,14 +558,6 @@ video {
 
 .row-span-8 {
   grid-row: span 8 / span 8;
-}
-
-.mr-1 {
-  margin-right: 0.25rem;
-}
-
-.mr-3 {
-  margin-right: 0.75rem;
 }
 
 .mr-4 {
@@ -608,59 +592,6 @@ video {
   width: 100vw;
 }
 
-.w-\[10\%\] {
-  width: 10%;
-}
-
-.w-\[20\%\] {
-  width: 20%;
-}
-
-.w-\[70\%\] {
-  width: 70%;
-}
-
-.w-\[60\%\] {
-  width: 60%;
-}
-
-.w-\[11\%\] {
-  width: 11%;
-}
-
-.w-\[69\%\] {
-  width: 69%;
-}
-
-.w-\[15\%\] {
-  width: 15%;
-}
-
-.w-\[65\%\] {
-  width: 65%;
-}
-
-.w-fit {
-  width: -moz-fit-content;
-  width: fit-content;
-}
-
-.w-96 {
-  width: 24rem;
-}
-
-.min-w-8 {
-  min-width: 2rem;
-}
-
-.min-w-10 {
-  min-width: 2.5rem;
-}
-
-.min-w-12 {
-  min-width: 3rem;
-}
-
 .grow {
   flex-grow: 1;
 }
@@ -687,28 +618,12 @@ video {
   align-items: center;
 }
 
-.justify-end {
-  justify-content: flex-end;
-}
-
 .gap-3 {
   gap: 0.75rem;
 }
 
-.rounded-lg {
-  border-radius: 0.5rem;
-}
-
-.rounded-2xl {
-  border-radius: 1rem;
-}
-
 .rounded-3xl {
   border-radius: 1.5rem;
-}
-
-.border {
-  border-width: 1px;
 }
 
 .border-4 {
@@ -718,10 +633,6 @@ video {
 .border-PP-orange {
   --tw-border-opacity: 1;
   border-color: rgb(219 116 31 / var(--tw-border-opacity));
-}
-
-.border-opacity-100 {
-  --tw-border-opacity: 1;
 }
 
 .bg-PP-blue {
@@ -748,21 +659,16 @@ video {
   padding: 0px;
 }
 
+.p-2 {
+  padding: 0.5rem;
+}
+
 .p-3 {
   padding: 0.75rem;
 }
 
 .p-7 {
   padding: 1.75rem;
-}
-
-.p-2 {
-  padding: 0.5rem;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
 }
 
 .text-3xl {
@@ -778,19 +684,14 @@ video {
   text-transform: uppercase;
 }
 
-.text-white {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-PP-orange {
-  --tw-text-opacity: 1;
-  color: rgb(219 116 31 / var(--tw-text-opacity));
-}
-
 .text-PP-light-orange {
   --tw-text-opacity: 1;
   color: rgb(235 171 89 / var(--tw-text-opacity));
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 /* Global affecting */
@@ -920,11 +821,6 @@ a:hover {
 }
 
 /*Main page*/
-
-.hover\:border-PP-light-orange:hover {
-  --tw-border-opacity: 1;
-  border-color: rgb(235 171 89 / var(--tw-border-opacity));
-}
 
 .hover\:bg-PP-orange:hover {
   --tw-bg-opacity: 1;
