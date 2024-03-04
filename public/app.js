@@ -58,6 +58,7 @@ function emailAndPasswordLogin(email, password) {
 
 function logOut() {
     firebase.auth().signOut();
+    location.href = "index.html";
 }
 
 function resetPassword(email) {
