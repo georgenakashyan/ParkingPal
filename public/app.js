@@ -14,7 +14,7 @@ function checkUserPageRequest() {
         location.href = "index.html";
     } else if (user && (location.href.indexOf("index.html") > -1 || location.href.indexOf("SignUp.html") > -1 || location.href.indexOf("PasswordReset.html") > -1)) {
         mainPage();
-        }
+    }
 }
 
 
@@ -22,7 +22,7 @@ function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('profile');
     firebase.auth().signInWithPopup(provider)
-    .then(userCredential => {
+    .then((userCredential) => {
         const user = userCredential.user;
         const accountExists = firebase.firestore().collection("Account").doc(user.uid);
         if (accountExists == null) {
