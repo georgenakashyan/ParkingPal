@@ -24,10 +24,16 @@ function googleLogin() {
     firebase.auth().signInWithPopup(provider)
     .then((userCredential) => {
         const user = userCredential.user;
-        const accountExists = firebase.firestore().collection("Account").doc(user.uid);
-        if (accountExists == null) {
-            createAccountDocument(user, user.email, "Anonymous", "Customer");
-        }
+        const accountRef = firebase.firestore().collection("Account").doc(user.uid);
+        accountRef.get()
+        .then((doc) => {
+            if (!doc.exists) {
+                createAccountDocument(user, user.email, "Anonymous", "User");
+            }
+        })
+        .catch((error) => {
+            console.log("Error getting document:", error);
+        });
         mainPage();
     })
     .catch((error) => {
