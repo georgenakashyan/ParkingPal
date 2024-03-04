@@ -233,7 +233,7 @@ body {
     top: 0%;
     height: 100%;
     width: 100%;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     text-align: center;
