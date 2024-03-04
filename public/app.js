@@ -206,34 +206,24 @@ function initMap() {
     fillGarages(map, garageList);
 }
 
-async function findGarages(areaCode) {
+function findGarages(address, areaCode) {
     try {
-        // Query Firestore collection "Garage" for documents with matching areaCode
-        firebase.firestore().collection("Garage").where("AreaCode", "==", areaCode)
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    console.log(doc.id + " => " + doc.data());
-                });
-            })
-            .catch((error) => {
-                console.log("Error getting garages: " + error);
-            });
-    
-        // Array to store matching documents
         const matchingGarages = [];
-    
-        // Iterate through query results and add documents to matchingGarages array
-        querySnapshot.forEach((doc) => {
-          matchingGarages.push({ id: doc.id, data: doc.data() });
+        firebase.firestore().collection("Garage").where("Address", "==", address).where("AreaCode", "==", areaCode)
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id + " => " + doc.data());
+                matchingGarages.push({id: doc.id, data: doc.data()});
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting garages: " + error);
         });
-    
-        // Return array of matching documents
         return matchingGarages;
     } catch (error) {
-        // Handle errors
         console.error("Error searching garages:", error);
-        return []; // Return empty array in case of error
+        return [];
     }
 }
 
