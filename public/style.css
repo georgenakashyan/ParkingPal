@@ -226,3 +226,93 @@ body {
     height: 2.5rem;
 
 }
+.popup{
+    background: rgba(0, 0, 0, .06);
+    position: absolute;
+    top: 0%;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.popup-content {
+    width: 25rem; 
+    height: 25rem;
+    padding: 20px;
+    border: 1px solid #000; 
+    background-color: #fff; 
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .input>input{
+    margin-bottom: 1rem;
+    width: 20rem;
+    height: 1.5rem;
+    border-radius: 0.3rem;
+    border-width: 0.1rem;
+    border-color: rgb(219, 219, 219);
+    padding-left: 2%;
+
+  }
+
+  .hours{
+    margin-bottom: 1rem;
+  }
+  .opening{
+    margin-left: -0.4rem;
+  }
+
+  .startField{
+    margin-bottom: 1rem;
+    width: 6rem;
+    height: 1.5rem;
+    border-radius: 0.3rem;
+    border-width: 0.1rem;
+    border-color: rgb(219, 219, 219);
+    padding-left: 2%;
+  }
+
+  .endField{
+    margin-bottom: 1rem;
+    width: 6rem;
+    height: 1.5rem;
+    border-radius: 0.3rem;
+    border-width: 0.1rem;
+    border-color: rgb(219, 219, 219);
+    padding-left: 2%;
+  }
+
+  .addBtn{
+    border-radius: 0.3rem;
+    border-width: 0px;
+    width: 90%;
+    margin-top: 2rem;
+    margin-left: -0.1rem;
+    height: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    background-color: #0291bd;
+    color: white;
+ 
+  }
+  .addBtn:hover {
+    background-color: #006e90;
+    -webkit-transition: all 130ms ease-in-out;
+    -moz-transition: all 130ms ease-in-out;
+    -o-transition: all 130ms ease-in-out;
+    transition: all 130ms ease-in-out;
+}
