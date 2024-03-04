@@ -107,18 +107,24 @@ function resetPassword(email) {
 }
 
 function mainPage() {
-    const accType = getAccountType();
-    switch (accType) {
-        case "Customer":
-            location.href="CustomerView.html";
-            break;
-        case "Manager":
-            location.href="ManagerView.html";
-            break;
-        default:
-            location.href="AccountSetup.html";
-            break;
-    }
+    getAccountType().then((accType) => {
+        switch (accType) {
+            case "Customer":
+                location.href="CustomerView.html";
+                break;
+            case "Manager":
+                location.href="ManagerView.html";
+                break;
+            default:
+                location.href="AccountSetup.html";
+                break;
+        }
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode + " --- " + errorMessage);
+    });
 }
 
 function makeAccountEmailAndPassword(email, firstName, lastName, password, retypePassword) {
@@ -255,6 +261,36 @@ function setCoordinates(position) {
 
 function setDefaultCoordinates() {
     userLocation = [40.78343000, -73.96625000];
+}
+
+function getAccountType() {
+    return new Promise((resolve, reject) => {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+            reject("User not logged in");
+            return;
+        }
+
+        const db = firebase.firestore();
+        const accountDoc = db.collection("Account").doc(user.uid);
+
+        accountDoc.get().then((doc) => {
+            if (doc.exists) {
+                const profile = doc.data().Type_ID;
+                if (profile.includes("Customer")) {
+                    resolve("Customer");
+                } else if (profile.includes("Manager")) {
+                    resolve("Manager");
+                } else {
+                    reject("Unknown account type");
+                }
+            } else {
+                reject("Account document does not exist");
+            }
+        }).catch((error) => {
+            reject(error);
+        });
+    });
 }
 
 function fillGarages(map, garageList) {
