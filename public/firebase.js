@@ -121,3 +121,13 @@ function deleteGarage(){
     //code to delete document
     const begone=db.collection('Garage').doc(/*enter doc id*/).delete();
 }
+function popup(){
+    document.getElementById("addGarage").addEventListener("click", function(){
+        document.querySelector(".popup").style.display = "flex"
+    })
+}
+function close(){
+    document.getElementById("popup").addEventListener("click", function(){
+        document.querySelector(".popup").style.display = "none"
+    })
+}
