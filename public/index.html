@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
@@ -14,31 +14,35 @@
   <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
   <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
   <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
-  <link rel="stylesheet" href="style.css" />
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <link rel="stylesheet" href="output.css" />
   <title>ParkingPal</title>
 </head>
 
-<body class="globalFont">
+<body class="globalFont bg-PP-blue">
   <script src="app.js"></script>
-  <div class="login-signup-prompt" style="margin-top: 10rem">
-    <h1>ParkingPal</h1>
-    <div><label class="instruction-text">Never get stuck searching for parking again</label></div>
-    <form style="margin-bottom: -1rem;">
-      <input type="text" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
-    </form>
-    <div class="reset-link"><a href="PasswordReset.html">Forgot password?</a></div>
-    <label class="notification-text" id="notification-text"></label>
-    <button type="button" class="long-main-button"
-      onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)">Log
-      In
-    </button>
-    <button type="button" class="google-sign-in-button" onclick="googleLogin()">Continue with Google</button>
-    <hr style="width: 50%;">
-    <div>
-      <label>Don't have an account?&nbsp;</label>
-      <a class="signup-link" href="SignUp.html">Sign up</a>
+  <div class="h-screen flex w-screen">
+    <div class="grow"></div>
+    <div class="login-signup-prompt w-fit bg-white">
+      <h1 class="font-semibold">ParkingPal</h1>
+      <form style="margin-bottom: -1rem;">
+        <input type="text" id="email" placeholder="Email" />
+        <input type="password" id="password" placeholder="Password" />
+      </form>
+      <div class="reset-link"><a href="PasswordReset.html">Forgot password?</a></div>
+      <label class="notification-text" id="notification-text"></label>
+      <button type="button" class="long-main-button"
+        onclick="emailAndPasswordLogin(document.getElementById('email').value, document.getElementById('password').value)">Log
+        In
+      </button>
+      <button type="button" class="google-sign-in-button" onclick="googleLogin()">Continue with Google</button>
+      <hr>
+      <div>
+        <label>Don't have an account?&nbsp;</label>
+        <a class="signup-link" href="SignUp.html">Sign up</a>
+      </div>
     </div>
+    <div class="grow"></div>
   </div>
 </body>
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
+    <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <link rel="stylesheet" href="output.css" />
+    <title>Setup your account</title>
+</head>
+<body class="globalFont bg-PP-blue">
+    <script src="app.js"></script>
+    <div class="h-screen flex w-screen">
+        <div class="grow"></div>
+        <div class="bg-white login-signup-prompt w-fit h-fit text-center items-center justify-center">
+            <div class="pb-5">
+                <label class="font-semibold">Finish setting up your account</label>
+            </div>
+            <div class="pb-10">
+                <label class="">Select your profile type</label>
+            </div>
+            <div class="">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="updateUserType('Customer')">Continue as a Customer</button>
+            </div>
+            <div class="">
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateUserType('Manager')">Continue as a Garage Manager</button>
+            </div>
+        </div>
+        <div class="grow"></div>
+      </div>
+    
+</body>
+</html>
