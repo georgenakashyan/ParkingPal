@@ -90,6 +90,7 @@ function resetPassword(email) {
         errorField.innerHTML = "Sent password reset email";
     })
     .catch((error) => {
+        errorField.style.setProperty("color", "red");
         switch (error.code) {
             case 'auth/missing-email':
                 errorField.innerHTML = "Enter your email.";
