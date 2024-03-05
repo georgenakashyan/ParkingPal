@@ -334,6 +334,7 @@ function updateUserType(type) {
                     Type_ID: type,
                     Profile: "Customer/" + doc.id
                 }, { merge: true });
+                mainPage();
             });
             break;
         case "Manager":
@@ -345,6 +346,7 @@ function updateUserType(type) {
                     Type_ID: type,
                     Profile: "Manager/" + doc.id
                 }, { merge: true });
+                mainPage();
             });
             break;
         default:
