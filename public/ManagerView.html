@@ -18,62 +18,7 @@
     <script src="firebase.js"></script>
     <script src="app.js"></script>
     <title>Parking Pal - Manager Home</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 80rem;
-            height: 40rem;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 2%;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-            display: flex;
-        }
-        .profile-pane, .garage-pane {
-            padding: 2rem;
-            position: relative;/*adds a line*/ 
-        }
-        .profile-pane::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: -1px; 
-            width: 1px; 
-            background-color: #ccc;
-        }
-        .garage-pane {
-            padding: 20px;
-            overflow-y: auto;
-        }
-        .profile-info {
-            margin-bottom: 20px;
-        }
-        .profile-picture {
-            width: 150px;
-            border-radius: 50%;
-            margin-top: 8rem;
-            margin-bottom: 5rem;
-        }
-        
-        .garage-item {
-            width: 45rem;
-            margin-left: 4rem;
-            margin-right: 6rem;
-            display: block;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body onload="main()">
     <a href="index.html">Back to Login</a>
@@ -81,16 +26,19 @@
         <div class="profile-pane">
             <div class="profile-info">
                 <img src="https://cdn.pixabay.com/photo/2014/04/02/10/45/parking-304464_1280.png" alt="Profile Picture" class="profile-picture">
-                <form class="form">
-                    <label id = "name">Name:</label> <span>"Jorge pedro"</span>
-                    <label id = "email">Email:</label> <span>jorgep@gmail.com</span>
-                </form>
-                <button>Edit Profile</button>
+                <div class="form">
+                    <label class="name" id = "name">Name:</label> <span class="input">"Jorge pedro"</span>
+                    <label class="email" id = "email">Email:</label> <span class="input2">jorgep@gmail.com</span>
+                </div>
+                <button class="edit">Edit Profile</button>
             </div>
         </div>
-        <div class="garage-pane">
-            <h2>Properties</h2>
+    <div class="garage-pane">
             <ul class="garages">
+                <li class="garage-item" id="addGarage" onclick="popup()">
+                    <h3>Add Garage</h3>
+                    <p>+</p>
+                </li>
                 <li class="garage-item">
                     <h3>Garage 1</h3>
                     <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
@@ -115,13 +63,30 @@
                     <p><strong>Price:</strong> $700,000</p>
                     <p><strong>Description:</strong> Garage Description</p>
                 </li>
-                <li class="garage-item">
-                    <h3>Add Garage</h3>
-                    <p>+</p>
-                </li>
                 <!-- Add more garage items as needed -->
             </ul>
         </div>
     </div>
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <span class="close"id="closebutton" onclick="close()">&times;</span>
+            <label>Input the following information:</label>
+            <form class="input"><br>
+                <input type="text" class="nameField" placeholder="Name"><br>
+                <input type="text" class="addressField" placeholder="Address"><br>
+                <input type="text" class="areacodeField" placeholder="AreaCode"><br>
+                <input type="Manager" class="managerField" placeholder="Manager"><br>
+            </form><br>
+            
+            <label class="hours">Operating Hours</label><br>
+            <label class="opening">Start -</label>
+            <input type="text" class="startField" placeholder="Start">
+            <label class="closing">End -</label>
+            <input type="text" class="endField" placeholder="End">
+            <button class="addBtn" onclick="addGarage()">Add Garage</button>
+        </div>
+    </div>
+
+
 </body>
 </html>
