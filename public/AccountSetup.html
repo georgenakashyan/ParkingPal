@@ -17,8 +17,26 @@
     <link rel="stylesheet" href="output.css" />
     <title>Setup your account</title>
 </head>
-<body>
+<body class="globalFont bg-PP-blue">
     <script src="app.js"></script>
+    <div class="h-screen flex w-screen">
+        <div class="grow"></div>
+        <div class="bg-white login-signup-prompt w-fit h-fit text-center items-center justify-center">
+            <div class="pb-5">
+                <label class="font-semibold">Finish setting up your account</label>
+            </div>
+            <div class="pb-10">
+                <label class="">Select your profile type</label>
+            </div>
+            <div class="">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="updateUserType('Customer')">Continue as a Customer</button>
+            </div>
+            <div class="">
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="updateUserType('Manager')">Continue as a Garage Manager</button>
+            </div>
+        </div>
+        <div class="grow"></div>
+      </div>
     
 </body>
 </html>
