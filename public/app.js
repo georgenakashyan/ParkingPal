@@ -10,19 +10,27 @@ document.addEventListener("DOMContentLoaded", event => {
 
 async function checkUserPageRequest() {
     const user = firebase.auth().currentUser;
-    const userType = await getAccountType();
-    if (!user && location.href.indexOf("index.html") == -1 && location.href.indexOf("SignUp.html") == -1 && location.href.indexOf("PasswordReset.html") == -1) {
-        location.href = "index.html";
-    } else if (user 
-            && userType == "Unfinished"
-            && location.href.indexOf("AccountSetup") == -1 ) {
-        mainPage();
-    } else if (user 
-            && (location.href.indexOf("index.html") > -1 
-            || location.href.indexOf("SignUp.html") > -1 
-            || location.href.indexOf("PasswordReset.html") > -1)) {
-        mainPage();
-    }
+    await getAccountType()
+    .then((userType) => {
+        if (userType == "Unfinished"
+                && location.href.indexOf("AccountSetup") == -1 ) {
+            mainPage();
+        } else if (location.href.indexOf("index.html") > -1 
+                || location.href.indexOf("SignUp.html") > -1 
+                || location.href.indexOf("PasswordReset.html") > -1) {
+            mainPage();
+        } else if (userType != "Unfinished" 
+                && location.href.indexOf(userType) == -1) {
+            mainPage();
+        }
+    })
+    .catch((error) => {
+        if (location.href.indexOf("index.html") == -1 
+                && location.href.indexOf("SignUp.html") == -1 
+                && location.href.indexOf("PasswordReset.html") == -1) {
+            location.href = "index.html";
+        }
+    });
 }
 
 function googleLogin() {
@@ -64,21 +72,26 @@ function emailAndPasswordLogin(email, password) {
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             errorField.innerHTML = "";
+            document.getElementById("login-form").reset(); 
             mainPage();
             resolve("Login successful");
         })
         .catch((error) => {
             switch (error.code) {
                 case 'auth/invalid-credential':
+                    document.getElementById("password").innerHTML = "";
                     errorField.innerHTML = "Email or password is incorrect.";
                     break;
                 case 'auth/invalid-email':
+                    document.getElementById("password").innerHTML = "";
                     errorField.innerHTML = "Email address is invalid.";
                     break;
                 case 'auth/missing-password':
+                    document.getElementById("password").innerHTML = "";
                     errorField.innerHTML = "Enter your password.";
                     break;
                 case 'auth/operation-not-allowed':
+                    document.getElementById("password").innerHTML = "";
                     errorField.innerHTML = "Error during sign up.";
                     break;
                 default:
