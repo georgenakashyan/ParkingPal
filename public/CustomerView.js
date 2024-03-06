@@ -1,3 +1,4 @@
+var userLocation = [40.78343000, -73.96625000];
 function initMap() {
     setLocation();
     var map = new google.maps.Map(document.getElementById('map'), {

@@ -1,4 +1,3 @@
-var userLocation = [40.78343000, -73.96625000];
 document.addEventListener("DOMContentLoaded", event => {
     const app = firebase.app();
     const auth = firebase.auth();
