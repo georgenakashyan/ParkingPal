@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", event => {
-    const app = firebase.app();
     const auth = firebase.auth();
     auth.onAuthStateChanged((user) => {
         const db = firebase.firestore();
@@ -7,6 +6,7 @@ document.addEventListener("DOMContentLoaded", event => {
         profileInfo.get()
         .then((doc) => {
             document.getElementById("WelcomeName").innerHTML = "Welcome, " + doc.data().FirstName;
+            displayAllGarages(doc.data());
         })
         .catch((error) => {
             console.log("Could not find user doc to display name and email");
@@ -16,17 +16,48 @@ document.addEventListener("DOMContentLoaded", event => {
 
 /**
  * pulls info from 'Garage' and displays it
- * @param {*} userID 
  */
-function displayManagerGarages(){
-    const profileInfo = db.collection('Manager').doc(profileLink);
-    const doc = profileInfo.get();
-    if(!doc.exists){
-        console.log('No such document');
-    }
-    else{
-        console.log('Document data:',doc.data());
-    }
+async function displayAllGarages(accountDoc){
+    const managerRef = accountDoc.Profile.slice(8);
+    console.log(managerRef);
+    const db = firebase.firestore();
+    const profileInfo = await db.collection('Manager').doc(managerRef);
+    profileInfo.get()
+    .then((doc) => {
+        var garageList = doc.data().Garages;
+        garageList.forEach(displayOneGarage);
+    })
+    .catch((error) => {
+        console.log("Failed to find manager doc: " + error);
+    });
+}
+
+function displayOneGarage(garageRef) {
+    let garageList = document.getElementById('GarageList');
+    var newGarage = document.createElement('li');
+    newGarage.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400';
+    var pName = document.createElement('p');
+    var pAddress = document.createElement('p');
+    var pSpots = document.createElement('p');
+    const db = firebase.firestore();
+    const garageInfo = db.collection('Garage').doc(garageRef.slice(7));
+    garageInfo.get()
+    .then((doc) => {
+        const data = doc.data();
+        const gName = data.Name;
+        const gAddress = data.Address + ", " + data.AreaCode;
+        const gSpots = data.Spots.length;
+        pName.innerHTML = "Name: " + gName;
+        pAddress.innerHTML = "Address: " + gAddress;
+        pSpots.innerHTML = "Total Spots: " + gSpots;
+    })
+    .catch((error) => {
+        console.log("Failed to find garage info doc");
+    });
+    newGarage.appendChild(pName);
+    newGarage.appendChild(pAddress);
+    newGarage.appendChild(pSpots);
+    garageList.appendChild(newGarage);
 }
 
 /**
@@ -52,8 +83,10 @@ function addGarage(){
     //double check that there is no existing garage
     const dbReference=db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
     var errorField = document.getElementById("notification-text");
-    var managerAccount=db.collection("Account").doc(user.id);
-    var managerInfo=db.collection("Manager").doc(user.uid);
+    /*Possible problem area (beginning)*/
+    var managerAccount=db.collection("Account").doc(user.id).Profile.slice(8);
+    var managerInfo=db.collection("Manager").doc(managerAccount);
+    /*Possible problem area (end)*/
     if(dbReference.empty){
         //puts info into database
         var errorField = document.getElementById("notification-text");
