@@ -1,15 +1,16 @@
 document.addEventListener("DOMContentLoaded", event => {
-    const db = firebase.firestore();
+    const app = firebase.app();
     const auth = firebase.auth();
-    const user = auth.currentUser;
-    const profileInfo = db.collection('Account').doc(user.uid);
-    const doc = profileInfo.get()
-    .then(() => {
-        document.getElementById("name").innerHTML = doc.data().FirstName;
-        document.getElementById("email").innerHTML = doc.data().Email;
-    })
-    .catch((error) => {
-        console.log("Could not find user doc to display name and email");
+    auth.onAuthStateChanged((user) => {
+        const db = firebase.firestore();
+        const profileInfo = db.collection('Account').doc(user.uid);
+        profileInfo.get()
+        .then((doc) => {
+            document.getElementById("WelcomeName").innerHTML = "Welcome, " + doc.data().FirstName;
+        })
+        .catch((error) => {
+            console.log("Could not find user doc to display name and email");
+        })
     });
 });
 
