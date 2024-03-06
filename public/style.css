@@ -131,24 +131,8 @@ a:hover {
         0 2px 4px rgba(0, 0, 0, .25),
         0 0 0 3px #c8dafc;
 }
-/*ManagerView*/
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-.container {
-    max-width: 80rem;
-    height: 40rem;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 2%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-    display: flex;
-}
+/*ManagerView*/
 .profile-pane, .garage-pane {
     padding: 2rem;
     position: relative;/*adds a line*/ 

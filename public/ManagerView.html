@@ -21,72 +21,75 @@
     <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
     <link rel="stylesheet" href="output.css"/>
 </head>
-<body onload="main()">
-    <div class="container">
-        <div class="profile-pane">
-            <div class="profile-info">
+<body class="globalFont">
+    <div class="bg-PP-dark-blue grid grid-cols-1 grid-rows-10 h-screen w-screen text-white font-semibold">
+        <div class="row-span-1 p-3 flex items-center">
+            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
+            <div class="grow mr-4"></div>
+            <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="">Settings</button></div>
+            <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="logOut()">Log Out</button></div>
+        </div>
+        <div class="p-0 row-span-9 w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
+            <div class="bg-PP-blue min-h-full col-span-full row-span-1 grid p-7 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">
                 <img src="https://cdn.pixabay.com/photo/2014/04/02/10/45/parking-304464_1280.png" alt="Profile Picture" class="profile-picture">
-                <div class="form">
-                    <label class="name" id = "name">Name:</label> <span class="input">"Jorge pedro"</span>
-                    <label class="email" id = "email">Email:</label> <span class="input2">jorgep@gmail.com</span>
+                <div class="w-fit">
+                    <div id="WelcomeName">Welcome</div>
+                    <div id="ReservationInfo">You have 0 reservations for your garages</div>
                 </div>
-                <button class="edit">Edit Profile</button>
+            </div>
+            <div class="garage-pane">
+                <ul class="garages">
+                    <li class="garage-item" id="addGarage" onclick="popup()">
+                        <h3>Add Garage</h3>
+                        <p>+</p>
+                    </li>
+                    <li class="garage-item">
+                        <h3>Garage 1</h3>
+                        <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
+                        <p><strong>Price:</strong> $400,000</p>
+                        <p><strong>Description:</strong> Garage Description</p>
+                    </li>
+                    <li class="garage-item">
+                        <h3>Garage 2</h3>
+                        <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
+                        <p><strong>Price:</strong> $500,000</p>
+                        <p><strong>Description:</strong> Garage Description</p>
+                    </li>
+                    <li class="garage-item">
+                        <h3>Garage 3</h3>
+                        <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
+                        <p><strong>Price:</strong> $600,000</p>
+                        <p><strong>Description:</strong> Garage Description</p>
+                    </li>
+                    <li class="garage-item">
+                        <h3>Garage 4</h3>
+                        <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
+                        <p><strong>Price:</strong> $700,000</p>
+                        <p><strong>Description:</strong> Garage Description</p>
+                    </li>
+                    <!-- Add more garage items as needed -->
+                </ul>
             </div>
         </div>
-    <div class="garage-pane">
-            <ul class="garages">
-                <li class="garage-item" id="addGarage" onclick="popup()">
-                    <h3>Add Garage</h3>
-                    <p>+</p>
-                </li>
-                <li class="garage-item">
-                    <h3>Garage 1</h3>
-                    <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
-                    <p><strong>Price:</strong> $400,000</p>
-                    <p><strong>Description:</strong> Garage Description</p>
-                </li>
-                <li class="garage-item">
-                    <h3>Garage 2</h3>
-                    <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
-                    <p><strong>Price:</strong> $500,000</p>
-                    <p><strong>Description:</strong> Garage Description</p>
-                </li>
-                <li class="garage-item">
-                    <h3>Garage 3</h3>
-                    <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
-                    <p><strong>Price:</strong> $600,000</p>
-                    <p><strong>Description:</strong> Garage Description</p>
-                </li>
-                <li class="garage-item">
-                    <h3>Garage 4</h3>
-                    <p><strong>Address:</strong> 69 Elm St, New York, USA</p>
-                    <p><strong>Price:</strong> $700,000</p>
-                    <p><strong>Description:</strong> Garage Description</p>
-                </li>
-                <!-- Add more garage items as needed -->
-            </ul>
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <span class="close"id="closebutton" onclick="close()">&times;</span>
+                <label>Input the following information:</label>
+                <form class="input"><br>
+                    <input type="text" class="nameField" placeholder="Name"><br>
+                    <input type="text" class="addressField" placeholder="Address"><br>
+                    <input type="text" class="areacodeField" placeholder="AreaCode"><br>
+                    <input type="Manager" class="managerField" placeholder="Manager"><br>
+                </form><br>
+                
+                <label class="hours">Operating Hours</label><br>
+                <label class="opening">Start -</label>
+                <input type="text" class="startField" placeholder="Start">
+                <label class="closing">End -</label>
+                <input type="text" class="endField" placeholder="End">
+                <button class="addBtn" onclick="addGarage()">Add Garage</button>
+            </div>
         </div>
     </div>
-    <div class="popup" id="popup">
-        <div class="popup-content">
-            <span class="close"id="closebutton" onclick="close()">&times;</span>
-            <label>Input the following information:</label>
-            <form class="input"><br>
-                <input type="text" class="nameField" placeholder="Name"><br>
-                <input type="text" class="addressField" placeholder="Address"><br>
-                <input type="text" class="areacodeField" placeholder="AreaCode"><br>
-                <input type="Manager" class="managerField" placeholder="Manager"><br>
-            </form><br>
-            
-            <label class="hours">Operating Hours</label><br>
-            <label class="opening">Start -</label>
-            <input type="text" class="startField" placeholder="Start">
-            <label class="closing">End -</label>
-            <input type="text" class="endField" placeholder="End">
-            <button class="addBtn" onclick="addGarage()">Add Garage</button>
-        </div>
-    </div>
-
-
 </body>
 </html>
