@@ -18,25 +18,35 @@ function checkUserPageRequest() {
 }
 
 function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope('profile');
-    firebase.auth().signInWithPopup(provider)
-    .then((userCredential) => {
-        const user = userCredential.user;
-        const accountRef = firebase.firestore().collection("Account").doc(user.uid);
-        accountRef.get()
-        .then((doc) => {
-            if (!doc.exists) {
-                createAccountDocument(user, user.email, user.displayname, "");
-            }
+    return new Promise((resolve, reject) => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('profile');
+        firebase.auth().signInWithPopup(provider)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            const displayName = user.displayName;
+            const accountRef = firebase.firestore().collection("Account").doc(user.uid);
+            accountRef.get()
+            .then((doc) => {
+                if (!doc.exists) {
+                    return createAccountDocument(user, user.email, displayName, "");
+                } else {
+                    resolve();
+                }
+            })
+            .then(() => {
+                mainPage();
+                resolve();
+            })
+            .catch((error) => {
+                console.error("Error creating or fetching account document:", error);
+                reject(error);
+            });
         })
         .catch((error) => {
-            console.log("Error getting document:", error);
+            console.error("Error in googleLogin:", error);
+            reject(error);
         });
-        mainPage();
-    })
-    .catch((error) => {
-        console.log("Error in googleLogin");
     });
 }
 
@@ -112,6 +122,7 @@ function createAccountDocument(user, email, firstName, lastName) {
     firebase.firestore().collection("Account").doc(user.uid).set(newAccount)
     .then(() => {
         console.log("document created");
+        mainPage();
     })
     .catch((error) => {
         var errorCode = error.code;
