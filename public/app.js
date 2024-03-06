@@ -17,7 +17,6 @@ function checkUserPageRequest() {
     }
 }
 
-
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('profile');
@@ -28,7 +27,7 @@ function googleLogin() {
         accountRef.get()
         .then((doc) => {
             if (!doc.exists) {
-                createAccountDocument(user, user.email, "Anonymous", "User");
+                createAccountDocument(user, user.email, user.displayname, "");
             }
         })
         .catch((error) => {
