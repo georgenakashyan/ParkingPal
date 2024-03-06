@@ -8,11 +8,19 @@ document.addEventListener("DOMContentLoaded", event => {
     });
 });
 
-function checkUserPageRequest() {
+async function checkUserPageRequest() {
     const user = firebase.auth().currentUser;
+    const userType = await getAccountType();
     if (!user && location.href.indexOf("index.html") == -1 && location.href.indexOf("SignUp.html") == -1 && location.href.indexOf("PasswordReset.html") == -1) {
         location.href = "index.html";
-    } else if (user && (location.href.indexOf("index.html") > -1 || location.href.indexOf("SignUp.html") > -1 || location.href.indexOf("PasswordReset.html") > -1)) {
+    } else if (user 
+            && userType == "Unfinished"
+            && location.href.indexOf("AccountSetup") == -1 ) {
+        mainPage();
+    } else if (user 
+            && (location.href.indexOf("index.html") > -1 
+            || location.href.indexOf("SignUp.html") > -1 
+            || location.href.indexOf("PasswordReset.html") > -1)) {
         mainPage();
     }
 }
@@ -117,7 +125,7 @@ function createAccountDocument(user, email, firstName, lastName) {
         FirstName: firstName,
         LastName: lastName,
         Profile: "",
-        Type_ID: "Unfinished"
+        Type_ID: ""
     };
     firebase.firestore().collection("Account").doc(user.uid).set(newAccount)
     .then(() => {
