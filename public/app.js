@@ -71,7 +71,6 @@ function emailAndPasswordLogin(email, password) {
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             errorField.innerHTML = "";
-            document.getElementById("login-form").reset(); 
             mainPage();
             resolve("Login successful");
         })
