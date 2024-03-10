@@ -50,6 +50,7 @@ function displayOneGarage(garageRef) {
         pName.innerHTML = "Name: " + gName;
         pAddress.innerHTML = "Address: " + gAddress;
         pSpots.innerHTML = "Total Spots: " + gSpots;
+        newGarage.id = doc.id;
     })
     .catch((error) => {
         console.log("Failed to find garage info doc");
