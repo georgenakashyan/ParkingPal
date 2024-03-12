@@ -51,14 +51,15 @@ function displayOneGarage(garageRef) {
         pAddress.innerHTML = "Address: " + gAddress;
         pSpots.innerHTML = "Total Spots: " + gSpots;
         newGarage.id = doc.id;
+        newGarage.appendChild(pName);
+        newGarage.appendChild(pAddress);
+        newGarage.appendChild(pSpots);
+        newGarage.onclick = function() {showGarageInfoPanel(newGarage.id)};
+        garageList.appendChild(newGarage);
     })
     .catch((error) => {
         console.log("Failed to find garage info doc");
     });
-    newGarage.appendChild(pName);
-    newGarage.appendChild(pAddress);
-    newGarage.appendChild(pSpots);
-    garageList.appendChild(newGarage);
 }
 
 /**
@@ -132,4 +133,8 @@ function close(){
     document.getElementById("closebutton").addEventListener("click", function(){
         document.querySelector(".popup").style.display = "none";
     })
+}
+
+function showGarageInfoPanel(garageID) {
+    console.log("Opening garage info: " + garageID);
 }
