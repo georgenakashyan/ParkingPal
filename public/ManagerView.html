@@ -24,7 +24,7 @@
     <div class="bg-PP-dark-blue grid grid-cols-1 grid-rows-10 h-screen w-screen">
         <div class="row-span-1 p-3 flex items-center text-white font-semibold">
             <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
-            <div class="grow mr-4"></div>
+            <div class="grow mr-0 md:mr-4"></div>
             <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="">Settings</button></div>
             <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="logOut()">Log Out</button></div>
         </div>
@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="text-black font-bold min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full">
-                <ul id="GarageList" class="bg-PP-blue border-PP-dark-blue min-h-full border-l-4 pt-3">
+                <ul id="GarageList" class="bg-PP-blue border-PP-dark-blue min-h-full border-l-0 md:border-l-4 pt-3">
                     <li id="addGarage" class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400" onclick="popup()">
                         <p class="text-center">Add Garage</p>
                         <p class="text-center">+</p>
