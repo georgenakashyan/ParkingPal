@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", event => {
         .then((doc) => {
             document.getElementById("WelcomeName").innerHTML = "Welcome, " + doc.data().FirstName;
             displayAllGarages(doc.data());
+            updateReservationCount(doc.data());
         })
         .catch((error) => {
             console.log("Could not find user doc to display name and email");
@@ -19,7 +20,6 @@ document.addEventListener("DOMContentLoaded", event => {
  */
 async function displayAllGarages(accountDoc){
     const managerRef = accountDoc.Profile.slice(8);
-    console.log(managerRef);
     const db = firebase.firestore();
     const profileInfo = await db.collection('Manager').doc(managerRef);
     profileInfo.get()
@@ -137,4 +137,24 @@ function close(){
 
 function showGarageInfoPanel(garageID) {
     console.log("Opening garage info: " + garageID);
+}
+
+async function updateReservationCount(accountDoc) {
+    var resCount = 0;
+    const resLabel = document.getElementById("ReservationInfo");
+    const db = firebase.firestore();
+    const managerRef = accountDoc.Profile.slice(8);
+    const profileInfo = await db.collection('Manager').doc(managerRef);
+    profileInfo.get()
+    .then((managerDoc) => {
+        var garageList = managerDoc.data().Garages;
+        resCount += garageList.length;
+        resLabel.innerHTML = "You have " + resCount + " active reservation";
+        if (resCount != 1) {
+            resLabel.innerHTML = resLabel.innerHTML + "s"
+        }
+    })
+    .catch((error) => {
+        console.log("Failed to find manager doc: " + error);
+    });
 }
