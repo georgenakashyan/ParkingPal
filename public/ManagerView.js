@@ -64,46 +64,55 @@ function displayOneGarage(garageRef) {
  * this will add garages to the firebase database
  */
 function addGarage(){
-    //gets info about garage
+    //links database
     const user=firebase.auth().currentUser;
+    const db = firebase.firestore();
+    //gets infomation from website
     var address=doc.getElementById(/*put in HTML references*/);
     var AreaCode=doc.getElementById(/*put in HTML references*/);
     var CloseTime=firebase.firestore.Timestamp.fromDate(new Date(doc.getElementById(/*put in HTML references*/)));
-    var Manager=user.uid;
+    var managerProfile;
+    //gets info from database {
+    var Manager=db.collection("Account").doc(user.uid);
+    Manager.get()
+        .then((document) => {
+            managerProfile=document.data().Profile.slice(8);
+        })
+    //}
     var Name=doc.getElementById(/*put in HTML references*/);
     var OpenTime=firebase.firestore.Timestamp.fromDate(new Date(doc.getElementById(/*put in HTML references*/)));
+    //document to add to database
     var garageData={
         Address: address,
         AreaCode: AreaCode,
         CloseTime: CloseTime,
-        Manager: Manager,
+        Manager: managerProfile,
         Name: Name,
         OpenTime: OpenTime
     };
     //double check that there is no existing garage
     const dbReference=db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
     var errorField = document.getElementById("notification-text");
-    /*Possible problem area (beginning)*/
-    var managerAccount=db.collection("Account").doc(user.id).Profile.slice(8);
-    var managerInfo=db.collection("Manager").doc(managerAccount);
-    /*Possible problem area (end)*/
+    var managerInfo=db.collection("Manager").doc(managerProfile);
     if(dbReference.empty){
-        //puts info into database
+        //puts document into database
         var errorField = document.getElementById("notification-text");
-        firebase.firestore().collection(Collection).add(addDocument)
+        firebase.firestore().collection("Garage").add(garageData)
             .then((document)=>{
                 //adds link to the manager array
                 managerInfo.update({
                     Garages: firebase.firestore.FieldValue.arrayUnion("Garage/"+document.id)
                 })
             }
+            //double checks if the document was add
             ).then(() => {
                 errorField.innerHTML= Collection+" Added";
             })
+            //reports if an error occurs
             .catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;
-                console.log(errorCode + " --- " + errorMessage);
+                console.log(errorCode + " --- " + errorMessage);     
             });
     }
     else{
