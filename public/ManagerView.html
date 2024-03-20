@@ -38,32 +38,30 @@
             </div>
             <div class="text-black font-bold min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full">
                 <ul id="GarageList" class="bg-PP-blue border-PP-dark-blue min-h-full border-l-0 md:border-l-4 pt-3">
-                    <li id="addGarage" class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400" onclick="popup()">
+                    <li id="addGarage" class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400" onclick="openPopup('addGaragePopup')">
                         <p class="text-center">Add Garage</p>
                         <p class="text-center">+</p>
                     </li>
                 </ul>
             </div>
         </div>
-        <!-- <div class="popup" id="popup">
-            <div class="popup-content">
-                <span class="close"id="closebutton" onclick="close()">&times;</span>
-                <label>Input the following information:</label>
-                <form class="input"><br>
-                    <input type="text" class="nameField" placeholder="Name"><br>
-                    <input type="text" class="addressField" placeholder="Address"><br>
-                    <input type="text" class="areacodeField" placeholder="AreaCode"><br>
-                    <input type="Manager" class="managerField" placeholder="Manager"><br>
+        <div class="bg-black bg-opacity-50 absolute top-0 w-full h-full justify-center z-10 flex" id="addGaragePopup">
+            <div class="grow"></div>
+            <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 p-6 border align-middle rounded-lg text-center items-center grid">
+                <div class="">
+                    <button class="text-gray-400 font-bold text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" id="closebutton" onclick="closePopup('addGaragePopup')">&times;</button>
+                </div>
+                <form><br>
+                    <input type="text" id="nameField" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="Name"><br>
+                    <input type="text" id="addressField" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="Address"><br>
+                    <input type="text" id="areacodeField" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="AreaCode"><br>
+                    <input type="text" id="startField" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="Start"><br>
+                    <input type="text" id="endField" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="End"><br>
                 </form><br>
-                
-                <label class="hours">Operating Hours</label><br>
-                <label class="opening">Start -</label>
-                <input type="text" class="startField" placeholder="Start">
-                <label class="closing">End -</label>
-                <input type="text" class="endField" placeholder="End">
-                <button class="addBtn" onclick="addGarage()">Add Garage</button>
+                <button class="long-main-button" onclick="addGarage()">Add Garage</button>
             </div>
-        </div> -->
+            <div class="grow"></div>
+        </div>
     </div>
 </body>
 </html>
