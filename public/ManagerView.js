@@ -126,10 +126,10 @@ function deleteGarage(){
 }
 function openPopup(popupID){
     document.querySelector("#" + popupID).classList.remove("hidden");
-    document.querySelector("#" + popupID).classList.add("block");
+    document.querySelector("#" + popupID).classList.add("flex");
 }
 function closePopup(popupID){
-    document.querySelector("#" + popupID).classList.remove("block");
+    document.querySelector("#" + popupID).classList.remove("flex");
     document.querySelector("#" + popupID).classList.add("hidden");
 }
 
