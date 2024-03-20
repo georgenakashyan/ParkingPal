@@ -124,15 +124,13 @@ function deleteGarage(){
     //code to delete document
     const begone=db.collection('Garage').doc(/*enter doc id*/).delete();
 }
-function popup(){
-    document.getElementById("addGarage").addEventListener("click", function(){
-        document.querySelector(".popup").style.display = "flex";
-    })
+function openPopup(popupID){
+    document.querySelector("#" + popupID).classList.remove("hidden");
+    document.querySelector("#" + popupID).classList.add("block");
 }
-function close(){
-    document.getElementById("closebutton").addEventListener("click", function(){
-        document.querySelector(".popup").style.display = "none";
-    })
+function closePopup(popupID){
+    document.querySelector("#" + popupID).classList.remove("block");
+    document.querySelector("#" + popupID).classList.add("hidden");
 }
 
 function showGarageInfoPanel(garageID) {
