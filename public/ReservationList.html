@@ -25,8 +25,8 @@
             <div class="row-span-1 p-3 flex items-center text-white font-semibold">
                 <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
             </div>
-            <div class="bg-PP-blue p-9  flex justify-center items-start pt-1/4 overflow-auto rounded-xl">
-                <table class="w-full rounded-xl">
+            <div class="bg-PP-blue p-9 h-full  flex justify-center items-start pt-1/4 overflow-auto rounded-xl">
+                <table id = "reservationList" class="w-full rounded-xl">
                     <thead class="bg-gray-50 border-b-2 border-gray-200">
                         <tr >
                             <th class="p-3 text-sm font-semibold tracking-wide text-left">Customer.</th>
@@ -39,15 +39,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="bg-gray-300 text-center">
-                            <td class="p-3 text-sm text-gray-700 text-left" >Jeo Quintanilla</td>
-                            <td class="p-3 text-sm text-gray-700 text-left">Sedan</td>
-                            <td class="p-3 text-sm text-gray-700 text-left">Confirmed</td>
-                            <td class="p-3 text-sm text-gray-700 text-left">2:00</td>
-                            <td class="p-3 text-sm text-gray-700 text-left">3:00</td>
-                            <td class="p-3 text-sm text-gray-700 text-left">B36</td>
-                            <td class="p-3 text-sm text-gray-700 text-left">Your MOM House</td>
-                        </tr>
+                        <ul>
+                            <tr class="bg-gray-300 text-center">
+                                <td class="p-3 text-sm text-gray-700 text-left" >Jeo Quintanilla</td>
+                                <td class="p-3 text-sm text-gray-700 text-left">Sedan</td>
+                                <td class="p-3 text-sm text-gray-700 text-left">Confirmed</td>
+                                <td class="p-3 text-sm text-gray-700 text-left">2:00</td>
+                                <td class="p-3 text-sm text-gray-700 text-left">3:00</td>
+                                <td class="p-3 text-sm text-gray-700 text-left">B36</td>
+                                <td class="p-3 text-sm text-gray-700 text-left">Your MOM House</td>
+                            </tr>
+                        </ul>
                     </tbody>
                     
                 </table>
