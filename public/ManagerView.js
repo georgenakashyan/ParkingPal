@@ -63,61 +63,63 @@ function displayOneGarage(garageRef) {
 /**
  * this will add garages to the firebase database
  */
-function addGarage(){
+async function addGarage(){
     //links database
     const user=firebase.auth().currentUser;
     const db = firebase.firestore();
     //gets infomation from website
-    var address=doc.getElementById(/*put in HTML references*/);
-    var AreaCode=doc.getElementById(/*put in HTML references*/);
-    var CloseTime=firebase.firestore.Timestamp.fromDate(new Date(doc.getElementById(/*put in HTML references*/)));
+    var address="testing1";
+    var AreaCode=12345;
+    var CloseTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30));
     var managerProfile;
     //gets info from database {
-    var Manager=db.collection("Account").doc(user.uid);
-    Manager.get()
-        .then((document) => {
-            managerProfile=document.data().Profile.slice(8);
-        })
+    await db.collection("Account").doc(user.uid)
+    .get()
+    .then((doc) => {
+        managerProfile = doc.data().Profile.slice(8);
+    })
+    .catch((error) => {
+        console.log("Failed to find manager doc: " + error);
+    });
+    console.log("Manager id: " + managerProfile)
     //}
-    var Name=doc.getElementById(/*put in HTML references*/);
-    var OpenTime=firebase.firestore.Timestamp.fromDate(new Date(doc.getElementById(/*put in HTML references*/)));
+    var Name="testingname";
+    var OpenTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30));
     //document to add to database
     var garageData={
         Address: address,
         AreaCode: AreaCode,
         CloseTime: CloseTime,
-        Manager: managerProfile,
+        Manager: "Manager/" + managerProfile,
         Name: Name,
-        OpenTime: OpenTime
+        OpenTime: OpenTime,
+        Spots: []
     };
     //double check that there is no existing garage
-    const dbReference=db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
-    var errorField = document.getElementById("notification-text");
-    var managerInfo=db.collection("Manager").doc(managerProfile);
+/*     var errorField = document.getElementById("notification-text");
+ */    var managerInfo= await db.collection("Manager").doc(managerProfile);
+    const dbReference= await db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
     if(dbReference.empty){
         //puts document into database
-        var errorField = document.getElementById("notification-text");
-        firebase.firestore().collection("Garage").add(garageData)
-            .then((document)=>{
-                //adds link to the manager array
-                managerInfo.update({
-                    Garages: firebase.firestore.FieldValue.arrayUnion("Garage/"+document.id)
-                })
-            }
-            //double checks if the document was add
-            ).then(() => {
-                errorField.innerHTML= Collection+" Added";
-            })
-            //reports if an error occurs
-            .catch((error) => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode + " --- " + errorMessage);     
+        db.collection("Garage").add(garageData)
+        .then((document)=>{
+            //adds link to the manager array
+            managerInfo.update({
+                Garages: firebase.firestore.FieldValue.arrayUnion("Garage/"+document.id)
             });
+            errorField.innerHTML= Collection+" Added";
+        })
+        //reports if an error occurs
+        .catch((error) => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode + " --- " + errorMessage);     
+        });
     }
     else{
         //reports if something is already in database
-        errorField.innerHTML="Garage Already In Use";
+        console.log("Document not empty, it exists or some other error")
+        /* errorField.innerHTML="Garage Already In Use"; */
     }
 }
 
