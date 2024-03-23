@@ -1,3 +1,4 @@
+var resCount = 0;
 document.addEventListener("DOMContentLoaded", event => {
     const auth = firebase.auth();
     auth.onAuthStateChanged((user) => {
@@ -7,7 +8,6 @@ document.addEventListener("DOMContentLoaded", event => {
         .then((doc) => {
             document.getElementById("WelcomeName").innerHTML = "Welcome, " + doc.data().FirstName;
             displayAllGarages(doc.data());
-            updateReservationCount(doc.data());
         })
         .catch((error) => {
             console.log("Could not find user doc to display name and email");
@@ -26,6 +26,7 @@ async function displayAllGarages(accountDoc){
     .then((doc) => {
         var garageList = doc.data().Garages;
         garageList.forEach(displayOneGarage);
+        updateResLabel();
     })
     .catch((error) => {
         console.log("Failed to find manager doc: " + error);
@@ -40,8 +41,7 @@ function displayOneGarage(garageRef) {
     var pAddress = document.createElement('p');
     var pSpots = document.createElement('p');
     const db = firebase.firestore();
-    const garageInfo = db.collection('Garage').doc(garageRef.slice(7));
-    garageInfo.get()
+    db.collection('Garage').doc(garageRef.slice(7)).get()
     .then((doc) => {
         const data = doc.data();
         const gName = data.Name;
@@ -56,6 +56,9 @@ function displayOneGarage(garageRef) {
         newGarage.appendChild(pSpots);
         newGarage.onclick = function() {showGarageInfoPanel(newGarage.id)};
         garageList.appendChild(newGarage);
+        var resList = data.Reservations;
+        resCount += resList.length;
+        updateResLabel();
     })
     .catch((error) => {
         console.log("Failed to find garage info doc");
@@ -105,7 +108,8 @@ async function addGarage(){
         Manager: "Manager/" + managerProfile,
         Name: name,
         OpenTime: openTime,
-        Spots: []
+        Spots: [],
+        Reservations: []
     };
     //double check that there is no existing garage
     /*var errorField = document.getElementById("notification-text");*/
@@ -120,6 +124,7 @@ async function addGarage(){
                 Garages: firebase.firestore.FieldValue.arrayUnion("Garage/" + document.id)
             });
             closePopup("addGarage");
+            window.location.reload();
         })
         //reports if an error occurs
         .catch((error) => {
@@ -160,22 +165,10 @@ function showGarageInfoPanel(garageID) {
     console.log("Opening garage info: " + garageID);
 }
 
-async function updateReservationCount(accountDoc) {
-    var resCount = 0;
+function updateResLabel() {
     const resLabel = document.getElementById("ReservationInfo");
-    const db = firebase.firestore();
-    const managerRef = accountDoc.Profile.slice(8);
-    const profileInfo = await db.collection('Manager').doc(managerRef);
-    profileInfo.get()
-    .then((managerDoc) => {
-        var garageList = managerDoc.data().Garages;
-        resCount += garageList.length;
-        resLabel.innerHTML = "You have " + resCount + " active reservation";
-        if (resCount != 1) {
-            resLabel.innerHTML = resLabel.innerHTML + "s"
-        }
-    })
-    .catch((error) => {
-        console.log("Failed to find manager doc: " + error);
-    });
+    resLabel.innerHTML = "" + resCount + " active reservation";
+    if (resCount != 1) {
+        resLabel.innerHTML = resLabel.innerHTML + "s"
+    }
 }
