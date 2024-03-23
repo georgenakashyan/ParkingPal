@@ -65,14 +65,16 @@ function displayOneGarage(garageRef) {
  */
 async function addGarage(){
     //links database
-    const user=firebase.auth().currentUser;
+    const user = firebase.auth().currentUser;
     const db = firebase.firestore();
     //gets infomation from website
-    var address="testing1";
-    var AreaCode=12345;
-    var CloseTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30));
+    var address = "testing1";
+    var areaCode = 12345;
+    var name = "testingname";
+    var openTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30));
+    var closeTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30));
     var managerProfile;
-    //gets info from database {
+    //gets info from database
     await db.collection("Account").doc(user.uid)
     .get()
     .then((doc) => {
@@ -82,22 +84,19 @@ async function addGarage(){
         console.log("Failed to find manager doc: " + error);
     });
     console.log("Manager id: " + managerProfile)
-    //}
-    var Name="testingname";
-    var OpenTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30));
     //document to add to database
     var garageData={
         Address: address,
-        AreaCode: AreaCode,
-        CloseTime: CloseTime,
+        AreaCode: areaCode,
+        CloseTime: closeTime,
         Manager: "Manager/" + managerProfile,
-        Name: Name,
-        OpenTime: OpenTime,
+        Name: name,
+        OpenTime: openTime,
         Spots: []
     };
     //double check that there is no existing garage
-/*     var errorField = document.getElementById("notification-text");
- */    var managerInfo= await db.collection("Manager").doc(managerProfile);
+    /*var errorField = document.getElementById("notification-text");*/
+    var managerInfo= await db.collection("Manager").doc(managerProfile);
     const dbReference= await db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
     if(dbReference.empty){
         //puts document into database
