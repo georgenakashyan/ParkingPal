@@ -70,11 +70,23 @@ async function addGarage(){
     const user = firebase.auth().currentUser;
     const db = firebase.firestore();
     //gets infomation from website
-    var address = "testing1";
-    var areaCode = 12345;
-    var name = "testingname";
-    var openTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30));
-    var closeTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30));
+    var name = document.getElementById("addGarageName").value;
+    var address = document.getElementById("addGarageAddress").value;
+    var areaCode = parseInt(document.getElementById("addGarageAreaCode").value);
+    var openDate = new Date();
+    var timeParts = document.getElementById("addGarageOpenTime").value.split(":");
+    var hours = parseInt(timeParts[0], 10);
+    var minutes = parseInt(timeParts[1], 10);
+    openDate.setHours(hours);
+    openDate.setMinutes(minutes);
+    var openTime=firebase.firestore.Timestamp.fromDate(openDate);
+    var closeDate = new Date();
+    var timeParts = document.getElementById("addGarageCloseTime").value.split(":");
+    var hours = parseInt(timeParts[0], 10);
+    var minutes = parseInt(timeParts[1], 10);
+    closeDate.setHours(hours);
+    closeDate.setMinutes(minutes);
+    var closeTime=firebase.firestore.Timestamp.fromDate(closeDate);
     var managerProfile;
     //gets info from database
     await db.collection("Account").doc(user.uid)
@@ -85,7 +97,6 @@ async function addGarage(){
     .catch((error) => {
         console.log("Failed to find manager doc: " + error);
     });
-    console.log("Manager id: " + managerProfile)
     //document to add to database
     var garageData={
         Address: address,
@@ -99,16 +110,16 @@ async function addGarage(){
     //double check that there is no existing garage
     /*var errorField = document.getElementById("notification-text");*/
     var managerInfo= await db.collection("Manager").doc(managerProfile);
-    const dbReference= await db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
+    const dbReference= await db.collection("Garage").where('Address','==',address).where('AreaCode','==',areaCode).get();
     if(dbReference.empty){
         //puts document into database
-        db.collection("Garage").add(garageData)
+        await db.collection("Garage").add(garageData)
         .then((document)=>{
             //adds link to the manager array
             managerInfo.update({
-                Garages: firebase.firestore.FieldValue.arrayUnion("Garage/"+document.id)
+                Garages: firebase.firestore.FieldValue.arrayUnion("Garage/" + document.id)
             });
-            errorField.innerHTML= Collection+" Added";
+            closePopup("addGarage");
         })
         //reports if an error occurs
         .catch((error) => {
@@ -135,12 +146,14 @@ function deleteGarage(){
     const begone=db.collection('Garage').doc(/*enter doc id*/).delete();
 }
 function openPopup(popupID){
-    document.querySelector("#" + popupID).classList.remove("hidden");
-    document.querySelector("#" + popupID).classList.add("flex");
+    document.querySelector("#" + popupID + "Popup").classList.remove("hidden");
+    document.querySelector("#" + popupID + "Popup").classList.add("flex");
+    document.querySelector("#" + popupID + "Form").reset();
 }
 function closePopup(popupID){
-    document.querySelector("#" + popupID).classList.remove("flex");
-    document.querySelector("#" + popupID).classList.add("hidden");
+    document.querySelector("#" + popupID + "Popup").classList.remove("flex");
+    document.querySelector("#" + popupID + "Popup").classList.add("hidden");
+    document.querySelector("#" + popupID + "Form").reset();
 }
 
 function showGarageInfoPanel(garageID) {
