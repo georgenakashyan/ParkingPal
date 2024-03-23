@@ -65,52 +65,62 @@ function displayOneGarage(garageRef) {
 /**
  * this will add garages to the firebase database
  */
-function addGarage(){
-    //gets info about garage
-    const user=firebase.auth().currentUser;
-    var address=doc.getElementById(/*put in HTML references*/);
-    var AreaCode=doc.getElementById(/*put in HTML references*/);
-    var CloseTime=firebase.firestore.Timestamp.fromDate(new Date(doc.getElementById(/*put in HTML references*/)));
-    var Manager=user.uid;
-    var Name=doc.getElementById(/*put in HTML references*/);
-    var OpenTime=firebase.firestore.Timestamp.fromDate(new Date(doc.getElementById(/*put in HTML references*/)));
+async function addGarage(){
+    //links database
+    const user = firebase.auth().currentUser;
+    const db = firebase.firestore();
+    //gets infomation from website
+    var address = "testing1";
+    var areaCode = 12345;
+    var name = "testingname";
+    var openTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30));
+    var closeTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30));
+    var managerProfile;
+    //gets info from database
+    await db.collection("Account").doc(user.uid)
+    .get()
+    .then((doc) => {
+        managerProfile = doc.data().Profile.slice(8);
+    })
+    .catch((error) => {
+        console.log("Failed to find manager doc: " + error);
+    });
+    console.log("Manager id: " + managerProfile)
+    //document to add to database
     var garageData={
         Address: address,
-        AreaCode: AreaCode,
-        CloseTime: CloseTime,
-        Manager: Manager,
-        Name: Name,
-        OpenTime: OpenTime
+        AreaCode: areaCode,
+        CloseTime: closeTime,
+        Manager: "Manager/" + managerProfile,
+        Name: name,
+        OpenTime: openTime,
+        Spots: []
     };
     //double check that there is no existing garage
-    const dbReference=db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
-    var errorField = document.getElementById("notification-text");
-    /*Possible problem area (beginning)*/
-    var managerAccount=db.collection("Account").doc(user.id).Profile.slice(8);
-    var managerInfo=db.collection("Manager").doc(managerAccount);
-    /*Possible problem area (end)*/
+    /*var errorField = document.getElementById("notification-text");*/
+    var managerInfo= await db.collection("Manager").doc(managerProfile);
+    const dbReference= await db.collection("Garage").where('Address','==',address).where('AreaCode','==',AreaCode).get();
     if(dbReference.empty){
-        //puts info into database
-        var errorField = document.getElementById("notification-text");
-        firebase.firestore().collection(Collection).add(addDocument)
-            .then((document)=>{
-                //adds link to the manager array
-                managerInfo.update({
-                    Garages: firebase.firestore.FieldValue.arrayUnion("Garage/"+document.id)
-                })
-            }
-            ).then(() => {
-                errorField.innerHTML= Collection+" Added";
-            })
-            .catch((error) => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode + " --- " + errorMessage);
+        //puts document into database
+        db.collection("Garage").add(garageData)
+        .then((document)=>{
+            //adds link to the manager array
+            managerInfo.update({
+                Garages: firebase.firestore.FieldValue.arrayUnion("Garage/"+document.id)
             });
+            errorField.innerHTML= Collection+" Added";
+        })
+        //reports if an error occurs
+        .catch((error) => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode + " --- " + errorMessage);     
+        });
     }
     else{
         //reports if something is already in database
-        errorField.innerHTML="Garage Already In Use";
+        console.log("Document not empty, it exists or some other error")
+        /* errorField.innerHTML="Garage Already In Use"; */
     }
 }
 
