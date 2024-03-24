@@ -123,8 +123,8 @@ async function addGarage(){
             managerInfo.update({
                 Garages: firebase.firestore.FieldValue.arrayUnion("Garage/" + document.id)
             });
+            displayOneGarage("Garage/" + document.id);
             closePopup("addGarage");
-            window.location.reload();
         })
         //reports if an error occurs
         .catch((error) => {
@@ -162,7 +162,11 @@ function closePopup(popupID){
 }
 
 function showGarageInfoPanel(garageID) {
-    console.log("Opening garage info: " + garageID);
+    openPopup("editGarage");
+}
+
+function hideGarageInfoPanel(garageID) {
+    openPopup("editGarage");
 }
 
 function updateResLabel() {
