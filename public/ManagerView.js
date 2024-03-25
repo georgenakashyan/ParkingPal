@@ -187,8 +187,6 @@ async function editGarage(garageRef){
         openTime=doc.data().OpenTime;
         closeTime=doc.data().CloseTime;
     });
-    //displays information
-    displayEditGarage(address,areaCode,name,openTime,closeTime);
     //gets infomation from website
     address = null; /*insert way to get information from HTML*/
     areaCode = 0; /*insert way to get information from HTML*/
