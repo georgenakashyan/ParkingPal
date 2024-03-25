@@ -580,12 +580,12 @@ video {
   float: right;
 }
 
-.m-auto {
-  margin: auto;
+.float-left {
+  float: left;
 }
 
-.mb-2 {
-  margin-bottom: 0.5rem;
+.m-auto {
+  margin: auto;
 }
 
 .mb-3 {
@@ -614,6 +614,10 @@ video {
 
 .mr-auto {
   margin-right: auto;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
 }
 
 .mb-4 {
@@ -678,6 +682,10 @@ video {
   width: 100vw;
 }
 
+.w-auto {
+  width: auto;
+}
+
 .grow {
   flex-grow: 1;
 }
@@ -712,6 +720,10 @@ video {
   gap: 0.75rem;
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .rounded {
   border-radius: 0.25rem;
 }
@@ -742,6 +754,10 @@ video {
 
 .border-l-0 {
   border-left-width: 0px;
+}
+
+.border-none {
+  border-style: none;
 }
 
 .border-PP-dark-blue {
@@ -909,6 +925,11 @@ video {
 
 .opacity-100 {
   opacity: 1;
+}
+
+.outline-none {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 
 /* Global affecting */

@@ -176,3 +176,12 @@ function updateResLabel() {
         resLabel.innerHTML = resLabel.innerHTML + "s"
     }
 }
+
+function openTab(tabName) {
+    var i;
+    var x = document.getElementsByClassName("editGarageTab");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";  
+    }
+    document.getElementById(tabName).style.display = "block";  
+  }
