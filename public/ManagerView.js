@@ -208,14 +208,27 @@ async function editGarage(garageRef){
 }
 
 /**
- * this is to show all the existing information about the garage that you wish to edit and will make the edit page
+ * this is to show all the existing information about the garage that you wish to edit 
  * @param {*} address 
  * @param {*} areaCode 
  * @param {*} name 
  * @param {*} openTime 
  * @param {*} closeTime 
  */
-function displayEditGarage(address,areaCode,name,openTime,closeTime){
+async function displayEditGarage(garageRef){
+    //links to database
+    const db = firebase.firestore();
+    const garageDB=await db.collection("Garage").doc(garageRef);
+    //variables being used
+    var address,areaCode,name,openTime,closeTime;
+    //gets infromation from database
+    await garageDB.get().then((doc)=>{ 
+        address=doc.data().Address;
+        areaCode=doc.data().AreaCode;
+        name=doc.data().Name;
+        openTime=doc.data().OpenTime;
+        closeTime=doc.data().CloseTime;
+    });
     //gets pages elements
     var pName = document.getElementById('p'); /*update to proper HTML reference*/
     var pAddress = document.getElementById('p'); /*update to proper HTML reference*/
