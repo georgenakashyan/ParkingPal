@@ -125,15 +125,29 @@ async function addGarage(){
 }
 
 /**
- * STILL UNDER PRODUCTION DO NOT USE
- * this will delete any existing garages from the database
+ * this will delete the garage doc and reference under manager
+ * @param {*} garageRef 
  */
-function deleteGarage(){
-    //code to get input
-
+async function deleteGarage(garageRef){
+    //links database
+    const user = firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const garageDB=await db.collection("Garage").doc(garageRef);
+    //variables
+    var managerLink;
+    //grabs manager Referance from database
+    await garageDB.get().then((doc)=>{
+        managerLink=doc.data().Manager.slice(8);
+    });
+    //deletes garage reference from manager garage list
+    const managerDB=await db.collection("Manager").doc(managerLink);
+    managerDB.update({
+        Garages: firebase.firestore.FieldValue.arrayRemove("garageRef")
+    });
     //code to delete document
-    const begone=db.collection('Garage').doc(/*enter doc id*/).delete();
+    const begone=db.collection('Garage').doc(garageRef).delete();
 }
+
 function openPopup(popupID){
     document.querySelector("#" + popupID).classList.remove("hidden");
     document.querySelector("#" + popupID).classList.add("flex");
