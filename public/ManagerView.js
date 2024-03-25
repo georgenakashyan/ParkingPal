@@ -188,7 +188,7 @@ async function editGarage(garageRef){
         closeTime=doc.data().CloseTime;
     });
     //displays information
-    await displayEditGarage(address,areaCode,name,openTime,closeTime);
+    displayEditGarage(address,areaCode,name,openTime,closeTime);
     //gets infomation from website
     address = null; /*insert way to get information from HTML*/
     areaCode = 0; /*insert way to get information from HTML*/
@@ -216,33 +216,16 @@ async function editGarage(garageRef){
  * @param {*} closeTime 
  */
 function displayEditGarage(address,areaCode,name,openTime,closeTime){
-    //links database
-    const db = firebase.firestore();
-    //makes edit page
-    let garageList = document.getElementById('GarageList');
-    var newGarage = document.createElement('li');
-    newGarage.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400'; /*this needs to updated to meet the edit requirements*/
-    //creates page elements
-    var pName = document.createElement('p');
-    var pAddress = document.createElement('p');
-    var pAreaCode = document.createElement('p');
-    var pOpenTime=document.createElement('p');
-    var pCloseTime=document.createElement('p');
-    //adds values to the page elements
+    //gets pages elements
+    var pName = document.getElementById('p'); /*update to proper HTML reference*/
+    var pAddress = document.getElementById('p'); /*update to proper HTML reference*/
+    var pAreaCode = document.getElementById('p'); /*update to proper HTML reference*/
+    var pOpenTime=document.getElementById('p'); /*update to proper HTML reference*/
+    var pCloseTime=document.getElementById('p'); /*update to proper HTML reference*/
+    //edits values on the page
     pName.innerHTML="Name: "+name;
     pAddress.innerHTML="Address: "+address;
     pAreaCode.innerHTML="Area Code: "+areaCode;
     pOpenTime.innerHTML="Open Time: "+openTime;
     pCloseTime.innerHTML="Close Time: "+closeTime;
-    newGarage.appendChild(pName);
-    newGarage.appendChild(pAddress);
-    newGarage.appendChild(pAreaCode);
-    newGarage.appendChild(pOpenTime);
-    newGarage.appendChild(pCloseTime);
-    //add edit functionality to page
-    /*I don't know how to change this so it allows the person to edit it upon click*/
-    newGarage.onclick = function() {showGarageInfoPanel(newGarage.id)};
-    //adds changes to new editGarages page
-    /*I don't know how to change this to it */
-    garageList.appendChild(newGarage);
 }
