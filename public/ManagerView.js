@@ -166,3 +166,37 @@ async function updateReservationCount(accountDoc) {
         console.log("Failed to find manager doc: " + error);
     });
 }
+
+async function editGarage(garageRef){
+    //links database
+    const user = firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const garageDB=await db.collection("Garage").doc(garageRef);
+    //variables being used
+    var address,areaCode,name,openTime,closeTime;
+    //gets infromation from database
+    /*find out if we need to double check if something is null before adding it and then implement if needed otherwise this should be good*/
+    await garageDB.get().then((doc)=>{ 
+        address=doc.data().Address;
+        areaCode=doc.data().AreaCode;
+        name=doc.data().Name;
+        openTime=doc.data().OpenTime;
+        closeTime=doc.data().CloseTime;
+    });
+    //gets infomation from website
+    address = null; //insert way to get information from HTML
+    areaCode = 0; //insert way to get information from HTML
+    name = null; //insert way to get information from HTML
+    openTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30)); //insert way to get information from HTML
+    closeTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30)); //insert way to get information from HTML
+    //document to add to database
+    var garageData={
+        Address: address,
+        AreaCode: areaCode,
+        CloseTime: closeTime,
+        Name: name,
+        OpenTime: openTime,
+    };
+    //updates the document
+    var finalStep=await garageDB.set({garageData},{merge:true});
+}
