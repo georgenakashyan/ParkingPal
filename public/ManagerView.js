@@ -221,11 +221,7 @@ async function editGarage(garageRef){
 
 /**
  * this is to show all the existing information about the garage that you wish to edit 
- * @param {*} address 
- * @param {*} areaCode 
- * @param {*} name 
- * @param {*} openTime 
- * @param {*} closeTime 
+ * @param {*} garageRef
  */
 async function displayEditGarage(garageRef){
     //links to database
