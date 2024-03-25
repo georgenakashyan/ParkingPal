@@ -175,7 +175,6 @@ async function editGarage(garageRef){
     //variables being used
     var address,areaCode,name,openTime,closeTime;
     //gets infromation from database
-    /*find out if we need to double check if something is null before adding it and then implement if needed otherwise this should be good*/
     await garageDB.get().then((doc)=>{ 
         address=doc.data().Address;
         areaCode=doc.data().AreaCode;
@@ -184,6 +183,7 @@ async function editGarage(garageRef){
         closeTime=doc.data().CloseTime;
     });
     //gets infomation from website
+    /*find out if we need to double check if something is null before adding it and then implement if needed otherwise this should be good*/
     address = null; //insert way to get information from HTML
     areaCode = 0; //insert way to get information from HTML
     name = null; //insert way to get information from HTML
