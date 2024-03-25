@@ -190,7 +190,6 @@ async function editGarage(garageRef){
     //displays information
     await displayEditGarage(address,areaCode,name,openTime,closeTime);
     //gets infomation from website
-    /*find out if we need to double check if something is null before adding it and then implement if needed otherwise this should be good*/
     address = null; /*insert way to get information from HTML*/
     areaCode = 0; /*insert way to get information from HTML*/
     name = null; /*insert way to get information from HTML*/
