@@ -167,6 +167,11 @@ async function updateReservationCount(accountDoc) {
     });
 }
 
+/**
+ * this will edit the garage besides making the display
+ * for making the display refer to displayEditGarage()
+ * @param {*} garageRef 
+ */
 async function editGarage(garageRef){
     //links database
     const user = firebase.auth().currentUser;
@@ -182,13 +187,15 @@ async function editGarage(garageRef){
         openTime=doc.data().OpenTime;
         closeTime=doc.data().CloseTime;
     });
+    //displays information
+    await displayEditGarage(address,areaCode,name,openTime,closeTime);
     //gets infomation from website
     /*find out if we need to double check if something is null before adding it and then implement if needed otherwise this should be good*/
-    address = null; //insert way to get information from HTML
-    areaCode = 0; //insert way to get information from HTML
-    name = null; //insert way to get information from HTML
-    openTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30)); //insert way to get information from HTML
-    closeTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30)); //insert way to get information from HTML
+    address = null; /*insert way to get information from HTML*/
+    areaCode = 0; /*insert way to get information from HTML*/
+    name = null; /*insert way to get information from HTML*/
+    openTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30)); /*insert way to get information from HTML*/
+    closeTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30)); /*insert way to get information from HTML*/
     //document to add to database
     var garageData={
         Address: address,
@@ -199,4 +206,44 @@ async function editGarage(garageRef){
     };
     //updates the document
     var finalStep=await garageDB.set({garageData},{merge:true});
+}
+
+/**
+ * this is to show all the existing information about the garage that you wish to edit and will make the edit page
+ * @param {*} address 
+ * @param {*} areaCode 
+ * @param {*} name 
+ * @param {*} openTime 
+ * @param {*} closeTime 
+ */
+function displayEditGarage(address,areaCode,name,openTime,closeTime){
+    //links database
+    const db = firebase.firestore();
+    //makes edit page
+    let garageList = document.getElementById('GarageList');
+    var newGarage = document.createElement('li');
+    newGarage.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400'; /*this needs to updated to meet the edit requirements*/
+    //creates page elements
+    var pName = document.createElement('p');
+    var pAddress = document.createElement('p');
+    var pAreaCode = document.createElement('p');
+    var pOpenTime=document.createElement('p');
+    var pCloseTime=document.createElement('p');
+    //adds values to the page elements
+    pName.innerHTML="Name: "+name;
+    pAddress.innerHTML="Address: "+address;
+    pAreaCode.innerHTML="Area Code: "+areaCode;
+    pOpenTime.innerHTML="Open Time: "+openTime;
+    pCloseTime.innerHTML="Close Time: "+closeTime;
+    newGarage.appendChild(pName);
+    newGarage.appendChild(pAddress);
+    newGarage.appendChild(pAreaCode);
+    newGarage.appendChild(pOpenTime);
+    newGarage.appendChild(pCloseTime);
+    //add edit functionality to page
+    /*I don't know how to change this so it allows the person to edit it upon click*/
+    newGarage.onclick = function() {showGarageInfoPanel(newGarage.id)};
+    //adds changes to new editGarages page
+    /*I don't know how to change this to it */
+    garageList.appendChild(newGarage);
 }
