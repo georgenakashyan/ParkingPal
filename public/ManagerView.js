@@ -141,15 +141,29 @@ async function addGarage(){
 }
 
 /**
- * STILL UNDER PRODUCTION DO NOT USE
- * this will delete any existing garages from the database
+ * this will delete the garage doc and reference under manager
+ * @param {*} garageRef 
  */
-function deleteGarage(){
-    //code to get input
-
+async function deleteGarage(garageRef){
+    //links database
+    const user = firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const garageDB=await db.collection("Garage").doc(garageRef);
+    //variables
+    var managerLink;
+    //grabs manager Referance from database
+    await garageDB.get().then((doc)=>{
+        managerLink=doc.data().Manager.slice(8);
+    });
+    //deletes garage reference from manager garage list
+    const managerDB=await db.collection("Manager").doc(managerLink);
+    managerDB.update({
+        Garages: firebase.firestore.FieldValue.arrayRemove("garageRef")
+    });
     //code to delete document
-    const begone=db.collection('Garage').doc(/*enter doc id*/).delete();
+    const begone=db.collection('Garage').doc(garageRef).delete();
 }
+
 function openPopup(popupID){
     document.querySelector("#" + popupID + "Popup").classList.remove("hidden");
     document.querySelector("#" + popupID + "Popup").classList.add("flex");
@@ -185,3 +199,73 @@ function openTab(tabName) {
     }
     document.getElementById(tabName).style.display = "block";  
   }
+
+/**
+ * this will edit the garage besides making the display
+ * for making the display refer to displayEditGarage()
+ * @param {*} garageRef 
+ */
+async function editGarage(garageRef){
+    //links database
+    const user = firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const garageDB=await db.collection("Garage").doc(garageRef);
+    //variables being used
+    var address,areaCode,name,openTime,closeTime;
+    //gets infromation from database
+    await garageDB.get().then((doc)=>{ 
+        address=doc.data().Address;
+        areaCode=doc.data().AreaCode;
+        name=doc.data().Name;
+        openTime=doc.data().OpenTime;
+        closeTime=doc.data().CloseTime;
+    });
+    //gets infomation from website
+    address = null; /*insert way to get information from HTML*/
+    areaCode = 0; /*insert way to get information from HTML*/
+    name = null; /*insert way to get information from HTML*/
+    openTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30)); /*insert way to get information from HTML*/
+    closeTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30)); /*insert way to get information from HTML*/
+    //document to add to database
+    var garageData={
+        Address: address,
+        AreaCode: areaCode,
+        CloseTime: closeTime,
+        Name: name,
+        OpenTime: openTime,
+    };
+    //updates the document
+    var finalStep=await garageDB.set({garageData},{merge:true});
+}
+
+/**
+ * this is to show all the existing information about the garage that you wish to edit 
+ * @param {*} garageRef
+ */
+async function displayEditGarage(garageRef){
+    //links to database
+    const db = firebase.firestore();
+    const garageDB=await db.collection("Garage").doc(garageRef);
+    //variables being used
+    var address,areaCode,name,openTime,closeTime;
+    //gets infromation from database
+    await garageDB.get().then((doc)=>{ 
+        address=doc.data().Address;
+        areaCode=doc.data().AreaCode;
+        name=doc.data().Name;
+        openTime=doc.data().OpenTime;
+        closeTime=doc.data().CloseTime;
+    });
+    //gets pages elements
+    var pName = document.getElementById('p'); /*update to proper HTML reference*/
+    var pAddress = document.getElementById('p'); /*update to proper HTML reference*/
+    var pAreaCode = document.getElementById('p'); /*update to proper HTML reference*/
+    var pOpenTime=document.getElementById('p'); /*update to proper HTML reference*/
+    var pCloseTime=document.getElementById('p'); /*update to proper HTML reference*/
+    //edits values on the page
+    pName.innerHTML="Name: "+name;
+    pAddress.innerHTML="Address: "+address;
+    pAreaCode.innerHTML="Area Code: "+areaCode;
+    pOpenTime.innerHTML="Open Time: "+openTime;
+    pCloseTime.innerHTML="Close Time: "+closeTime;
+}
