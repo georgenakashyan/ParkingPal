@@ -132,3 +132,6 @@ function close(){
         document.querySelector(".popup").style.display = "none";
     })
 }
+function reservationPage() {
+    window.location.href = "ManagerReservationList.html"; 
+}
