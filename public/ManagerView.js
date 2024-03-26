@@ -205,37 +205,29 @@ function openTab(tabName) {
  * for making the display refer to displayEditGarage()
  * @param {*} garageID
  */
-async function editGarage(garageID){
-    //links database
-    const user = firebase.auth().currentUser;
+async function saveGarageChanges(garageID){
+    var name,address,areaCode,openTime,closeTime;
     const db = firebase.firestore();
-    const garageDB=await db.collection("Garage").doc(garageID);
-    //variables being used
-    var address,areaCode,name,openTime,closeTime;
-    //gets infromation from database
-    await garageDB.get().then((doc)=>{ 
-        address=doc.data().Address;
-        areaCode=doc.data().AreaCode;
-        name=doc.data().Name;
-        openTime=doc.data().OpenTime;
-        closeTime=doc.data().CloseTime;
-    });
-    //gets infomation from website
-    address = null; /*insert way to get information from HTML*/
-    areaCode = 0; /*insert way to get information from HTML*/
-    name = null; /*insert way to get information from HTML*/
-    openTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,9,30)); /*insert way to get information from HTML*/
-    closeTime=firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,22,30)); /*insert way to get information from HTML*/
-    //document to add to database
-    var garageData={
+    const garageRef = db.collection("Garage").doc(garageID);
+    name = document.getElementById('editGarageName').value;
+    address = document.getElementById('editGarageAddress').value;
+    areaCode = document.getElementById('editGarageAreaCode').value;
+    var openTimeInput = document.getElementById('editGarageOpenTime').value;
+    var openTimeHours = openTimeInput.substr(0,2);
+    var openTimeMinutes = openTimeInput.substr(3,2);
+    openTime = firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,openTimeHours,openTimeMinutes));
+    var closeTimeInput = document.getElementById('editGarageCloseTime').value;
+    var closeTimeHours = closeTimeInput.substr(0,2);
+    var closeTimeMinutes = closeTimeInput.substr(3,2);
+    closeTime = firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,closeTimeHours,closeTimeMinutes));
+    var garageData = {
+        Name: name,
         Address: address,
         AreaCode: areaCode,
-        CloseTime: closeTime,
-        Name: name,
         OpenTime: openTime,
+        CloseTime: closeTime,
     };
-    //updates the document
-    await garageDB.set({garageData},{merge:true});
+    await garageRef.set(garageData,{merge:true});
 }
 
 /**
@@ -243,24 +235,22 @@ async function editGarage(garageID){
  * @param {*} garageID
  */
 async function displayEditGarage(garageID){
-    var address,areaCode,name,openTime,closeTime;
+    var name,address,areaCode,openTime,closeTime;
     const db = firebase.firestore();
     await db.collection("Garage").doc(garageID).get()
     .then((doc)=>{
         const data = doc.data();
+        name = data.Name;
         address = data.Address;
         areaCode = data.AreaCode;
-        name = data.Name;
         openTime = data.OpenTime;
         closeTime = data.CloseTime;
     });
-    //gets pages elements
     var pName = document.getElementById('editGarageName');
     var pAddress = document.getElementById('editGarageAddress');
     var pAreaCode = document.getElementById('editGarageAreaCode');
     var pOpenTime = document.getElementById('editGarageOpenTime');
     var pCloseTime = document.getElementById('editGarageCloseTime');
-    //edits values on the page
     pName.value = name;
     pAddress.value = address;
     pAreaCode.value = areaCode;
@@ -272,4 +262,6 @@ async function displayEditGarage(garageID){
     var closeHours = closeTimeDate.getHours().toString().padStart(2, '0');
     var closeMinutes = closeTimeDate.getMinutes().toString().padStart(2, '0');
     pCloseTime.value = closeHours + ":" + closeMinutes;
+    var saveButton = document.getElementById("editGarageSaveButton")
+    saveButton.onclick = function() {saveGarageChanges(garageID)};
 }
