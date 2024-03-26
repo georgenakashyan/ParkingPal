@@ -167,7 +167,6 @@ async function deleteGarage(garageRef){
 function openPopup(popupID){
     document.querySelector("#" + popupID + "Popup").classList.remove("hidden");
     document.querySelector("#" + popupID + "Popup").classList.add("flex");
-    document.querySelector("#" + popupID + "Form").reset();
 }
 function closePopup(popupID){
     document.querySelector("#" + popupID + "Popup").classList.remove("flex");
@@ -177,10 +176,11 @@ function closePopup(popupID){
 
 function showGarageInfoPanel(garageID) {
     openPopup("editGarage");
+    displayEditGarage(garageID);
 }
 
 function hideGarageInfoPanel(garageID) {
-    openPopup("editGarage");
+    closePopup("editGarage");
 }
 
 function updateResLabel() {
@@ -203,13 +203,13 @@ function openTab(tabName) {
 /**
  * this will edit the garage besides making the display
  * for making the display refer to displayEditGarage()
- * @param {*} garageRef 
+ * @param {*} garageID
  */
-async function editGarage(garageRef){
+async function editGarage(garageID){
     //links database
     const user = firebase.auth().currentUser;
     const db = firebase.firestore();
-    const garageDB=await db.collection("Garage").doc(garageRef);
+    const garageDB=await db.collection("Garage").doc(garageID);
     //variables being used
     var address,areaCode,name,openTime,closeTime;
     //gets infromation from database
@@ -235,37 +235,41 @@ async function editGarage(garageRef){
         OpenTime: openTime,
     };
     //updates the document
-    var finalStep=await garageDB.set({garageData},{merge:true});
+    await garageDB.set({garageData},{merge:true});
 }
 
 /**
  * this is to show all the existing information about the garage that you wish to edit 
- * @param {*} garageRef
+ * @param {*} garageID
  */
-async function displayEditGarage(garageRef){
-    //links to database
-    const db = firebase.firestore();
-    const garageDB=await db.collection("Garage").doc(garageRef);
-    //variables being used
+async function displayEditGarage(garageID){
     var address,areaCode,name,openTime,closeTime;
-    //gets infromation from database
-    await garageDB.get().then((doc)=>{ 
-        address=doc.data().Address;
-        areaCode=doc.data().AreaCode;
-        name=doc.data().Name;
-        openTime=doc.data().OpenTime;
-        closeTime=doc.data().CloseTime;
+    const db = firebase.firestore();
+    await db.collection("Garage").doc(garageID).get()
+    .then((doc)=>{
+        const data = doc.data();
+        address = data.Address;
+        areaCode = data.AreaCode;
+        name = data.Name;
+        openTime = data.OpenTime;
+        closeTime = data.CloseTime;
     });
     //gets pages elements
-    var pName = document.getElementById('p'); /*update to proper HTML reference*/
-    var pAddress = document.getElementById('p'); /*update to proper HTML reference*/
-    var pAreaCode = document.getElementById('p'); /*update to proper HTML reference*/
-    var pOpenTime=document.getElementById('p'); /*update to proper HTML reference*/
-    var pCloseTime=document.getElementById('p'); /*update to proper HTML reference*/
+    var pName = document.getElementById('editGarageName');
+    var pAddress = document.getElementById('editGarageAddress');
+    var pAreaCode = document.getElementById('editGarageAreaCode');
+    var pOpenTime = document.getElementById('editGarageOpenTime');
+    var pCloseTime = document.getElementById('editGarageCloseTime');
     //edits values on the page
-    pName.innerHTML="Name: "+name;
-    pAddress.innerHTML="Address: "+address;
-    pAreaCode.innerHTML="Area Code: "+areaCode;
-    pOpenTime.innerHTML="Open Time: "+openTime;
-    pCloseTime.innerHTML="Close Time: "+closeTime;
+    pName.value = name;
+    pAddress.value = address;
+    pAreaCode.value = areaCode;
+    var openTimeDate = openTime.toDate();
+    var openHours = openTimeDate.getHours().toString().padStart(2, '0');
+    var openMinutes = openTimeDate.getMinutes().toString().padStart(2, '0');
+    pOpenTime.value = openHours + ":" + openMinutes;
+    var closeTimeDate = closeTime.toDate();
+    var closeHours = closeTimeDate.getHours().toString().padStart(2, '0');
+    var closeMinutes = closeTimeDate.getMinutes().toString().padStart(2, '0');
+    pCloseTime.value = closeHours + ":" + closeMinutes;
 }
