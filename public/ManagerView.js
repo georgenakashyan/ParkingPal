@@ -69,26 +69,28 @@ function displayOneGarage(garageRef) {
  * this will add garages to the firebase database
  */
 async function addGarage(){
+    var errorField = document.getElementById("add-notification-text");
+    errorField.style.setProperty("color", "red");
     //links database
     const user = firebase.auth().currentUser;
     const db = firebase.firestore();
     //gets infomation from website
     var name = document.getElementById("addGarageName").value;
     var address = document.getElementById("addGarageAddress").value;
-    var areaCode = parseInt(document.getElementById("addGarageAreaCode").value);
+    var areaCode = "" + document.getElementById("addGarageAreaCode").value;
     var openDate = new Date();
-    var timeParts = document.getElementById("addGarageOpenTime").value.split(":");
-    var hours = parseInt(timeParts[0], 10);
-    var minutes = parseInt(timeParts[1], 10);
-    openDate.setHours(hours);
-    openDate.setMinutes(minutes);
+    var opentimeParts = document.getElementById("addGarageOpenTime").value.split(":");
+    var openhours = parseInt(opentimeParts[0], 10);
+    var openminutes = parseInt(opentimeParts[1], 10);
+    openDate.setHours(openhours);
+    openDate.setMinutes(openminutes);
     var openTime=firebase.firestore.Timestamp.fromDate(openDate);
     var closeDate = new Date();
-    var timeParts = document.getElementById("addGarageCloseTime").value.split(":");
-    var hours = parseInt(timeParts[0], 10);
-    var minutes = parseInt(timeParts[1], 10);
-    closeDate.setHours(hours);
-    closeDate.setMinutes(minutes);
+    var closetimeParts = document.getElementById("addGarageCloseTime").value.split(":");
+    var closehours = parseInt(closetimeParts[0], 10);
+    var closeminutes = parseInt(closetimeParts[1], 10);
+    closeDate.setHours(closehours);
+    closeDate.setMinutes(closeminutes);
     var closeTime=firebase.firestore.Timestamp.fromDate(closeDate);
     var managerProfile;
     //gets info from database
@@ -100,22 +102,35 @@ async function addGarage(){
     .catch((error) => {
         console.log("Failed to find manager doc: " + error);
     });
+    var managerInfo = await db.collection("Manager").doc(managerProfile);
+    const dbReference = await db.collection("Garage").where('Address','==',address).where('AreaCode','==',areaCode).get();
     //document to add to database
-    var garageData={
-        Address: address,
-        AreaCode: areaCode,
-        CloseTime: closeTime,
-        Manager: "Manager/" + managerProfile,
-        Name: name,
-        OpenTime: openTime,
-        Spots: [],
-        Reservations: []
-    };
-    //double check that there is no existing garage
-    /*var errorField = document.getElementById("notification-text");*/
-    var managerInfo= await db.collection("Manager").doc(managerProfile);
-    const dbReference= await db.collection("Garage").where('Address','==',address).where('AreaCode','==',areaCode).get();
-    if(dbReference.empty){
+    if (inputNullOrEmpty(name)) {
+        errorField.innerHTML = "Please enter the garage name";
+    } else if (inputNullOrEmpty(address)) {
+        errorField.innerHTML = "Please enter the garage address";
+    } else if (inputNullOrEmpty(areaCode)) {
+        errorField.innerHTML = "Please enter the garage area code";
+    } else if (isNaN(openDate)) {
+        errorField.innerHTML = "Please enter the garage opening time";
+    } else if (isNaN(closeDate)) {
+        errorField.innerHTML = "Please enter the garage closing time";
+    } else if (inputNullOrEmpty(managerProfile)) {
+        errorField.innerHTML = "Manager profile not found, refresh your page";
+    } else if (!dbReference.empty) {
+        errorField.innerHTML = "Garage already registed and in use";
+    } else {
+        errorField.innerHTML = "";
+        var garageData={
+            Name: name,
+            Address: address,
+            AreaCode: areaCode,
+            OpenTime: openTime,
+            CloseTime: closeTime,
+            Manager: "Manager/" + managerProfile,
+            Spots: [],
+            Reservations: []
+        };
         //puts document into database
         await db.collection("Garage").add(garageData)
         .then((document)=>{
@@ -132,11 +147,7 @@ async function addGarage(){
             var errorMessage = error.message;
             console.log(errorCode + " --- " + errorMessage);     
         });
-    }
-    else{
-        //reports if something is already in database
-        console.log("Document not empty, it exists or some other error")
-        /* errorField.innerHTML="Garage Already In Use"; */
+        closePopup('addGarage');
     }
 }
 
@@ -206,7 +217,8 @@ function openTab(tabName) {
  * @param {*} garageID
  */
 async function saveGarageChanges(garageID){
-    var errorField = document.getElementById("notification-text");
+    var errorField = document.getElementById("edit-notification-text");
+    errorField.style.setProperty("color", "red");
     var name,address,areaCode,openTime,closeTime;
     const db = firebase.firestore();
     const garageRef = db.collection("Garage").doc(garageID);
@@ -232,7 +244,8 @@ async function saveGarageChanges(garageID){
     } else if (inputNullOrEmpty(closeTimeInput)) {
         errorField.innerHTML = "Please enter the garage closing time";
     } else {
-        errorField.innerHTML = "";
+        errorField.style.setProperty("color", "green");
+        errorField.innerHTML = "Garage information saved";
         var garageData = {
             Name: name,
             Address: address,
