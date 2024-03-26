@@ -632,10 +632,6 @@ video {
   display: flex;
 }
 
-.table-cell {
-  display: table-cell;
-}
-
 .grid {
   display: grid;
 }
@@ -750,10 +746,6 @@ video {
 
 .border {
   border-width: 1px;
-}
-
-.border-0 {
-  border-width: 0px;
 }
 
 .border-4 {

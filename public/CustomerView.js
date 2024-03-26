@@ -1,4 +1,4 @@
-var userLocation = [41.78343000, -73.96625000];
+var userLocation = [40.78343000, -73.96625000];
 var areaCode = 10024;
 var map;
 var garageList = [];
@@ -14,24 +14,22 @@ function initMap() {
         {elementType: "labels.icon", stylers: [{ visibility: "off" }],}
     ];
     map.setOptions({styles: removedPOI});
-    setLocation();
-    fillGarageList();
-    fillMapMarkers();
+    navigator.geolocation.getCurrentPosition(setCoordinates, setDefaultCoordinates);
+    /* fillGarageList(); */
+    /* fillMapMarkers(); */
 }
 
 async function fillGarageList() {
-    const matchingGarages = [];
     await firebase.firestore().collection("Garage").where("AreaCode", "==", areaCode).get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             console.log(doc.id + " => " + doc.data());
-            matchingGarages.push({id: doc.id, data: doc.data()});
+            garageList.push({id: doc.id, data: doc.data()});
         });
     })
     .catch((error) => {
         console.log("Error getting garages: " + error);
     });
-    return matchingGarages;
 }
 
 function setLocation() {
@@ -42,7 +40,17 @@ function setLocation() {
 
 function setCoordinates(position) {
     userLocation = [position.coords.latitude, position.coords.longitude];
-    map.center = position.coords.latitude, position.coords.longitude
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        streetViewControl: false,
+        mapTypeControl: false,
+        center: {lat: userLocation[0], lng: userLocation[1]}
+    });
+    removedPOI = [
+        {featureType: "poi.business", stylers: [{ visibility: "off" }],},
+        {elementType: "labels.icon", stylers: [{ visibility: "off" }],}
+    ];
+    map.setOptions({styles: removedPOI});
 }
 
 function setDefaultCoordinates() {
