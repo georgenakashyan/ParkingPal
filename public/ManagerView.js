@@ -206,6 +206,7 @@ function openTab(tabName) {
  * @param {*} garageID
  */
 async function saveGarageChanges(garageID){
+    var errorField = document.getElementById("notification-text");
     var name,address,areaCode,openTime,closeTime;
     const db = firebase.firestore();
     const garageRef = db.collection("Garage").doc(garageID);
@@ -220,14 +221,27 @@ async function saveGarageChanges(garageID){
     var closeTimeHours = closeTimeInput.substr(0,2);
     var closeTimeMinutes = closeTimeInput.substr(3,2);
     closeTime = firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,closeTimeHours,closeTimeMinutes));
-    var garageData = {
-        Name: name,
-        Address: address,
-        AreaCode: areaCode,
-        OpenTime: openTime,
-        CloseTime: closeTime,
-    };
-    await garageRef.set(garageData,{merge:true});
+    if (inputNullOrEmpty(name)) {
+        errorField.innerHTML = "Please enter the garage name";
+    } else if (inputNullOrEmpty(address)) {
+        errorField.innerHTML = "Please enter the garage address";
+    } else if (inputNullOrEmpty(areaCode)) {
+        errorField.innerHTML = "Please enter the garage area code";
+    } else if (inputNullOrEmpty(openTimeInput)) {
+        errorField.innerHTML = "Please enter the garage opening time";
+    } else if (inputNullOrEmpty(closeTimeInput)) {
+        errorField.innerHTML = "Please enter the garage closing time";
+    } else {
+        errorField.innerHTML = "";
+        var garageData = {
+            Name: name,
+            Address: address,
+            AreaCode: areaCode,
+            OpenTime: openTime,
+            CloseTime: closeTime,
+        };
+        await garageRef.set(garageData,{merge:true});
+    }
 }
 
 /**
