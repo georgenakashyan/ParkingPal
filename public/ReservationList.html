@@ -25,7 +25,19 @@
             <div class="row-span-1 p-3 flex items-center text-white font-semibold">
                 <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
             </div> 
-            <div class="bg-PP-blue p-9 h-full  flex justify-center items-start pt-1/4 overflow-auto rounded-xl">
+                            
+            <div class="bg-PP-blue p-9 h-full items-start pt-1/4 overflow-auto rounded-xl">
+                <div class="flex justify-end w-full">
+                    
+
+                    <div class=" flex justify-end w-2/3 max-w-lg">
+                        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search Appointments" class="w-full px-3 py-2 border rounded shadow">
+                    </div>
+
+                </div>
+
+                
+                <div class="w-full mt-24">
                 <table id = "reservationList" class="w-full rounded-xl">
                     <thead class="bg-gray-50 border-b-2 border-gray-200">
                         <tr >
