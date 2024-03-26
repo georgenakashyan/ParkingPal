@@ -155,24 +155,43 @@ async function addGarage(){
  * this will delete the garage doc and reference under manager
  * @param {*} garageRef 
  */
-async function deleteGarage(garageRef){
-    //links database
-    const user = firebase.auth().currentUser;
+async function deleteGarage(garageID){
     const db = firebase.firestore();
-    const garageDB=await db.collection("Garage").doc(garageRef);
-    //variables
-    var managerLink;
-    //grabs manager Referance from database
-    await garageDB.get().then((doc)=>{
-        managerLink=doc.data().Manager.slice(8);
+    await db.collection("Garage").doc(garageID).get()
+    .then((garageDoc)=>{
+        var garageData = garageDoc.data();
+        var managerID = garageData.Manager.slice(8);
+        var garageLink = "Garage/" + garageID;
+        db.collection("Reservation").where("Garage_ID", "==", garageLink).get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                db.collection("Reservation").doc(doc.id).delete();
+            });
+        });
+        db.collection("Parking Spot").where("Garage_ID", "==", garageLink).get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                db.collection("Parking Spot").doc(doc.id).delete();
+            });
+        });
+        db.collection("Favorite").where("Garage_ID", "==", garageLink).get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                db.collection("Favorite").doc(doc.id).delete();
+            });
+        });
+        db.collection("Review").where("Garage_ID", "==", garageLink).get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                db.collection("Review").doc(doc.id).delete();
+            });
+        });
+        db.collection("Manager").doc(managerID)
+        .update({
+            Garages: firebase.firestore.FieldValue.arrayRemove(garageLink)
+        });
+        db.collection("Garage").doc(garageID).delete();
     });
-    //deletes garage reference from manager garage list
-    const managerDB=await db.collection("Manager").doc(managerLink);
-    managerDB.update({
-        Garages: firebase.firestore.FieldValue.arrayRemove("garageRef")
-    });
-    //code to delete document
-    const begone=db.collection('Garage').doc(garageRef).delete();
 }
 
 function openPopup(popupID){
@@ -289,6 +308,8 @@ async function displayEditGarage(garageID){
     var closeHours = closeTimeDate.getHours().toString().padStart(2, '0');
     var closeMinutes = closeTimeDate.getMinutes().toString().padStart(2, '0');
     pCloseTime.value = closeHours + ":" + closeMinutes;
-    var saveButton = document.getElementById("editGarageSaveButton")
-    saveButton.onclick = function() {saveGarageChanges(garageID)};
+    var saveGarageButton = document.getElementById("editGarageSaveButton")
+    saveGarageButton.onclick = function() {saveGarageChanges(garageID)};
+    var deleteGarageButton = document.getElementById("editGarageDeleteButton")
+    deleteGarageButton.onclick = function() {deleteGarage(garageID)};
 }

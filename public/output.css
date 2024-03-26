@@ -632,6 +632,10 @@ video {
   display: flex;
 }
 
+.table-cell {
+  display: table-cell;
+}
+
 .grid {
   display: grid;
 }
@@ -746,6 +750,10 @@ video {
 
 .border {
   border-width: 1px;
+}
+
+.border-0 {
+  border-width: 0px;
 }
 
 .border-4 {
@@ -1005,6 +1013,24 @@ a:hover {
 
 .long-main-button:hover {
   background-color: #006e90;
+  transition: all 130ms ease-in-out;
+}
+
+.long-delete-button {
+  display: table-cell;
+  border-radius: 0.3rem;
+  border-width: 0px;
+  width: 90%;
+  margin-left: 5%;
+  height: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  background-color: #d30303;
+  color: white;
+}
+
+.long-delete-button:hover {
+  background-color: #b10000;
   transition: all 130ms ease-in-out;
 }
 

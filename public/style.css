@@ -80,6 +80,27 @@ a:hover {
     transition: all 130ms ease-in-out;
 }
 
+.long-delete-button {
+    display: table-cell;
+    border-radius: 0.3rem;
+    border-width: 0px;
+    width: 90%;
+    margin-left: 5%;
+    height: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    background-color: #d30303;
+    color: white;
+}
+
+.long-delete-button:hover {
+    background-color: #b10000;
+    -webkit-transition: all 130ms ease-in-out;
+    -moz-transition: all 130ms ease-in-out;
+    -o-transition: all 130ms ease-in-out;
+    transition: all 130ms ease-in-out;
+}
+
 .notification-text {
     color: red;
     display: block;
