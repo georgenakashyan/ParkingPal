@@ -1,36 +1,8 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-  const auth = firebase.auth();
-  auth.onAuthStateChanged((user) => {
-    const db = firebase.firestore();
-    db.collection("Account").doc(user.uid).get()
-    .then((doc) => {
-      retrieveAllGarages(doc.data());
-    })
-    .catch((error) => {
-      console.log("Could not find user doc to display name and email");
-    });
-  });
-});
-
-/**
- * pulls info from 'Reservation' and displays it
- */
-async function retrieveAllGarages(accountDoc) {
-  const managerRef = accountDoc.Profile.slice(8);
+async function displayAllReservations(garageID) {
+  var resTable = document.getElementById("reservationTable");
+  while(resTable.rows.length > 1) resTable.rows[1].remove();
   const db = firebase.firestore();
-  await db.collection("Manager").doc(managerRef).get()
-  .then((doc) => {
-    var garageList = doc.data().Garages;
-    garageList.forEach(displayAllReservations);
-  })
-  .catch((error) => {
-    console.log("Failed to find manager doc: " + error);
-  });
-}
-
-async function displayAllReservations(garageRef) {
-  const db = firebase.firestore();
-  await db.collection("Garage").doc(garageRef.slice(7)).get()
+  await db.collection("Garage").doc(garageID).get()
   .then((doc) => {
     //console.log(doc.id, " => ", doc.data());
     var reservationList = doc.data().Reservations;

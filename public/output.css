@@ -600,6 +600,14 @@ video {
   margin-bottom: 1rem;
 }
 
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .ml-3 {
   margin-left: 0.75rem;
 }
@@ -612,6 +620,10 @@ video {
   margin-right: 0px;
 }
 
+.mr-1 {
+  margin-right: 0.25rem;
+}
+
 .mr-3 {
   margin-right: 0.75rem;
 }
@@ -622,6 +634,10 @@ video {
 
 .mr-auto {
   margin-right: auto;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
 }
 
 .block {
@@ -669,6 +685,10 @@ video {
   width: 50%;
 }
 
+.w-4\/5 {
+  width: 80%;
+}
+
 .w-72 {
   width: 18rem;
 }
@@ -688,6 +708,10 @@ video {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-80 {
+  width: 20rem;
 }
 
 .grow {
@@ -875,10 +899,6 @@ video {
   padding: 1.75rem;
 }
 
-.p-9 {
-  padding: 2.25rem;
-}
-
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -899,6 +919,14 @@ video {
 
 .pl-1 {
   padding-left: 0.25rem;
+}
+
+.pl-2 {
+  padding-left: 0.5rem;
+}
+
+.pr-2 {
+  padding-right: 0.5rem;
 }
 
 .pt-3 {
@@ -1039,7 +1067,6 @@ a:hover {
   border-radius: 0.3rem;
   border-width: 0px;
   width: 90%;
-  margin-left: 5%;
   height: 2.5rem;
   font-weight: bold;
   text-align: center;
@@ -1057,7 +1084,6 @@ a:hover {
   border-radius: 0.3rem;
   border-width: 0px;
   width: 90%;
-  margin-left: 5%;
   height: 2.5rem;
   font-weight: bold;
   text-align: center;
@@ -1147,9 +1173,19 @@ a:hover {
   background-color: rgb(148 163 184 / var(--tw-bg-opacity));
 }
 
+.hover\:text-PP-orange:hover {
+  --tw-text-opacity: 1;
+  color: rgb(219 116 31 / var(--tw-text-opacity));
+}
+
 .hover\:text-black:hover {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.hover\:text-gray-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
 }
 
 .hover\:no-underline:hover {

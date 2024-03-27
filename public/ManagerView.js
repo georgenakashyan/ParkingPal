@@ -191,6 +191,8 @@ async function deleteGarage(garageID){
             Garages: firebase.firestore.FieldValue.arrayRemove(garageLink)
         });
         db.collection("Garage").doc(garageID).delete();
+        document.getElementById(garageID).remove();
+        closePopup("editGarage");
     });
 }
 
@@ -227,8 +229,8 @@ function openTab(tabName) {
     for (i = 0; i < x.length; i++) {
       x[i].style.display = "none";  
     }
-    document.getElementById(tabName).style.display = "block";  
-  }
+    document.getElementById(tabName).style.display = "block";
+}
 
 /**
  * this will edit the garage besides making the display
@@ -292,11 +294,13 @@ async function displayEditGarage(garageID){
         openTime = data.OpenTime;
         closeTime = data.CloseTime;
     });
+
     var pName = document.getElementById('editGarageName');
     var pAddress = document.getElementById('editGarageAddress');
     var pAreaCode = document.getElementById('editGarageAreaCode');
     var pOpenTime = document.getElementById('editGarageOpenTime');
     var pCloseTime = document.getElementById('editGarageCloseTime');
+
     pName.value = name;
     pAddress.value = address;
     pAreaCode.value = areaCode;
@@ -308,8 +312,11 @@ async function displayEditGarage(garageID){
     var closeHours = closeTimeDate.getHours().toString().padStart(2, '0');
     var closeMinutes = closeTimeDate.getMinutes().toString().padStart(2, '0');
     pCloseTime.value = closeHours + ":" + closeMinutes;
+
     var saveGarageButton = document.getElementById("editGarageSaveButton")
     saveGarageButton.onclick = function() {saveGarageChanges(garageID)};
     var deleteGarageButton = document.getElementById("editGarageDeleteButton")
     deleteGarageButton.onclick = function() {deleteGarage(garageID)};
+
+    displayAllReservations(garageID);
 }

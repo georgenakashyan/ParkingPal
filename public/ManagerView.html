@@ -16,6 +16,7 @@
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
     <script src="app.js"></script>
     <script src="ManagerView.js"></script>
+    <script src="Reservation.js"></script>
     <title>Parking Pal - Manager Home</title>
     <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
     <link rel="stylesheet" href="output.css"/>
@@ -45,63 +46,75 @@
                 </ul>
             </div>
         </div>
-        <div class="bg-black bg-opacity-50 hidden absolute top-0 w-full h-full justify-center z-10" id="addGaragePopup">
+        <div class="bg-black bg-opacity-50 absolute hidden top-0 w-full h-full justify-center z-10" id="addGaragePopup">
             <div class="grow"></div>
-            <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 p-6 border align-middle rounded-lg text-center items-center grid">
-                <div>
+            <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
+                <div class="flex overflow-hidden text-white pl-2 pr-2">
+                    <div class="grow w-80"></div>
                     <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('addGarage')">&times;</button>
                 </div>
-                <form id="addGarageForm">
-                    <input type="text" id="addGarageName" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="Garage Name"><br>
-                    <input type="text" id="addGarageAddress" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="Address"><br>
-                    <input type="number" id="addGarageAreaCode" class="mb-2 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="AreaCode"><br>
-                    <div class="text-left flex">
-                        <label for="addGarageOpenTime">Opening Time</label>
-                        <div class="grow"></div>
-                        <input type="time" id="addGarageOpenTime" class="mb-2 w-fit h-8 border rounded-md border-gray-300 pl-1">
-                    </div>
-                    <div class="text-left flex">
-                        <label for="addGarageCloseTime">Closing Time</label>
-                        <div class="grow"></div>
-                        <input type="time" id="addGarageCloseTime" class="mb-4 w-fit h-8 border rounded-md border-gray-300 pl-1">
-                    </div>
-                </form>
-                <label class="notification-text" id="add-notification-text"></label>
-                <button class="long-main-button" onclick="addGarage()">Add Garage</button>
+                <div class="addGarageTab">
+                    <form id="addGarageForm">
+                        <input type="text" id="addGarageName" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Garage Name"><br>
+                        <input type="text" id="addGarageAddress" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Address"><br>
+                        <input type="number" id="addGarageAreaCode" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="AreaCode"><br>
+                        <div class="w-full flex justify-center">
+                            <div class="text-left flex mb-2 w-4/5 items-center">
+                              <label for="addGarageOpenTime">Opening Time</label>
+                              <div class="grow w-fit"></div>
+                              <input type="time" id="addGarageOpenTime" class="mb-2 w-fit h-8 border rounded-md border-gray-300 pl-1">
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-center">
+                            <div class="text-left flex mb-2 w-4/5 items-center">
+                              <label for="addGarageCloseTime">Closing Time</label>
+                              <div class="grow w-fit"></div>
+                              <input type="time" id="addGarageCloseTime" class="mb-2 w-fit h-8 border rounded-md border-gray-300 pl-1">
+                            </div>
+                        </div>
+                    </form>
+                    <label class="notification-text" id="add-notification-text"></label>
+                <button class="long-main-button mt-1 mb-6" onclick="addGarage()" style="width: 80% !important;">Add Garage</button>
+                </div>
             </div>
             <div class="grow"></div>
         </div>
-        <div class="bg-black bg-opacity-50 hidden absolute top-0 w-full h-full justify-center z-10" id="editGaragePopup">
+        <div class="bg-black bg-opacity-50 absolute hidden top-0 w-full h-full justify-center z-10" id="editGaragePopup">
             <div class="grow"></div>
-            <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 p-6 border align-middle rounded-lg text-center items-center grid">
-                <div>
+            <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
+                <div class="flex overflow-hidden bg-PP-blue rounded-md text-white mb-5 pl-2 pr-2">
+                    <div class="mr-1 font-bold">
+                        <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('garageInfo')">Garage Info</button>
+                        <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('spotInfo')">Parking Spots</button>
+                        <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('reservationList')">Resevations</button>
+                    </div>
+                    <div class="grow w-fit"></div>
                     <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('editGarage')">&times;</button>
-                </div>
-                <div class="w-full overflow-hidden bg-black text-white">
-                    <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('garageInfo')">Garage Info</button>
-                    <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('spotInfo')">Parking Spots</button>
-                    <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('reservationList')">Resevations</button>
                 </div>
                   
                 <div id="garageInfo" class="editGarageTab">
                     <form id="editGarageForm">
-                        <input type="text" id="editGarageName" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="Garage Name"><br>
-                        <input type="text" id="editGarageAddress" class="mb-3 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="Address"><br>
-                        <input type="number" id="editGarageAreaCode" class="mb-2 w-72 h-8 border rounded-md border-gray-300 pl-1" placeholder="AreaCode"><br>
-                        <div class="text-left flex">
-                            <label for="editGarageOpenTime">Opening Time</label>
-                            <div class="grow"></div>
-                            <input type="time" id="editGarageOpenTime" class="mb-2 w-fit h-8 border rounded-md border-gray-300 pl-1">
+                        <input type="text" id="editGarageName" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Garage Name"><br>
+                        <input type="text" id="editGarageAddress" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Address"><br>
+                        <input type="number" id="editGarageAreaCode" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="AreaCode"><br>
+                        <div class="w-full flex justify-center">
+                            <div class="text-left flex mb-2 w-4/5 items-center">
+                              <label for="editGarageOpenTime">Opening Time</label>
+                              <div class="grow w-fit"></div>
+                              <input type="time" id="editGarageOpenTime" class="mb-2 w-fit h-8 border rounded-md border-gray-300 pl-1">
+                            </div>
                         </div>
-                        <div class="text-left flex">
-                            <label for="editGarageCloseTime">Closing Time</label>
-                            <div class="grow"></div>
-                            <input type="time" id="editGarageCloseTime" class="w-fit h-8 border rounded-md border-gray-300 pl-1">
+                        <div class="w-full flex justify-center">
+                            <div class="text-left flex mb-2 w-4/5 items-center">
+                              <label for="editGarageCloseTime">Closing Time</label>
+                              <div class="grow w-fit"></div>
+                              <input type="time" id="editGarageCloseTime" class="mb-2 w-fit h-8 border rounded-md border-gray-300 pl-1">
+                            </div>
                         </div>
                     </form>
-                    <label class="notification-text" id="edit-notification-text"></label>
-                    <button id="editGarageSaveButton" class="long-main-button">Save</button>
-                    <button id="editGarageDeleteButton" class="long-delete-button">Delete Garage</button>
+                    <label id="edit-notification-text" class="notification-text"></label>
+                    <button id="editGarageSaveButton" class="long-main-button mt-1 mb-3" style="width:80% !important;">Save</button>
+                    <button id="editGarageDeleteButton" class="long-delete-button mb-6" style="width:80% !important;">Delete Garage</button>
                 </div>
                 
                 <div id="spotInfo" class="editGarageTab" style="display:none">
@@ -109,7 +122,24 @@
                 </div>
                 
                 <div id="reservationList" class="editGarageTab" style="display:none">
-                    <h2>Here will be a list of active resevations for your garage.</h2>
+                    <div class="h-full flex justify-center items-start pt-1/4 overflow-auto">
+                        <table id = "reservationTable" class="w-full rounded-xl">
+                            <thead class="bg-gray-50 border-b-2 border-gray-200">
+                                <tr class="tracking-wide text-left [&>th]:p-3">
+                                    <th>Customer</th>
+                                    <th>Vehicle</th>
+                                    <th>Status</th>
+                                    <th>Starting Time</th>
+                                    <th>Ending Time</th>
+                                    <th>Spot-ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id = "reservationBody">
+                                <ul class="text-center">
+                                </ul>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="grow"></div>
