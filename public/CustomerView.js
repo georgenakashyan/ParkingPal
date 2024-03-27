@@ -1,7 +1,9 @@
 var userLocation = [40.78343000, -73.96625000];
+var areaCode = 10024;
+var map;
+var garageList = [];
 function initMap() {
-    setLocation();
-    var map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         zoom: 12,
         streetViewControl: false,
         mapTypeControl: false,
@@ -12,33 +14,22 @@ function initMap() {
         {elementType: "labels.icon", stylers: [{ visibility: "off" }],}
     ];
     map.setOptions({styles: removedPOI});
-
-    // Add fictional parking garages as markers
-    //TODO: add areaCode based on latitude and longitude (probably with google maps API)
-    var areaCode = 10024;
-    var garageList = findGarages(areaCode);
-    fillGarages(map, garageList);
+    navigator.geolocation.getCurrentPosition(setCoordinates, setDefaultCoordinates);
+    /* fillGarageList(); */
+    /* fillMapMarkers(); */
 }
 
-function findGarages(address, areaCode) {
-    try {
-        const matchingGarages = [];
-        firebase.firestore().collection("Garage").where("Address", "==", address).where("AreaCode", "==", areaCode)
-        .get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                console.log(doc.id + " => " + doc.data());
-                matchingGarages.push({id: doc.id, data: doc.data()});
-            });
-        })
-        .catch((error) => {
-            console.log("Error getting garages: " + error);
+async function fillGarageList() {
+    await firebase.firestore().collection("Garage").where("AreaCode", "==", areaCode).get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            console.log(doc.id + " => " + doc.data());
+            garageList.push({id: doc.id, data: doc.data()});
         });
-        return matchingGarages;
-    } catch (error) {
-        console.error("Error searching garages:", error);
-        return [];
-    }
+    })
+    .catch((error) => {
+        console.log("Error getting garages: " + error);
+    });
 }
 
 function setLocation() {
@@ -49,14 +40,25 @@ function setLocation() {
 
 function setCoordinates(position) {
     userLocation = [position.coords.latitude, position.coords.longitude];
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        streetViewControl: false,
+        mapTypeControl: false,
+        center: {lat: userLocation[0], lng: userLocation[1]}
+    });
+    removedPOI = [
+        {featureType: "poi.business", stylers: [{ visibility: "off" }],},
+        {elementType: "labels.icon", stylers: [{ visibility: "off" }],}
+    ];
+    map.setOptions({styles: removedPOI});
 }
 
 function setDefaultCoordinates() {
     userLocation = [40.78343000, -73.96625000];
 }
 
-function fillGarages(map, garageList) {
-    garageList.forEach(function(parkingGarage) {
+function fillMapMarkers() {
+    garageList.forEach((parkingGarage) => {
         var marker = new google.maps.Marker({
             position: parkingGarage.location,
             map: map,
