@@ -7,6 +7,7 @@ function updateUserType(type) {
         case "Customer":
             typeDoc.add({
                 Accessibility: false,
+                Account: "Account/" + user.uid,
                 Favorites: [],
                 Payments: [],
                 Reservations: [],
@@ -22,6 +23,7 @@ function updateUserType(type) {
             break;
         case "Manager":
             typeDoc.add({
+                Account: "Account/" + user.uid,
                 Billing: "",
                 Garages: []
             }).then((doc) => {
