@@ -28,27 +28,17 @@
             <div class="bg-PP-blue p-9 h-full  flex justify-center items-start pt-1/4 overflow-auto rounded-xl">
                 <table id = "reservationTable" class="w-full rounded-xl">
                     <thead class="bg-gray-50 border-b-2 border-gray-200">
-                        <tr >
-                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Customer.</th>
-                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Vehicle</th>
-                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Status</th>
-                            <th class="p-3 text-sm font-semibold tracking-wide text-left">StartTime</th>
-                            <th class="p-3 text-sm font-semibold tracking-wide text-left">EndTime</th>
-                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Spot-Number</th>
-                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Location</th>
+                        <tr class="tracking-wide text-left [&>th]:p-3">
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Status</th>
+                            <th>Starting Time</th>
+                            <th>Ending Time</th>
+                            <th>Spot-ID</th>
                         </tr>
                     </thead>
                     <tbody id = "reservationBody">
-                        <ul>
-                            <tr class="bg-gray-300 text-center">
-                                <td class="p-3 text-sm text-gray-700 text-left" >Jeo Quintanilla</td>
-                                <td class="p-3 text-sm text-gray-700 text-left">Sedan</td>
-                                <td class="p-3 text-sm text-gray-700 text-left">Confirmed</td>
-                                <td class="p-3 text-sm text-gray-700 text-left">2:00</td>
-                                <td class="p-3 text-sm text-gray-700 text-left">3:00</td>
-                                <td class="p-3 text-sm text-gray-700 text-left">B36</td>
-                                <td class="p-3 text-sm text-gray-700 text-left">Your MOM House</td>
-                            </tr>
+                        <ul class="text-center">
                         </ul>
                     </tbody>
                 </table>
