@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
+        <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+        <script src="app.js"></script>
+        <script src="Reservation.js"></script>
+        <title>Parking Pal - ReservationInfo</title>
+        <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
+        <link rel="stylesheet" href="output.css"/>
+    </head>
+    <body class="globalFont ">
+        <div class="h-screen bg-PP-dark-blue"  >
+            <div class="row-span-1 p-3 flex items-center text-white font-semibold">
+                <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
+            </div>
+            <div class="bg-PP-blue p-9 h-full  flex justify-center items-start pt-1/4 overflow-auto rounded-xl">
+                <table id = "reservationTable" class="w-full rounded-xl">
+                    <thead class="bg-gray-50 border-b-2 border-gray-200">
+                        <tr class="tracking-wide text-left [&>th]:p-3">
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Status</th>
+                            <th>Starting Time</th>
+                            <th>Ending Time</th>
+                            <th>Spot-ID</th>
+                        </tr>
+                    </thead>
+                    <tbody id = "reservationBody">
+                        <ul class="text-center">
+                        </ul>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+    </html>
