@@ -115,7 +115,7 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StatusR
   await db.collection("Account").doc(user.uid)
     .get()
     .then((doc)=>{
-        customerID=doc.data().Profile.slice(9);
+        customerID=doc.data().Profile;
     })
     .catch((error)=>{
         console.log("Failed to find customer doc: "+error);
