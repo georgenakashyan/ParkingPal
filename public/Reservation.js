@@ -94,3 +94,112 @@ async function getStringFromReservation(coll, reference) {
     reject(stringForm);
   });
 }
+
+/**
+ * this method SHOULD NOT be called directly
+ * this is the method that will be used to add the reservation to the database
+ * it should be called with one of two methods: quickAdd() or standardAdd()
+ * @param {*} GarageRef 
+ * @param {*} ParkingRef 
+ * @param {*} VehicleRef 
+ * @param {*} PaymentRef 
+ * @param {*} StatusRef 
+ */
+async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StatusRef){
+  //links database
+  const user = firebase.auth().currentUser;
+  const db = firebase.firestore();
+  //variables
+  var customerID,startTime,endTime,garageID,spotID,status,vechileID,reservationID,paymentMethod;
+  //assigning values
+  await db.collection("Account").doc(user.uid)
+    .get()
+    .then((doc)=>{
+        customerID=doc.data().Profile.slice(9);
+    })
+    .catch((error)=>{
+        console.log("Failed to find customer doc: "+error);
+    });
+  await db.collection("Garage").doc(GarageRef)
+    .get()
+    .then((doc)=>{
+        startTime=doc.data().OpenTime;
+    })
+    .catch((error)=>{
+        console.log("Failed to find Garage doc: "+error);
+    });
+  await db.collection("Garage").doc(GarageRef)
+    .get()
+    .then((doc)=>{
+        endTime=doc.data().CloseTime;
+    })
+    .catch((error)=>{
+        console.log("Failed to find Garage doc: "+error);
+    });
+  garageID=GarageRef;
+  spotID=ParkingRef;
+  status=StatusRef;
+  vechileID=VehicleRef;
+  paymentMethod=PaymentRef;
+  //make document
+  var reservation={
+    Customer_ID: customerID,
+    End: endTime,
+    Garage_ID: garageID,
+    Payment_ID: paymentMethod,
+    Spot_ID: spotID,
+    Status: status,
+    Vechile_ID: vechileID
+  };
+  //adds doc to database
+  await db.collection("Reservation").add(reservation)
+  .then((document)=>{
+    reservationID=document.uid;
+  })
+  .catch((error)=>{
+    console.log("Failed to add to Reservation: "+error);
+  });
+  //adds reference to other collections
+  await db.collection("Garage").update({
+    Reservations: firebase.firestore.FieldValue.arrayUnion("Reservations/" + reservationID)
+  })
+  .catch((error)=>{
+    console.log("Failed to sync reservation list on Garage: "+error);
+  });
+  await db.collection("Customer").update({
+    Reservations: firebase.firestore.FieldValue.arrayUnion("Reservations/" + reservationID)
+  })
+  .catch((error)=>{
+    console.log("Failed to sync reservation list on Customer: "+error);
+  });
+}
+
+/**
+ * this method is used to call addReservation()
+ * this particalur method makes status FALSE when calling the addReservation()
+ * @param {*} GarageRef 
+ * @param {*} ParkingRef 
+ * @param {*} VehicleRef 
+ * @param {*} PaymentRef 
+ */
+function quickAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
+  //variables
+  var status=false;
+  //call addReservation()
+  addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,status);
+}
+
+/**
+ * this method is used to call addReservation()
+ * this particular method makes status TRUE when calling the addReservation()
+ * @param {*} GarageRef 
+ * @param {*} ParkingRef 
+ * @param {*} VehicleRef 
+ * @param {*} PaymentRef 
+ */
+function standardAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
+  //variables
+  var status=true;
+  //call addReservation()
+  addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,status);
+}
