@@ -203,3 +203,21 @@ function standardAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
   //call addReservation()
   addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,status);
 }
+
+/**
+ * this is to change the status of a reservation
+ * @param {*} ReservationRef 
+ * @param {*} StatusValue 
+ */
+async function confirmReservation(ReservationRef,StatusValue){
+  //links database
+  const user = firebase.auth().currentUser;
+  const db = firebase.firestore();
+  //change status value
+  await db.collection("Reservation").doc(ReservationRef).update({
+    Status: StatusValue
+  })
+  .catch((error)=>{
+    console.log("Failed to update status in Reservation: "+error);
+  });
+}
