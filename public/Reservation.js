@@ -102,10 +102,12 @@ async function getStringFromReservation(coll, reference) {
  * @param {*} GarageRef 
  * @param {*} ParkingRef 
  * @param {*} VehicleRef 
- * @param {*} PaymentRef 
+ * @param {*} PaymentRef
+ * @param {*} EndTime
+ * @param {*} StartTime
  * @param {*} StatusRef 
  */
-async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StatusRef){
+async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTime,EndTime,StatusRef){
   //links database
   const user = firebase.auth().currentUser;
   const db = firebase.firestore();
@@ -120,22 +122,8 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StatusR
     .catch((error)=>{
         console.log("Failed to find customer doc: "+error);
     });
-  await db.collection("Garage").doc(GarageRef)
-    .get()
-    .then((doc)=>{
-        startTime=doc.data().OpenTime;
-    })
-    .catch((error)=>{
-        console.log("Failed to find Garage doc: "+error);
-    });
-  await db.collection("Garage").doc(GarageRef)
-    .get()
-    .then((doc)=>{
-        endTime=doc.data().CloseTime;
-    })
-    .catch((error)=>{
-        console.log("Failed to find Garage doc: "+error);
-    });
+  startTime=StartTime;
+  endTime=EndTime;
   garageID=GarageRef;
   spotID=ParkingRef;
   status=StatusRef;
@@ -148,6 +136,7 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StatusR
     Garage_ID: garageID,
     Payment_ID: paymentMethod,
     Spot_ID: spotID,
+    Start: startTime,
     Status: status,
     Vechile_ID: vechileID
   };
@@ -184,9 +173,23 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StatusR
  */
 function quickAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
   //variables
-  var status=false;
+  var startTime=new Date(),endTime=new Date(),status=false;
+  var tempStart=new Date(),tempEnd=new Date();
+  //adding values to variables
+  var starttimeParts = document.getElementById("").value.split(":");
+  var starthours = parseInt(starttimeParts[0], 10);
+  var startminutes = parseInt(starttimeParts[1], 10);
+  tempStart.setHours(starthours);
+  tempStart.setMinutes(startminutes);
+  startTime=firebase.firestore.Timestamp.fromDate(tempStart);
+  var endtimeParts = document.getElementById("").value.split(":");
+  var endhours = parseInt(endtimeParts[0], 10);
+  var endminutes = parseInt(endtimeParts[1], 10);
+  tempEnd.setHours(endhours);
+  tempEnd.setMinutes(endminutes);
+  endTime=firebase.firestore.Timestamp.fromDate(tempEnd);
   //call addReservation()
-  addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,status);
+  addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,startTime,endTime,status);
 }
 
 /**
@@ -199,9 +202,23 @@ function quickAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
  */
 function standardAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
   //variables
-  var status=true;
+  var startTime=new Date(),endTime=new Date(),status=true;
+  var tempStart=new Date(),tempEnd=new Date();
+  //adding values to variables
+  var starttimeParts = document.getElementById("").value.split(":");
+  var starthours = parseInt(starttimeParts[0], 10);
+  var startminutes = parseInt(starttimeParts[1], 10);
+  tempStart.setHours(starthours);
+  tempStart.setMinutes(startminutes);
+  startTime=firebase.firestore.Timestamp.fromDate(tempStart);
+  var endtimeParts = document.getElementById("").value.split(":");
+  var endhours = parseInt(endtimeParts[0], 10);
+  var endminutes = parseInt(endtimeParts[1], 10);
+  tempEnd.setHours(endhours);
+  tempEnd.setMinutes(endminutes);
+  endTime=firebase.firestore.Timestamp.fromDate(tempEnd);
   //call addReservation()
-  addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,status);
+  addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,startTime,endTime,status);
 }
 
 /**
@@ -209,13 +226,49 @@ function standardAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
  * @param {*} ReservationRef 
  * @param {*} StatusValue 
  */
-async function confirmReservation(ReservationRef,StatusValue){
+async function reservationStatusValue(ReservationRef,StatusValue){
   //links database
   const user = firebase.auth().currentUser;
   const db = firebase.firestore();
   //change status value
   await db.collection("Reservation").doc(ReservationRef).update({
     Status: StatusValue
+  })
+  .catch((error)=>{
+    console.log("Failed to update status in Reservation: "+error);
+  });
+}
+
+/**
+ * this flips the status value
+ * @param {*} ReservationRef 
+ */
+async function reservationStatusFlip(ReservationRef){
+  //links database
+  const user = firebase.auth().currentUser;
+  const db = firebase.firestore();
+  //variables
+  var reservationStatus;
+  //gets info from db
+  await db.collection("Reservation").doc(ReservationRef).get().then((document)=>{
+    reservationStatus=document.data().Status;
+  })
+  .catch((error)=>{
+    console.log("could not find doc "+ReservationRef+" or status did not exist: "+error);
+  });
+  //flips status
+  if(reservationStatus==true){
+    reservationStatus=false;
+  }
+  else if(reservation==false){
+    reservationStatus=true;
+  }
+  else{
+    console.log("Error has accorded within reservationStatusFlip: "+error);
+  }
+  //change status value
+  await db.collection("Reservation").doc(ReservationRef).update({
+    Status: reservationStatus
   })
   .catch((error)=>{
     console.log("Failed to update status in Reservation: "+error);
