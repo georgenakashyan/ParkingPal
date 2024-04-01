@@ -1,6 +1,7 @@
 var userLocation = [40.78343000, -73.96625000];
 var areaCode = 10024;
 var map;
+var mapCenter;
 var garageList = [];
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -15,16 +16,22 @@ function initMap() {
     ];
     map.setOptions({styles: removedPOI});
     navigator.geolocation.getCurrentPosition(setCoordinates, setDefaultCoordinates);
+    google.maps.event.addListener(map, "dragend", function() {
+        var mapCenter = this.getCenter();
+        var latitude = mapCenter.lat();
+        var longitude = mapCenter.lng();
+    });
     /* fillGarageList(); */
-    /* fillMapMarkers(); */
 }
 
 async function fillGarageList() {
     await firebase.firestore().collection("Garage").where("AreaCode", "==", areaCode).get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            console.log(doc.id + " => " + doc.data());
-            garageList.push({id: doc.id, data: doc.data()});
+            const data = doc.data()
+            console.log(doc.id + " => " + data);
+            garageList.push(data);
+            addGarageMarker(data);
         });
     })
     .catch((error) => {
@@ -57,7 +64,7 @@ function setDefaultCoordinates() {
     userLocation = [40.78343000, -73.96625000];
 }
 
-function fillMapMarkers() {
+function addMapMarker() {
     garageList.forEach((parkingGarage) => {
         var marker = new google.maps.Marker({
             position: parkingGarage.location,
