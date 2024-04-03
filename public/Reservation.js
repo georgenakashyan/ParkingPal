@@ -96,9 +96,7 @@ async function getStringFromReservation(coll, reference) {
 }
 
 /**
- * this method SHOULD NOT be called directly
  * this is the method that will be used to add the reservation to the database
- * it should be called with one of two methods: quickAdd() or standardAdd()
  * @param {*} GarageRef 
  * @param {*} ParkingRef 
  * @param {*} VehicleRef 
@@ -162,7 +160,7 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
 }
 
 /**
- * this is for editting the reservation
+ * this is for editting the reservation doc in the reservation collection
  * @param {*} ReservationRef 
  * @param {*} GarageRef 
  * @param {*} ParkingRef 
@@ -207,5 +205,47 @@ async function editReservation(ReservationRef,GarageRef,ParkingRef,VehicleRef,Pa
   await db.collection("Reservation").doc(reservationID).set(reservation,{merge:true})
   .catch((error)=>{
     console.log("Reservation could not update: "+error);
+  });
+}
+
+/**
+ * this is to delete the reservation doc and references from collections
+ * @param {*} ReservationRef 
+ */
+async function deleteReservation(ReservationRef){
+  //links database
+  const user = firebase.auth().currentUser;
+  const db = firebase.firestore();
+  //variable
+  var garageID,reservationID,customerID;
+  var reservationDB,garageDB,customerDB;
+  //assigning values to variables
+  reservationDB=db.collection("Reservation").doc(reservationID);
+  await reservationDB.get().then((reservationDoc)=>{
+    garageID=reservationDoc.data().Garage_ID.slice(7);
+    customerID=reservationDoc.data().Customer_ID.slice(9);
+  })
+  .catch((error)=>{
+    console.log("Error retrieving info from Reservation: "+error);
+  });
+  garageDB=db.collection("Garage").doc(garageID);
+  customerDB=db.collection("Customer").doc(customerID);
+  //delete references
+  await garageDB.update({
+    Reservations: firebase.firestore.FieldValue.arrayRemove(reservationID)
+  })
+  .catch((error)=>{
+    console.log("Error removing reference from Garage: "+error);
+  });
+  await customerDB.update({
+    Reservations: firebase.firestore.FieldValue.arrayRemove(reservationID)
+  })
+  .catch((error)=>{
+    console.log("Error removing reference from Customer: "+error);
+  });
+  //delete document
+  await reservationDB.delete()
+  .catch((error)=>{
+    console.log("Error deleting doc from Reservation: "+error);
   });
 }
