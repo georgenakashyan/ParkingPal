@@ -160,3 +160,42 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
     console.log("Failed to sync reservation list on Customer: "+error);
   });
 }
+
+async function editReservation(ReservationRef,GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTime,EndTime){
+  //links database
+  const user = firebase.auth().currentUser;
+  const db = firebase.firestore();
+  //variables
+  var customerID,startTime,endTime,garageID,spotID,vechileID,reservationID,paymentMethod;
+  //assigns values to variables
+  await db.collection("Account").doc(user.uid)
+    .get()
+    .then((doc)=>{
+        customerID=doc.data().Profile;
+    })
+    .catch((error)=>{
+        console.log("Failed to find customer doc: "+error);
+    });
+  startTime=StartTime;
+  endTime=EndTime;
+  garageID=GarageRef;
+  spotID=ParkingRef;
+  vechileID=VehicleRef;
+  paymentMethod=PaymentRef;
+  reservationID=ReservationRef;
+  //make document
+  var reservation={
+    Customer_ID: customerID,
+    End: endTime,
+    Garage_ID: garageID,
+    Payment_ID: paymentMethod,
+    Spot_ID: spotID,
+    Start: startTime,
+    Vechile_ID: vechileID
+  };
+  //merge information with doc
+  await db.collection("Reservation").doc(reservationID).set(reservation,{merge:true})
+  .catch((error)=>{
+    console.log("Reservation could not update: "+error);
+  });
+}
