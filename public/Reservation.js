@@ -161,6 +161,16 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
   });
 }
 
+/**
+ * this is for editting the reservation
+ * @param {*} ReservationRef 
+ * @param {*} GarageRef 
+ * @param {*} ParkingRef 
+ * @param {*} VehicleRef 
+ * @param {*} PaymentRef 
+ * @param {*} StartTime 
+ * @param {*} EndTime 
+ */
 async function editReservation(ReservationRef,GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTime,EndTime){
   //links database
   const user = firebase.auth().currentUser;
