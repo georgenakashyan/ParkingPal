@@ -107,12 +107,12 @@ async function getStringFromReservation(coll, reference) {
  * @param {*} StartTime
  * @param {*} StatusRef 
  */
-async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTime,EndTime,StatusRef){
+async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTime,EndTime){
   //links database
   const user = firebase.auth().currentUser;
   const db = firebase.firestore();
   //variables
-  var customerID,startTime,endTime,garageID,spotID,status,vechileID,reservationID,paymentMethod;
+  var customerID,startTime,endTime,garageID,spotID,vechileID,reservationID,paymentMethod;
   //assigning values
   await db.collection("Account").doc(user.uid)
     .get()
@@ -126,7 +126,6 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
   endTime=EndTime;
   garageID=GarageRef;
   spotID=ParkingRef;
-  status=StatusRef;
   vechileID=VehicleRef;
   paymentMethod=PaymentRef;
   //make document
@@ -137,7 +136,6 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
     Payment_ID: paymentMethod,
     Spot_ID: spotID,
     Start: startTime,
-    Status: status,
     Vechile_ID: vechileID
   };
   //adds doc to database
@@ -160,117 +158,5 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
   })
   .catch((error)=>{
     console.log("Failed to sync reservation list on Customer: "+error);
-  });
-}
-
-/**
- * this method is used to call addReservation()
- * this particalur method makes status FALSE when calling the addReservation()
- * @param {*} GarageRef 
- * @param {*} ParkingRef 
- * @param {*} VehicleRef 
- * @param {*} PaymentRef 
- */
-function quickAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
-  //variables
-  var startTime=new Date(),endTime=new Date(),status=false;
-  var tempStart=new Date(),tempEnd=new Date();
-  //adding values to variables
-  var starttimeParts = document.getElementById("").value.split(":");
-  var starthours = parseInt(starttimeParts[0], 10);
-  var startminutes = parseInt(starttimeParts[1], 10);
-  tempStart.setHours(starthours);
-  tempStart.setMinutes(startminutes);
-  startTime=firebase.firestore.Timestamp.fromDate(tempStart);
-  var endtimeParts = document.getElementById("").value.split(":");
-  var endhours = parseInt(endtimeParts[0], 10);
-  var endminutes = parseInt(endtimeParts[1], 10);
-  tempEnd.setHours(endhours);
-  tempEnd.setMinutes(endminutes);
-  endTime=firebase.firestore.Timestamp.fromDate(tempEnd);
-  //call addReservation()
-  addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,startTime,endTime,status);
-}
-
-/**
- * this method is used to call addReservation()
- * this particular method makes status TRUE when calling the addReservation()
- * @param {*} GarageRef 
- * @param {*} ParkingRef 
- * @param {*} VehicleRef 
- * @param {*} PaymentRef 
- */
-function standardAdd(GarageRef,ParkingRef,VehicleRef,PaymentRef){
-  //variables
-  var startTime=new Date(),endTime=new Date(),status=true;
-  var tempStart=new Date(),tempEnd=new Date();
-  //adding values to variables
-  var starttimeParts = document.getElementById("").value.split(":");
-  var starthours = parseInt(starttimeParts[0], 10);
-  var startminutes = parseInt(starttimeParts[1], 10);
-  tempStart.setHours(starthours);
-  tempStart.setMinutes(startminutes);
-  startTime=firebase.firestore.Timestamp.fromDate(tempStart);
-  var endtimeParts = document.getElementById("").value.split(":");
-  var endhours = parseInt(endtimeParts[0], 10);
-  var endminutes = parseInt(endtimeParts[1], 10);
-  tempEnd.setHours(endhours);
-  tempEnd.setMinutes(endminutes);
-  endTime=firebase.firestore.Timestamp.fromDate(tempEnd);
-  //call addReservation()
-  addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,startTime,endTime,status);
-}
-
-/**
- * this is to change the status of a reservation
- * @param {*} ReservationRef 
- * @param {*} StatusValue 
- */
-async function reservationStatusValue(ReservationRef,StatusValue){
-  //links database
-  const user = firebase.auth().currentUser;
-  const db = firebase.firestore();
-  //change status value
-  await db.collection("Reservation").doc(ReservationRef).update({
-    Status: StatusValue
-  })
-  .catch((error)=>{
-    console.log("Failed to update status in Reservation: "+error);
-  });
-}
-
-/**
- * this flips the status value
- * @param {*} ReservationRef 
- */
-async function reservationStatusFlip(ReservationRef){
-  //links database
-  const user = firebase.auth().currentUser;
-  const db = firebase.firestore();
-  //variables
-  var reservationStatus;
-  //gets info from db
-  await db.collection("Reservation").doc(ReservationRef).get().then((document)=>{
-    reservationStatus=document.data().Status;
-  })
-  .catch((error)=>{
-    console.log("could not find doc "+ReservationRef+" or status did not exist: "+error);
-  });
-  //flips status
-  if(reservationStatus==true){
-    reservationStatus=false;
-  }
-  else if(reservation==false){
-    reservationStatus=true;
-  }
-  else{
-    console.log("Error has accorded within reservationStatusFlip: "+error);
-  }
-  //change status value
-  await db.collection("Reservation").doc(ReservationRef).update({
-    Status: reservationStatus
-  })
-  .catch((error)=>{
-    console.log("Failed to update status in Reservation: "+error);
   });
 }
