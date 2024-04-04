@@ -39,21 +39,17 @@ function displayOneGarage(garageRef) {
     newGarage.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400';
     var pName = document.createElement('p');
     var pAddress = document.createElement('p');
-    var pSpots = document.createElement('p');
     const db = firebase.firestore();
     db.collection('Garage').doc(garageRef.slice(7)).get()
     .then((doc) => {
         const data = doc.data();
         const gName = data.Name;
         const gAddress = data.Address + ", " + data.AreaCode;
-        const gSpots = data.Spots.length;
         pName.innerHTML = "Name: " + gName;
         pAddress.innerHTML = "Address: " + gAddress;
-        pSpots.innerHTML = "Total Spots: " + gSpots;
         newGarage.id = doc.id;
         newGarage.appendChild(pName);
         newGarage.appendChild(pAddress);
-        newGarage.appendChild(pSpots);
         newGarage.onclick = function() {showGarageInfoPanel(newGarage.id)};
         garageList.appendChild(newGarage);
         var resList = data.Reservations;
@@ -128,8 +124,27 @@ async function addGarage(){
             OpenTime: openTime,
             CloseTime: closeTime,
             Manager: "Manager/" + managerProfile,
-            Spots: [],
-            Reservations: []
+            Reservations: [],
+            Spots_Normal: {
+                Price: 0,
+                Taken: 0,
+                Total: 0
+            },
+            Spots_EV: {
+                Price: 0,
+                Taken: 0,
+                Total: 0
+            },
+            Spots_Handicap: {
+                Price: 0,
+                Taken: 0,
+                Total: 0
+            },
+            Spots_Moto: {
+                Price: 0,
+                Taken: 0,
+                Total: 0
+            },
         };
         //puts document into database
         await db.collection("Garage").add(garageData)
