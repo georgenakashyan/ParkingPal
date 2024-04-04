@@ -97,6 +97,7 @@ async function getStringFromReservation(coll, reference) {
 
 /**
  * this is the method that will be used to add the reservation to the database
+ * change how spots work
  * @param {*} GarageRef 
  * @param {*} ParkingRef 
  * @param {*} VehicleRef 
@@ -161,6 +162,7 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
 
 /**
  * this is for editting the reservation doc in the reservation collection
+ * change how spots work
  * @param {*} ReservationRef 
  * @param {*} GarageRef 
  * @param {*} ParkingRef 
@@ -210,6 +212,7 @@ async function editReservation(ReservationRef,GarageRef,ParkingRef,VehicleRef,Pa
 
 /**
  * this is to delete the reservation doc and references from collections
+ * change how spots work
  * @param {*} ReservationRef 
  */
 async function deleteReservation(ReservationRef){
