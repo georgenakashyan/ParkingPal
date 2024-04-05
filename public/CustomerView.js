@@ -1,4 +1,4 @@
-var userLocation = [40.78343000, -73.96625000];
+var userLocation = [40.76343000, -73.96625000];
 var areaCode = 10024;
 var map;
 var mapCenter;
@@ -9,7 +9,7 @@ var openInfoWindow = null;
 function initMap() {
     mapCenter = new google.maps.LatLng(40.78343000, -73.96625000);
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 13,
+        zoom: 14,
         streetViewControl: false,
         mapTypeControl: false,
         center: {lat: userLocation[0], lng: userLocation[1]}
@@ -31,17 +31,18 @@ function initMap() {
 
 async function fillGarageList() {
     await firebase.firestore().collection("Garage")
-    .where("Lng", ">", mapCenter.lng() - 0.035)
-    .where("Lng", "<", mapCenter.lng() + 0.035)
-    .where("Lat", ">", mapCenter.lat() - 0.035)
-    .where("Lat", "<", mapCenter.lat() + 0.035)
+    .where("Lng", ">", mapCenter.lng() - 0.03)
+    .where("Lng", "<", mapCenter.lng() + 0.03)
+    .where("Lat", ">", mapCenter.lat() - 0.03)
+    .where("Lat", "<", mapCenter.lat() + 0.03)
     .orderBy("Lng")
     .get()
     .then((querySnapshot) => {
+        deleteGarageCards();
         querySnapshot.forEach((doc) => {
             const data = doc.data()
-            console.log(doc.id + " => " + data);
             garageList.push(data);
+            displayOneGarage(data)
             addMapMarker(data);
         });
     })
@@ -106,4 +107,26 @@ function setMapOnAll(map) {
 function deleteMarkers() {
     setMapOnAll(null);
     markers = [];
+}
+
+function displayOneGarage(data) {
+    let garageList = document.getElementById('GarageList');
+    var newGarage = document.createElement('li');
+    newGarage.className = 'bg-slate-300 p-3 mb-3 rounded-xl hover:bg-slate-400';
+    var pName = document.createElement('p');
+    var pAddress = document.createElement('p');
+    const gName = data.Name;
+    const gAddress = data.Address + ", " + data.AreaCode;
+    pName.innerHTML = "Name: " + gName;
+    pAddress.innerHTML = "Address: " + gAddress;
+    newGarage.id = data.id;
+    newGarage.appendChild(pName);
+    newGarage.appendChild(pAddress);
+    newGarage.onclick = function() {};
+    garageList.appendChild(newGarage);
+}
+
+function deleteGarageCards() {
+    let garageList = document.getElementById('GarageList');
+    garageList.innerHTML = "";
 }
