@@ -1,4 +1,4 @@
-var userLocation = [40.76343000, -73.96625000];
+var userLocation = [40.76343000, -73.98625000];
 var areaCode = 10024;
 var map;
 var mapCenter;
@@ -7,9 +7,9 @@ var markers = [];
 var openInfoWindow = null;
 
 function initMap() {
-    mapCenter = new google.maps.LatLng(40.78343000, -73.96625000);
+    mapCenter = new google.maps.LatLng(userLocation[0], userLocation[1]);
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 14,
+        zoom: 15,
         streetViewControl: false,
         mapTypeControl: false,
         center: {lat: userLocation[0], lng: userLocation[1]}
@@ -31,10 +31,10 @@ function initMap() {
 
 async function fillGarageList() {
     await firebase.firestore().collection("Garage")
-    .where("Lng", ">", mapCenter.lng() - 0.03)
-    .where("Lng", "<", mapCenter.lng() + 0.03)
-    .where("Lat", ">", mapCenter.lat() - 0.03)
-    .where("Lat", "<", mapCenter.lat() + 0.03)
+    .where("Lng", ">", mapCenter.lng() - 0.02)
+    .where("Lng", "<", mapCenter.lng() + 0.02)
+    .where("Lat", ">", mapCenter.lat() - 0.015)
+    .where("Lat", "<", mapCenter.lat() + 0.015)
     .orderBy("Lng")
     .get()
     .then((querySnapshot) => {
@@ -83,7 +83,7 @@ function addMapMarker(garageData) {
         title: garageData.Name
     });
 
-    var infoWindow = new google.maps.InfoWindow({
+    const infoWindow = new google.maps.InfoWindow({
         content: '<div><strong>' + garageData.Name + '</strong><br>' +
                 'Some information about the garage</div>'
     });
