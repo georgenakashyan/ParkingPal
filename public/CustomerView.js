@@ -3,15 +3,16 @@ var map;
 var mapCenter;
 var garageList = [];
 var markers = [];
-var openInfoWindow = null;
+var selectedMarker = null;
 
-function initMap() {
+document.addEventListener("DOMContentLoaded", event => {
     mapCenter = new google.maps.LatLng(startLocation[0], startLocation[1]);
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 15,
         streetViewControl: false,
         mapTypeControl: false,
-        center: mapCenter
+        center: mapCenter,
+        mapId: "c6bd309a43d6680f"
     });
     removedPOI = [
         {featureType: "poi.business", stylers: [{ visibility: "off" }],},
@@ -26,7 +27,7 @@ function initMap() {
         await fillGarageList();
     });
     fillGarageList();
-}
+});
 
 async function fillGarageList() {
     await firebase.firestore().collection("Garage")
@@ -38,10 +39,10 @@ async function fillGarageList() {
     .get()
     .then((querySnapshot) => {
         deleteGarageCards();
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(async (doc) => {
             const data = doc.data()
             garageList.push(data);
-            addMapMarker(data, doc.id);
+            await addMapMarker(data, doc.id);
         });
     })
     .catch((error) => {
@@ -60,23 +61,18 @@ async function setCoordinates(position) {
     await fillGarageList();
 }
 
-function addMapMarker(garageData, garageID) {
-    var marker = new google.maps.Marker({
+async function addMapMarker(garageData, garageID) {
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    var marker = new AdvancedMarkerElement({
         position: new google.maps.LatLng(garageData.Lat, garageData.Lng),
         map: map,
         title: garageData.Name
     });
-
-    const infoWindow = new google.maps.InfoWindow({
-        content: '<div><strong>' + garageData.Name + '</strong><br>' +
-                'Some information about the garage</div>'
-    });
-
     marker.addListener('click', function() {
-        selectGarageMarker(marker, infoWindow);
+        selectGarageMarker(marker);
         selectGarageCard(garageID);
     });
-    displayOneGarage(garageData, garageID, marker, infoWindow);
+    displayOneGarage(garageData, garageID, marker);
     markers.push(marker);
 }
 
@@ -91,7 +87,7 @@ function deleteMarkers() {
     markers = [];
 }
 
-function displayOneGarage(data, garageID, marker, infoWindow) {
+function displayOneGarage(data, garageID, marker) {
     let garageList = document.getElementById('GarageList');
     var newGarage = document.createElement('li');
     newGarage.className = 'bg-slate-300 p-3 mb-3 rounded-xl hover:bg-slate-400';
@@ -105,7 +101,7 @@ function displayOneGarage(data, garageID, marker, infoWindow) {
     newGarage.appendChild(pName);
     newGarage.appendChild(pAddress);
     newGarage.onclick = function() {
-        selectGarageMarker(marker, infoWindow);
+        selectGarageMarker(marker);
         selectGarageCard(garageID);
     };
     garageList.appendChild(newGarage);
@@ -127,12 +123,20 @@ function selectGarageCard(garageID) {
     card.classList.add("bg-black");
 }
 
-function selectGarageMarker(marker, infoWindow) {
-    if (openInfoWindow != null) {
-        openInfoWindow.close();
+async function selectGarageMarker(marker) {
+    const { PinElement } = await google.maps.importLibrary("marker");
+    var smallPin = new PinElement({
+        scale: 1.0,
+    });
+    var largePin = new PinElement({
+        scale: 1.5,
+    });
+    if (selectedMarker != null) {
+        selectedMarker.content = smallPin.element;
     }
-    openInfoWindow = infoWindow;
-    infoWindow.open(map, marker);
+    marker.content = largePin.element;
+    selectedMarker = marker;
+    map.panTo(selectedMarker.position);
 }
 
 function handleBookButton() {
