@@ -106,12 +106,13 @@ async function getStringFromReservation(coll, reference) {
  * @param {*} StartTime
  * @param {*} StatusRef 
  */
-async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTime,EndTime){
+async function addReservation(GarageRef,VehicleRef,PaymentRef,StartTime,EndTime){
   //links database
   const user = firebase.auth().currentUser;
   const db = firebase.firestore();
   //variables
-  var customerID,startTime,endTime,garageID,spotID,vechileID,reservationID,paymentMethod;
+  var customerID,startTime,endTime,garageID,vechileID,reservationID,paymentMethod,spotType;
+  var garageDB;
   //assigning values
   await db.collection("Account").doc(user.uid)
     .get()
@@ -124,16 +125,16 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
   startTime=StartTime;
   endTime=EndTime;
   garageID=GarageRef;
-  spotID=ParkingRef;
   vechileID=VehicleRef;
   paymentMethod=PaymentRef;
+  spotType=document.getElementById("").value;
+  garageDB=await db.collection("Garage").doc(garageID);
   //make document
   var reservation={
     Customer_ID: customerID,
     End: endTime,
     Garage_ID: garageID,
     Payment_ID: paymentMethod,
-    Spot_ID: spotID,
     Start: startTime,
     Vechile_ID: vechileID
   };
@@ -158,6 +159,40 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
   .catch((error)=>{
     console.log("Failed to sync reservation list on Customer: "+error);
   });
+  //reserves the spot for the garage
+  switch(spotType){
+    case "EV":
+      await garageDB.update({
+        Spots_EV:{
+          Taken: firebase.firestore.FieldValue.increment(1)
+        }
+      });
+      break;
+    case "Handicap":
+      await garageDB.update({
+        Spots_Handicap:{
+          Taken: firebase.firststore.FieldValue.increment(1)
+        }
+      });
+      break;
+    case "Moto":
+      await garageDB.update({
+        Spots_Moto:{
+          Taken: firebase.firestore.FieldValue.increment(1)
+        }
+      });
+      break;
+    case "Normal":
+      await garageDB.update({
+        Spots_Normal:{
+          Taken: firebase.firestore.FieldValue.increment(1)
+        }
+      });
+      break;
+    default:
+      console.log("Issue with spot reservation: "+error);
+      break;
+  }
 }
 
 /**
@@ -171,12 +206,12 @@ async function addReservation(GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTi
  * @param {*} StartTime 
  * @param {*} EndTime 
  */
-async function editReservation(ReservationRef,GarageRef,ParkingRef,VehicleRef,PaymentRef,StartTime,EndTime){
+async function editReservation(ReservationRef,GarageRef,VehicleRef,PaymentRef,StartTime,EndTime){
   //links database
   const user = firebase.auth().currentUser;
   const db = firebase.firestore();
   //variables
-  var customerID,startTime,endTime,garageID,spotID,vechileID,reservationID,paymentMethod;
+  var customerID,startTime,endTime,garageID,vechileID,reservationID,paymentMethod;
   //assigns values to variables
   await db.collection("Account").doc(user.uid)
     .get()
@@ -189,7 +224,6 @@ async function editReservation(ReservationRef,GarageRef,ParkingRef,VehicleRef,Pa
   startTime=StartTime;
   endTime=EndTime;
   garageID=GarageRef;
-  spotID=ParkingRef;
   vechileID=VehicleRef;
   paymentMethod=PaymentRef;
   reservationID=ReservationRef;
@@ -199,7 +233,6 @@ async function editReservation(ReservationRef,GarageRef,ParkingRef,VehicleRef,Pa
     End: endTime,
     Garage_ID: garageID,
     Payment_ID: paymentMethod,
-    Spot_ID: spotID,
     Start: startTime,
     Vechile_ID: vechileID
   };
@@ -222,6 +255,7 @@ async function deleteReservation(ReservationRef){
   //variable
   var garageID,reservationID,customerID;
   var reservationDB,garageDB,customerDB;
+  var spotInfo;
   //assigning values to variables
   reservationDB=db.collection("Reservation").doc(reservationID);
   await reservationDB.get().then((reservationDoc)=>{
@@ -233,6 +267,9 @@ async function deleteReservation(ReservationRef){
   });
   garageDB=db.collection("Garage").doc(garageID);
   customerDB=db.collection("Customer").doc(customerID);
+  await reservationDB.get().then((document)=>{
+    spotInfo=document.data().SpotInfo.Type;
+  });
   //delete references
   await garageDB.update({
     Reservations: firebase.firestore.FieldValue.arrayRemove(reservationID)
@@ -251,4 +288,38 @@ async function deleteReservation(ReservationRef){
   .catch((error)=>{
     console.log("Error deleting doc from Reservation: "+error);
   });
+  //reserves the spot for the garage
+  switch(spotInfo){
+    case "EV":
+      await garageDB.update({
+        Spots_EV:{
+          Taken: firebase.firestore.FieldValue.increment(-1)
+        }
+      });
+      break;
+    case "Handicap":
+      await garageDB.update({
+        Spots_Handicap:{
+          Taken: firebase.firststore.FieldValue.increment(-1)
+        }
+      });
+      break;
+    case "Moto":
+      await garageDB.update({
+        Spots_Moto:{
+          Taken: firebase.firestore.FieldValue.increment(-1)
+        }
+      });
+      break;
+    case "Normal":
+      await garageDB.update({
+        Spots_Normal:{
+          Taken: firebase.firestore.FieldValue.increment(-1)
+        }
+      });
+      break;
+    default:
+      console.log("Issue with spot reservation: "+error);
+      break;
+  }
 }
