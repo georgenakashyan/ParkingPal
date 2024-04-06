@@ -109,7 +109,7 @@ function deleteMarkers() {
     markers = [];
 }
 
-function displayOneGarage(data) {
+function displayOneGarage(data, garageID) {
     let garageList = document.getElementById('GarageList');
     var newGarage = document.createElement('li');
     newGarage.className = 'bg-slate-300 p-3 mb-3 rounded-xl hover:bg-slate-400';
@@ -117,12 +117,12 @@ function displayOneGarage(data) {
     var pAddress = document.createElement('p');
     const gName = data.Name;
     const gAddress = data.Address + ", " + data.AreaCode;
-    pName.innerHTML = "Name: " + gName;
-    pAddress.innerHTML = "Address: " + gAddress;
-    newGarage.id = data.id;
+    pName.innerHTML = gName;
+    pAddress.innerHTML = gAddress;
+    newGarage.id = garageID;
     newGarage.appendChild(pName);
     newGarage.appendChild(pAddress);
-    newGarage.onclick = function() {};
+    newGarage.onclick = function() {focusGarage(data.id)};
     garageList.appendChild(newGarage);
 }
 
