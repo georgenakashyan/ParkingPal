@@ -14,11 +14,6 @@ document.addEventListener("DOMContentLoaded", event => {
         center: mapCenter,
         mapId: "c6bd309a43d6680f"
     });
-    removedPOI = [
-        {featureType: "poi.business", stylers: [{ visibility: "off" }],},
-        {elementType: "labels.icon", stylers: [{ visibility: "off" }],}
-    ];
-    map.setOptions({styles: removedPOI});
     navigator.geolocation.getCurrentPosition(setCoordinates);
     google.maps.event.addListener(map, "dragend", async function() {
         mapCenter = await this.getCenter();
@@ -63,10 +58,18 @@ async function setCoordinates(position) {
 
 async function addMapMarker(garageData, garageID) {
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    const { PinElement } = await google.maps.importLibrary("marker");
+    var pin = new PinElement({
+        borderColor: "#ebab59",
+        background: "#ebab59",
+        glyphColor: "#db741f",
+        scale: 1.0,
+    });
     var marker = new AdvancedMarkerElement({
         position: new google.maps.LatLng(garageData.Lat, garageData.Lng),
         map: map,
-        title: garageData.Name
+        title: garageData.Name,
+        content: pin.element
     });
     marker.addListener('click', function() {
         selectGarageMarker(marker);
@@ -115,20 +118,26 @@ function deleteGarageCards() {
 function selectGarageCard(garageID) {
     let garageList = document.getElementById("GarageList");
     for (var child of garageList.children) {
-        child.classList.remove("bg-black");
+        child.classList.remove("bg-slate-400");
         child.classList.add("bg-slate-300");
     }
     let card = document.getElementById(garageID);
     card.classList.remove("bg-slate-300");
-    card.classList.add("bg-black");
+    card.classList.add("bg-slate-400");
 }
 
 async function selectGarageMarker(marker) {
     const { PinElement } = await google.maps.importLibrary("marker");
     var smallPin = new PinElement({
+        borderColor: "#ebab59",
+        background: "#ebab59",
+        glyphColor: "#db741f",
         scale: 1.0,
     });
     var largePin = new PinElement({
+        borderColor: "#ebab59",
+        background: "#ebab59",
+        glyphColor: "#db741f",
         scale: 1.5,
     });
     if (selectedMarker != null) {
