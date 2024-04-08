@@ -257,6 +257,7 @@ async function deleteReservation(ReservationRef){
   var reservationDB,garageDB,customerDB;
   var spotInfo;
   //assigning values to variables
+  reservationID=ReservationRef;
   reservationDB=db.collection("Reservation").doc(reservationID);
   await reservationDB.get().then((reservationDoc)=>{
     garageID=reservationDoc.data().Garage_ID.slice(7);
