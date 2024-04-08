@@ -335,3 +335,59 @@ async function displayEditGarage(garageID){
 
     displayAllReservations(garageID);
 }
+
+function addNormal(){
+    let count = 0;
+    
+    document.getElementById("decreaseBtn").onclick = function() {
+        count -= 1;
+        document.getElementById("number").innerHTML = count;
+    }
+
+    document.getElementById("increaseBtn").onclick = function() {
+        count += 1;
+        document.getElementById("number").innerHTML = count;
+    }
+}
+
+function addEV(){
+    let count = 0;
+    
+    document.getElementById("decreaseBtn2").onclick = function() {
+        count -= 1;
+        document.getElementById("number2").innerHTML = count;
+    }
+
+    document.getElementById("increaseBtn2").onclick = function() {
+        count += 1;
+        document.getElementById("number2").innerHTML = count;
+    }
+}
+
+function addAccess(){
+    let count = 0;
+    
+    document.getElementById("decreaseBtn3").onclick = function() {
+        count -= 1;
+        document.getElementById("number3").innerHTML = count;
+    }
+
+    document.getElementById("increaseBtn3").onclick = function() {
+        count += 1;
+        document.getElementById("number3").innerHTML = count;
+    }
+}
+
+function addMoto(){
+    let count = 0;
+    
+    document.getElementById("decreaseBtn4").onclick = function() {
+        count -= 1;
+        document.getElementById("number4").innerHTML = count;
+    }
+
+    document.getElementById("increaseBtn4").onclick = function() {
+        count += 1;
+        document.getElementById("number4").innerHTML = count;
+    }
+}
