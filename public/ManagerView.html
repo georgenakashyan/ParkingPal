@@ -115,15 +115,90 @@
                     <label id="edit-notification-text" class="notification-text"></label>
                     <button id="editGarageSaveButton" class="long-main-button mt-1 mb-3" style="width:80% !important;">Save</button>
                     <button id="editGarageDeleteButton" class="long-delete-button mb-6" style="width:80% !important;">Delete Garage</button>
+                
                 </div>
                 
                 <div id="spotInfo" class="editGarageTab" style="display:none">
-                    <Label>Number of Spots: </Label><input type="text" id="" placeholder = "Spots Available"><br>
-                    <button class="long-main-button mt-1 mb-6" onclick="addSpots1()" style="width: 80% !important;">Add Spots</button>
-                    <div id= "SpotHolder"class="">
+                    <ul class="bg-PP-blue border-PP-dark-blue pt-3">
+                        <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
+                            <div class="flex ">
+                                <div class="pb-3">
+                                    <label class="text-left">Normal:</label>
+                                </div>
+                                <div class=" pl-12">
+                                    <input type="number" id="Normal-price" placeholder="Input Price" class="text-right w-1/4">
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <button id="decreaseBtn" class="bg-gray-700 text-black py-6 px-4 border-4 border-black rounded-l-md hover:bg-gray-400" onclick="addNormal()"> - </button>
+                                <label id="number" class="bg-gray-700 text-black py-6 px-4 border-4 border-black"> 0 </label>
+                                <button id="increaseBtn" class="bg-gray-700 text-black py-6 px-4 border-4 border-black rounded-r-md hover:bg-gray-400" onclick="addNormal()"> + </button>
+                            </div>
+                        </li>
+                    
+        
+        
+                        <li  class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl ">
+                            <div class="flex">
+                                <div>
+                                    <label class="text-left">EV:</label>
+                                </div>
+                                <div>
+                                    <input id="EV-price" class="" placeholder="input price"></input>
+                                </div>
+                            </div>
+        
+                           
+                            <div class="flex">
+                                <button id = "decreaseBtn2"class="bg-gray-700 text-black py-6 px-4 border-4 border-black rounded-l-md hover:bg-gray-400" onclick="addEV()"> - </button>
+                                <label id = "number2" class="bg-gray-700 text-black py-6 px-4 border-4 border-black"> 0 </label>
+                                <button id = "increaseBtn2" class="bg-gray-700 text-black py-6 px-4 border-4 border-black rounded-r-md hover:bg-gray-400" onclick="addEV()"> + </button>
+                            </div>
+        
+                        </li>
+        
+                        <li  class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl ">
+                            <div class="flex">
+                                <div>
+                                    <p class="text-left">Accesibility:</p>
+                                </div>
+                                <div>
+                                    <input id="Access-price" placeholder="Input Price"></input>
+                                </div>     
+                            </div>
+                            
+                            <div class="flex">
+                                <button id = "decreaseBtn3"class="bg-gray-700 text-black py-6 px-4 border-4 border-black rounded-l-md hover:bg-gray-400" onclick="addAccess()"> - </button>
+                                <label id = "number3" class="bg-gray-700 text-black py-6 px-4 border-4 border-black"> 0 </label>
+                                <button id = "increaseBtn3" class="bg-gray-700 text-black py-6 px-4 border-4 border-black rounded-r-md hover:bg-gray-400" onclick="addAccess()"> + </button>
+                            </div>
+        
+                        </li>
+                        <li  class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl ">
+                            <div class="flex">
+                                <div>
+                                    <label class="text-left">Motorcycle:</label>
+                                </div>
+                                <div>
+                                    <input id="Moto-price" placeholder="Input Price" class=""></input>
+                                </div>          
+                            </div>
+                           
+                            <div class="flex">
+                                <button id = "decreaseBtn4"class="bg-gray-700 text-black py-6 px-4 border-4 border-black rounded-l-md hover:bg-gray-400" onclick="addMoto()"> - </button>
+                                <label id = "number4" class="bg-gray-700 text-black py-6 px-4 border-4 border-black"> 0 </label>
+                                <button id = "increaseBtn4" class="bg-gray-700 text-black py-6 px-4 border-4 border-black rounded-r-md hover:bg-gray-400" onclick="addMoto()"> + </button>
+                            </div>
+        
+                        </li>
+        
+                        <button class="long-main-button ml-3 mt-1 mb-6" onclick="SaveChanges()" style="width: 40% !important;">Save Changes</button>
+                    </ul>
 
 
-                    </div>
+
+
+
                 </div>
 
                 
