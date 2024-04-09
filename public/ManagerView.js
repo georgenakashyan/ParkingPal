@@ -193,12 +193,6 @@ async function deleteGarage(garageID){
                 db.collection("Reservation").doc(doc.id).delete();
             });
         });
-        db.collection("Parking Spot").where("Garage_ID", "==", garageLink).get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                db.collection("Parking Spot").doc(doc.id).delete();
-            });
-        });
         db.collection("Favorite").where("Garage_ID", "==", garageLink).get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
