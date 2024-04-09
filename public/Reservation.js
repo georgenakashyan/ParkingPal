@@ -22,31 +22,31 @@ async function displayReservation(reservationRef) {
     "bg-gray-300 text-left text-gray-700 [&>td]:p-3 hover:bg-gray-400";
   const pName = document.createElement("td");
   const pVehID = document.createElement("td");
-  const pStatus = document.createElement("td");
+  const pVehPlate = document.createElement("td");
   const pStart = document.createElement("td");
   const pEnd = document.createElement("td");
-  const pSpotID = document.createElement("td");
+  const pSpotInfo = document.createElement("td");
   await db.collection("Reservation").doc(reservationRef.slice(12)).get()
   .then(async (doc) => {
     const data = doc.data();
     pName.textContent = await getStringFromReservation("Name", data.Customer_ID);
     pVehID.textContent = await getStringFromReservation("VehicleID", data.Vehicle_ID);
-    pStatus.textContent = await getStringFromReservation("Status", data.Status);
+    pVehPlate.textContent = await getStringFromReservation("VehiclePlate", data.Vehicle_ID);
     var strStart = await getStringFromReservation("Start", data.Start);
     pStart.textContent = timeConvert(strStart);
-    var strEnd = await getStringFromReservation("Start", data.End);
+    var strEnd = await getStringFromReservation("End", data.End);
     pEnd.textContent = timeConvert(strEnd);
-    pSpotID.textContent = await getStringFromReservation("SpotID", data.Spot_ID);
+    pSpotInfo.textContent = await getStringFromReservation("SpotInfo", data.SpotInfo);
   })
   .catch((error) => {
     console.log("Failed to find reservation info doc: " + error);
   });
   newReservation.appendChild(pName);
   newReservation.appendChild(pVehID);
-  newReservation.appendChild(pStatus);
+  newReservation.appendChild(pVehPlate);
   newReservation.appendChild(pStart);
   newReservation.appendChild(pEnd);
-  newReservation.appendChild(pSpotID);
+  newReservation.appendChild(pSpotInfo);
   reservationBody.appendChild(newReservation);
   reservationTable.appendChild(reservationBody);
 }
@@ -54,7 +54,6 @@ async function displayReservation(reservationRef) {
 async function getStringFromReservation(coll, reference) {
   return new Promise(async (resolve, reject) => {
     const db = firebase.firestore();
-    const stringForm = reference;
     switch (coll) {
       case "Start":
         var openTimeDate = reference.toDate();
@@ -66,16 +65,21 @@ async function getStringFromReservation(coll, reference) {
         var closeHours = closeTimeDate.getHours().toString().padStart(2, '0');
         var closeMinutes = closeTimeDate.getMinutes().toString().padStart(2, '0');
         resolve("" + closeHours + ":" + closeMinutes);
-      case "SpotID":
-        await db.collection('Parking Spot').doc(reference.toString().slice(13)).get()
-        .then((doc) => {
-          resolve(doc.data().Name);
-        });
+      case "SpotInfo":
+        resolve(reference.Type);
         break;
       case "VehicleID":
         await db.collection('Vehicle').doc(reference.slice(8)).get()
         .then((doc) => {
-          resolve(doc.data().Make +" "+ doc.data().Model);
+          var data = doc.data();
+          resolve(data.Make + " " + data.Model);
+        });
+        break;
+      case "VehiclePlate":
+        await db.collection('Vehicle').doc(reference.slice(8)).get()
+        .then((doc) => {
+          var data = doc.data();
+          resolve(data.LicensePlate);
         });
         break;
       case "Name":
@@ -88,9 +92,7 @@ async function getStringFromReservation(coll, reference) {
           })
         });
         break;
-      case "Status":
-        true == reference ?  resolve("Confirmed") : resolve("Not Confirmed");
     }
-    reject(stringForm);
+    reject(reference);
   });
 }
