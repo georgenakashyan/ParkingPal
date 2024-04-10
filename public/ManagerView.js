@@ -137,22 +137,18 @@ async function addGarage(){
             Lng: lng,
             Spots_Normal: {
                 Price: 0,
-                Taken: 0,
                 Total: 0
             },
             Spots_EV: {
                 Price: 0,
-                Taken: 0,
                 Total: 0
             },
             Spots_Handicap: {
                 Price: 0,
-                Taken: 0,
                 Total: 0
             },
             Spots_Moto: {
                 Price: 0,
-                Taken: 0,
                 Total: 0
             }
         };
