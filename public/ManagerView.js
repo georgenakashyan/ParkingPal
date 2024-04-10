@@ -1,4 +1,6 @@
 var resCount = 0;
+var currentGarage = "";
+
 document.addEventListener("DOMContentLoaded", event => {
     const auth = firebase.auth();
     auth.onAuthStateChanged((user) => {
@@ -391,4 +393,40 @@ function addMoto(){
         count += 1;
         document.getElementById("number4").innerHTML = count;
     }
+}
+
+async function SaveChanges(garageID){
+    let NormalPrice = document.getElementById("Normal-price");
+    let EvPrice =  document.getElementById("EV-price");
+    let AccessPrice = document.getElementById("Access-price");
+    let MotoPrice = document.getElementById("Moto-price");
+
+
+    const db = firebase.firestore();
+    await db.collection("Garage").doc(currentGarage).get()
+    .then((doc)=>{
+        const data = doc.data();
+        console.log(data);
+        
+        if(!EvPrice.empty){
+            doc.data().Spots_EV[0] = EvPrice;
+
+        } 
+        if(!AccessPrice.empty){
+            doc.data().Spots_Handicap[0] = AccessPrice;
+        }
+        if(!MotoPrice.empty){
+            doc.data().Spots_Moto[0] = MotoPrice;
+        }
+          
+        if(!NormalPrice.empty){
+            doc.data().Spots_Normal[0] = NormalPrice;
+        }
+
+    });
+
+    
+
+
+
 }
