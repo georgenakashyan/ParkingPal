@@ -38,19 +38,22 @@ async function fillGarageList() {
     .then((querySnapshot) => {
         deleteGarageCards();
         querySnapshot.forEach(async (doc) => {
-            //TODO: check date to see if we should add it
+            //TODO: check date to see if we should add the garage
+            //TODO: check price to see if garage should be added (for the spot they specifically want)
             const data = doc.data()
             var openTimeDate = data.OpenTime.toDate();
-            let [sHours, sMins] = document.getElementById("startTime").value.split(":");
+            let [sHours, sMins] = sTime.value.split(":");
             var requestStartTime = parseInt(sHours)*100 + parseInt(sMins);
             var actualStartTime = openTimeDate.getHours()*100 + openTimeDate.getMinutes();
 
             var closeTimeDate = data.CloseTime.toDate();
-            let [eHours, eMins] = document.getElementById("endTime").value.split(":");
+            let [eHours, eMins] = eTime.split(":");
             var requestEndTime = parseInt(eHours)*100 + parseInt(eMins);
             var actualEndTime = closeTimeDate.getHours()*100 + closeTimeDate.getMinutes();
 
-            if(requestStartTime >= actualStartTime && requestEndTime <= actualEndTime) {
+            if(requestStartTime >= actualStartTime 
+            && requestEndTime <= actualEndTime 
+            && requestEndTime > requestStartTime) {
                 garageList.push(data);
                 await addMapMarker(data, doc.id);
             }
@@ -184,12 +187,12 @@ function handleBookButton() {
 
 function setDefaultValues(){
     var today = new Date();
-    document.getElementById("sDate").value = today.toISOString().slice(0, 10);
-    var currTime = "" + today.getHours() + ":" + today.getMinutes();
-    document.getElementById("startTime").defaultValue = currTime;
-    var laterTime = "" + (parseInt(today.getHours()) + 1) + ":" + today.getMinutes();
-    document.getElementById("endTime").defaultValue = laterTime;
-    document.getElementById("price").defaultValue = "7";
+    var currentDate = today.toISOString().substring(0,10);
+    var currentTime = today.toISOString().substring(11,16);
+    document.getElementById("sDate").value = currentDate;
+    document.getElementById("startTime").value = currentTime;
+    document.getElementById("endTime").value = currentTime;
+    document.getElementById("price").value = "10";
 }
 
 async function replaceGarages() {
