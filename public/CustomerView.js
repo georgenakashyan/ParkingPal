@@ -42,7 +42,7 @@ async function fillGarageList() {
             //TODO: check price to see if garage should be added (for the spot they specifically want)
             const data = doc.data()
             var openTimeDate = data.OpenTime.toDate();
-            let [sHours, sMins] = sTime.value.split(":");
+            let [sHours, sMins] = sTime.split(":");
             var requestStartTime = parseInt(sHours)*100 + parseInt(sMins);
             var actualStartTime = openTimeDate.getHours()*100 + openTimeDate.getMinutes();
 
@@ -187,11 +187,13 @@ function handleBookButton() {
 
 function setDefaultValues(){
     var today = new Date();
-    var currentDate = today.toISOString().substring(0,10);
-    var currentTime = today.toISOString().substring(11,16);
+    var isoTime = today.toISOString();
+    var currentDate = isoTime.substring(0,10);
+    var currentTime = isoTime.substring(11,16);
+    var laterTime = "" + (parseInt(isoTime.substring(11,13)) + 1) + isoTime.substring(13,16);
     document.getElementById("sDate").value = currentDate;
     document.getElementById("startTime").value = currentTime;
-    document.getElementById("endTime").value = currentTime;
+    document.getElementById("endTime").value = laterTime;
     document.getElementById("price").value = "10";
 }
 
