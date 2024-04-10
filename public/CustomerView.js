@@ -184,16 +184,12 @@ function handleBookButton() {
 
 function setDefaultValues(){
     var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1;
-    var yyyy = today.getFullYear();
-    if(dd<10) {dd = '0'+dd} 
-    if(mm<10) {mm = '0'+mm} 
-    today = yyyy + '-' + mm + '-' + dd;
-    document.getElementById("sDate").value = today;
-    document.getElementById("startTime").defaultValue = "00:00";
-    document.getElementById("endTime").defaultValue = "23:59";
-    document.getElementById("price").defaultValue = "50";
+    document.getElementById("sDate").value = today.toISOString().slice(0, 10);
+    var currTime = "" + today.getHours() + ":" + today.getMinutes();
+    document.getElementById("startTime").defaultValue = currTime;
+    var laterTime = "" + (parseInt(today.getHours()) + 1) + ":" + today.getMinutes();
+    document.getElementById("endTime").defaultValue = laterTime;
+    document.getElementById("price").defaultValue = "7";
 }
 
 async function replaceGarages() {
