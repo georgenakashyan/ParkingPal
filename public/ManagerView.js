@@ -298,6 +298,7 @@ async function saveGarageChanges(garageID){
  * @param {*} garageID
  */
 async function displayEditGarage(garageID){
+    currentGarage = garageID;
     var name,address,areaCode,openTime,closeTime;
     const db = firebase.firestore();
     await db.collection("Garage").doc(garageID).get()
