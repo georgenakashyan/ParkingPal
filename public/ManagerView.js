@@ -1,5 +1,6 @@
 var resCount = 0;
 var geocoder;
+
 document.addEventListener("DOMContentLoaded", event => {
     geocoder = new google.maps.Geocoder();
     const auth = firebase.auth();
@@ -341,6 +342,10 @@ async function displayEditGarage(garageID){
     var deleteGarageButton = document.getElementById("editGarageDeleteButton")
     deleteGarageButton.onclick = function() {deleteGarage(garageID)};
 
+    var spotSaveButton = document.getElementById("spotSaveButton")
+    spotSaveButton.onclick = function() {updateSpotInfo(garageID)};
+
+    displayParkingSpots(garageID);
     displayAllReservations(garageID);
 }
 
@@ -357,4 +362,94 @@ async function geocodeAddress(addr, areacode) {
         }
     });
     return [lat, lng];
+}
+
+function changeSpotCount(change, spotType) {
+    var count = document.getElementById(spotType + "SpotCount");
+    var newVal = parseInt(count.value) + parseInt(change);
+    count.value = (newVal >= 0 ? newVal : 0)
+}
+
+async function updateSpotInfo(garageID) {
+    var errorField = document.getElementById("spot-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
+
+    let normalSpotPrice = document.getElementById("normalSpotPrice");
+    let evSpotPrice = document.getElementById("evSpotPrice");
+    let handicapSpotPrice = document.getElementById("handicapSpotPrice");
+    let motoSpotPrice = document.getElementById("motoSpotPrice");
+
+    let normalSpotCount = document.getElementById("normalSpotCount");
+    let evSpotCount = document.getElementById("evSpotCount");
+    let handicapSpotCount = document.getElementById("handicapSpotCount");
+    let motoSpotCount = document.getElementById("motoSpotCount");
+
+    if(normalSpotPrice.value == 0 ||
+        evSpotPrice.value == 0 ||
+        handicapSpotPrice.value == 0 ||
+        motoSpotPrice.value == 0) {
+            errorField.innerHTML = "Enter a price for your spots";
+            return;
+    }
+
+    var spotData = {
+        Spots_Normal: {
+            Price: normalSpotPrice.value,
+            Total: normalSpotCount.value
+        },
+        Spots_EV: {
+            Price: evSpotPrice.value,
+            Total: evSpotCount.value
+        },
+        Spots_Handicap: {
+            Price: handicapSpotPrice.value,
+            Total: handicapSpotCount.value
+        },
+        Spots_Moto: {
+            Price: motoSpotPrice.value,
+            Total: motoSpotCount.value
+        }
+    }
+
+    const db = firebase.firestore();
+    await db.collection("Garage").doc(garageID).set(spotData, {merge:true})
+    .then(() => {
+        errorField.innerHTML = "Spots updated successfully";
+        errorField.style.setProperty("color", "green");
+    });
+}
+
+async function displayParkingSpots(garageID) {
+    var errorField = document.getElementById("spot-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
+
+    const db = firebase.firestore();
+    let normalSpotPrice = document.getElementById("normalSpotPrice");
+    let evSpotPrice = document.getElementById("evSpotPrice");
+    let handicapSpotPrice = document.getElementById("handicapSpotPrice");
+    let motoSpotPrice = document.getElementById("motoSpotPrice");
+
+    let normalSpotCount = document.getElementById("normalSpotCount");
+    let evSpotCount = document.getElementById("evSpotCount");
+    let handicapSpotCount = document.getElementById("handicapSpotCount");
+    let motoSpotCount = document.getElementById("motoSpotCount");
+
+    await db.collection("Garage").doc(garageID).get()
+    .then(async (doc) => {
+        const data = doc.data();
+        normalSpotPrice.value = data.Spots_Normal.Price;
+        evSpotPrice.value = data.Spots_EV.Price;
+        handicapSpotPrice.value = data.Spots_Handicap.Price;
+        motoSpotPrice.value = data.Spots_Moto.Price;
+
+        normalSpotCount.value = data.Spots_Normal.Total;
+        evSpotCount.value = data.Spots_EV.Total;
+        handicapSpotCount.value = data.Spots_Handicap.Total;
+        motoSpotCount.value = data.Spots_Moto.Total;
+    })
+    .catch((error) => {
+      console.log("Failed to find parking spot info doc: " + error);
+    });
 }
