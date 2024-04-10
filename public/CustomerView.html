@@ -32,9 +32,41 @@
         </div>
         <div class="p-0 row-span-9 w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
             <div class="bg-PP-blue min-h-full col-span-full row-span-1 grid p-3 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">
+                <div class = "p-2">
+                    <label for="adress">Address:</label>
+                    <input class = "text-black" type="string" id="address" placeholder="Input Adress">
+                  </div>
+
+                <div class = "p-2">
+                    <label for="datepicker"> Start Date:</label>
+                    <input class = "text-black" type="date" id="sDate" placeholder="Select Date">
+                </div>
+
+                <div class = "p-2">
+                    <label for="datepicker">End Date:</label>
+                    <input class = "text-black" type="date" id="eDate" placeholder="Select Date">
+                </div>
+              
+                <div class = "p-2">
+                    <label for="startTime">Start Time:</label>
+                    <input class = "text-black" type="time" id="startTime" name="startTime">
+                </div>
+              
+                <div class = "p-2">
+                    <label for="endTime">End Time:</label>
+                    <input class = "text-black" type="time" id="endTime" name="endTime">
+                </div>
+              
+                <div class = "p-2">
+                    <label for="price">Price: $</label>
+                    <input class = "text-black" type="number" id="price" name="price"placeholder="Enter Price">
+                </div>
+              
+                <button class = "bg-PP-dark-blue" onclick = retrieveGarages()>Search</button>
                 <ul id="GarageList" class="bg-PP-blue min-h-full pt-3">
                 </ul>
             </div>
+            
             <div class="min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full" id="map">Map</div>
         </div>
     </div>
