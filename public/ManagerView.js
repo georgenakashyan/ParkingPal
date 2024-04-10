@@ -1,5 +1,8 @@
 var resCount = 0;
+var geocoder;
+
 document.addEventListener("DOMContentLoaded", event => {
+    geocoder = new google.maps.Geocoder();
     const auth = firebase.auth();
     auth.onAuthStateChanged((user) => {
         const db = firebase.firestore();
@@ -39,21 +42,17 @@ function displayOneGarage(garageRef) {
     newGarage.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400';
     var pName = document.createElement('p');
     var pAddress = document.createElement('p');
-    var pSpots = document.createElement('p');
     const db = firebase.firestore();
     db.collection('Garage').doc(garageRef.slice(7)).get()
     .then((doc) => {
         const data = doc.data();
         const gName = data.Name;
         const gAddress = data.Address + ", " + data.AreaCode;
-        const gSpots = data.Spots.length;
         pName.innerHTML = "Name: " + gName;
         pAddress.innerHTML = "Address: " + gAddress;
-        pSpots.innerHTML = "Total Spots: " + gSpots;
         newGarage.id = doc.id;
         newGarage.appendChild(pName);
         newGarage.appendChild(pAddress);
-        newGarage.appendChild(pSpots);
         newGarage.onclick = function() {showGarageInfoPanel(newGarage.id)};
         garageList.appendChild(newGarage);
         var resList = data.Reservations;
@@ -70,6 +69,7 @@ function displayOneGarage(garageRef) {
  */
 async function addGarage(){
     var errorField = document.getElementById("add-notification-text");
+    errorField.innerHTML = "";
     errorField.style.setProperty("color", "red");
     //links database
     const user = firebase.auth().currentUser;
@@ -80,6 +80,9 @@ async function addGarage(){
     var areaCode = "" + document.getElementById("addGarageAreaCode").value;
     var openDate = new Date();
     var opentimeParts = document.getElementById("addGarageOpenTime").value.split(":");
+    var latlng = await geocodeAddress(address, areaCode);
+    var lat = latlng[0];
+    var lng = latlng[1];
     var openhours = parseInt(opentimeParts[0], 10);
     var openminutes = parseInt(opentimeParts[1], 10);
     openDate.setHours(openhours);
@@ -119,6 +122,8 @@ async function addGarage(){
         errorField.innerHTML = "Manager profile not found, refresh your page";
     } else if (!dbReference.empty) {
         errorField.innerHTML = "Garage already registed and in use";
+    } else if (isNaN(lat) || isNaN(lng)) {
+        errorField.innerHTML = "Invalid address";
     } else {
         errorField.innerHTML = "";
         var garageData={
@@ -128,8 +133,25 @@ async function addGarage(){
             OpenTime: openTime,
             CloseTime: closeTime,
             Manager: "Manager/" + managerProfile,
-            Spots: [],
-            Reservations: []
+            Reservations: [],
+            Lat: lat,
+            Lng: lng,
+            Spots_Normal: {
+                Price: 0,
+                Total: 0
+            },
+            Spots_EV: {
+                Price: 0,
+                Total: 0
+            },
+            Spots_Handicap: {
+                Price: 0,
+                Total: 0
+            },
+            Spots_Moto: {
+                Price: 0,
+                Total: 0
+            }
         };
         //puts document into database
         await db.collection("Garage").add(garageData)
@@ -166,12 +188,6 @@ async function deleteGarage(garageID){
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 db.collection("Reservation").doc(doc.id).delete();
-            });
-        });
-        db.collection("Parking Spot").where("Garage_ID", "==", garageLink).get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                db.collection("Parking Spot").doc(doc.id).delete();
             });
         });
         db.collection("Favorite").where("Garage_ID", "==", garageLink).get()
@@ -239,6 +255,7 @@ function openTab(tabName) {
  */
 async function saveGarageChanges(garageID){
     var errorField = document.getElementById("edit-notification-text");
+    errorField.innerHTML = "";
     errorField.style.setProperty("color", "red");
     var name,address,areaCode,openTime,closeTime;
     const db = firebase.firestore();
@@ -246,6 +263,9 @@ async function saveGarageChanges(garageID){
     name = document.getElementById('editGarageName').value;
     address = document.getElementById('editGarageAddress').value;
     areaCode = document.getElementById('editGarageAreaCode').value;
+    var latlng = await geocodeAddress(address, areaCode);
+    var lat = latlng[0];
+    var lng = latlng[1];
     var openTimeInput = document.getElementById('editGarageOpenTime').value;
     var openTimeHours = openTimeInput.substr(0,2);
     var openTimeMinutes = openTimeInput.substr(3,2);
@@ -264,6 +284,8 @@ async function saveGarageChanges(garageID){
         errorField.innerHTML = "Please enter the garage opening time";
     } else if (inputNullOrEmpty(closeTimeInput)) {
         errorField.innerHTML = "Please enter the garage closing time";
+    } else if (isNaN(lat) || isNaN(lng)) {
+        errorField.innerHTML = "Invalid address";
     } else {
         errorField.style.setProperty("color", "green");
         errorField.innerHTML = "Garage information saved";
@@ -273,6 +295,8 @@ async function saveGarageChanges(garageID){
             AreaCode: areaCode,
             OpenTime: openTime,
             CloseTime: closeTime,
+            Lat: lat,
+            Lng: lng
         };
         await garageRef.set(garageData,{merge:true});
     }
@@ -318,5 +342,114 @@ async function displayEditGarage(garageID){
     var deleteGarageButton = document.getElementById("editGarageDeleteButton")
     deleteGarageButton.onclick = function() {deleteGarage(garageID)};
 
+    var spotSaveButton = document.getElementById("spotSaveButton")
+    spotSaveButton.onclick = function() {updateSpotInfo(garageID)};
+
+    displayParkingSpots(garageID);
     displayAllReservations(garageID);
+}
+
+async function geocodeAddress(addr, areacode) {
+    var address = "" + addr + ", " + areacode 
+    var lat, lng = null;
+    await geocoder.geocode( { 'address': address}, function(results, status) {
+        if (status == 'OK') {
+            var location = results[0].geometry.location;
+            lat = location.lat()
+            lng = location.lng();
+        } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+        }
+    });
+    return [lat, lng];
+}
+
+function changeSpotCount(change, spotType) {
+    var count = document.getElementById(spotType + "SpotCount");
+    var newVal = parseInt(count.value) + parseInt(change);
+    count.value = (newVal >= 0 ? newVal : 0)
+}
+
+async function updateSpotInfo(garageID) {
+    var errorField = document.getElementById("spot-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
+
+    let normalSpotPrice = document.getElementById("normalSpotPrice");
+    let evSpotPrice = document.getElementById("evSpotPrice");
+    let handicapSpotPrice = document.getElementById("handicapSpotPrice");
+    let motoSpotPrice = document.getElementById("motoSpotPrice");
+
+    let normalSpotCount = document.getElementById("normalSpotCount");
+    let evSpotCount = document.getElementById("evSpotCount");
+    let handicapSpotCount = document.getElementById("handicapSpotCount");
+    let motoSpotCount = document.getElementById("motoSpotCount");
+
+    if(normalSpotPrice.value == 0 ||
+        evSpotPrice.value == 0 ||
+        handicapSpotPrice.value == 0 ||
+        motoSpotPrice.value == 0) {
+            errorField.innerHTML = "Enter a price for your spots";
+            return;
+    }
+
+    var spotData = {
+        Spots_Normal: {
+            Price: normalSpotPrice.value,
+            Total: normalSpotCount.value
+        },
+        Spots_EV: {
+            Price: evSpotPrice.value,
+            Total: evSpotCount.value
+        },
+        Spots_Handicap: {
+            Price: handicapSpotPrice.value,
+            Total: handicapSpotCount.value
+        },
+        Spots_Moto: {
+            Price: motoSpotPrice.value,
+            Total: motoSpotCount.value
+        }
+    }
+
+    const db = firebase.firestore();
+    await db.collection("Garage").doc(garageID).set(spotData, {merge:true})
+    .then(() => {
+        errorField.innerHTML = "Spots updated successfully";
+        errorField.style.setProperty("color", "green");
+    });
+}
+
+async function displayParkingSpots(garageID) {
+    var errorField = document.getElementById("spot-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
+
+    const db = firebase.firestore();
+    let normalSpotPrice = document.getElementById("normalSpotPrice");
+    let evSpotPrice = document.getElementById("evSpotPrice");
+    let handicapSpotPrice = document.getElementById("handicapSpotPrice");
+    let motoSpotPrice = document.getElementById("motoSpotPrice");
+
+    let normalSpotCount = document.getElementById("normalSpotCount");
+    let evSpotCount = document.getElementById("evSpotCount");
+    let handicapSpotCount = document.getElementById("handicapSpotCount");
+    let motoSpotCount = document.getElementById("motoSpotCount");
+
+    await db.collection("Garage").doc(garageID).get()
+    .then(async (doc) => {
+        const data = doc.data();
+        normalSpotPrice.value = data.Spots_Normal.Price;
+        evSpotPrice.value = data.Spots_EV.Price;
+        handicapSpotPrice.value = data.Spots_Handicap.Price;
+        motoSpotPrice.value = data.Spots_Moto.Price;
+
+        normalSpotCount.value = data.Spots_Normal.Total;
+        evSpotCount.value = data.Spots_EV.Total;
+        handicapSpotCount.value = data.Spots_Handicap.Total;
+        motoSpotCount.value = data.Spots_Moto.Total;
+    })
+    .catch((error) => {
+      console.log("Failed to find parking spot info doc: " + error);
+    });
 }

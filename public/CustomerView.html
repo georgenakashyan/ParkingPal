@@ -21,16 +21,40 @@
     <title>ParkingPal Home</title>
     <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
 </head>
-<body class="globalFont" onload="initMap()">
-    <div class="bg-PP-dark-blue grid grid-cols-1 grid-rows-10 h-screen w-screen text-white font-semibold">
-        <div class="row-span-1 p-3 flex items-center">
+<body class="globalFont">
+    <div class="bg-slate-400"></div>
+    <div class="bg-PP-dark-blue grid grid-cols-1 grid-rows-10 h-screen w-screen font-semibold">
+        <div class="row-span-1 p-3 flex items-center text-white">
             <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
             <div class="grow mr-4"></div>
-            <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="">Settings</button></div>
+            <div class="object-right mr-4 p-2 text-outline-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="">Settings</button></div>
             <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="logOut()">Log Out</button></div>
         </div>
         <div class="p-0 row-span-9 w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
-            <div class="bg-PP-blue min-h-full col-span-full row-span-1 grid p-7 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">Garage Cards Here
+            <div class="bg-PP-blue min-h-full col-span-full row-span-1 grid p-3 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">
+                <div class="min-h-full">
+                    <div class="p-2">
+                        <label for="datepicker">Date</label>
+                        <input class = "text-black" type="date" id="sDate" placeholder="Select Date">
+                    </div>
+                    <div class="p-2">
+                        <label for="startTime">Start Time</label>
+                        <input class = "text-black" type="time" id="startTime" name="startTime">
+                    </div>
+                  
+                    <div class="p-2">
+                        <label for="endTime">End Time</label>
+                        <input class = "text-black" type="time" id="endTime" name="endTime">
+                    </div>
+                    <div class="p-2">
+                        <label for="price">Price $</label>
+                        <input class = "text-black" type="number" id="price" name="price"placeholder="Enter Price">
+                    </div>
+                    <!--TODO: Add dropdown for available vehicles for customer-->
+                    <button class = "bg-PP-dark-blue" onclick = replaceGarages()>Search</button>
+                    <ul id="GarageList" class="bg-PP-blue pt-3">
+                    </ul>
+                </div>
             </div>
             <div class="min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full" id="map">Map</div>
         </div>

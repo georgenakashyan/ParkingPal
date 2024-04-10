@@ -4,9 +4,9 @@
 
 @layer utilities {
     .striped div:nth-child(even) {
-      @apply bg-gray-400
+        @apply bg-gray-400
     }
-  }
+}
 /* Global affecting */
 
 .globalFont {

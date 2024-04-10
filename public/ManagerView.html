@@ -19,6 +19,7 @@
     <script src="Reservation.js"></script>
     <title>Parking Pal - Manager Home</title>
     <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
+    <script loading=async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEw4uAP37UWhAS8P9RHrx_PrA-08vutk"></script>
     <link rel="stylesheet" href="output.css"/>
 </head>
 <body class="globalFont">
@@ -118,9 +119,59 @@
                 </div>
                 
                 <div id="spotInfo" class="editGarageTab" style="display:none">
-                    <h2>Here will be a list of spots for your garage.</h2>
+                    <ul class="pt-3">
+                        <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
+                            <div class="flex mb-3">
+                                <label class="pb-3 text-left font-semibold">Normal</label>
+                                <div class="grow mr-10"></div>
+                                <input type="number" id="normalSpotPrice" placeholder="Hourly price" class="pl-12 text-center items-center">
+                            </div>
+                            <div class="flex">
+                                <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(-1, 'normal')"> - </button>
+                                <input id="normalSpotCount" class="text-black border-4 grow border-black text-center items-center" placeholder="Number of spots">
+                                <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(1, 'normal')"> + </button>
+                            </div>
+                        </li>
+                        <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
+                            <div class="flex mb-3">
+                                <label class="pb-3 text-left font-semibold">Electric Vehicle</label>
+                                <div class="grow mr-10"></div>
+                                <input type="number" id="evSpotPrice" placeholder="Hourly price" class="pl-12 text-center items-center">
+                            </div>
+                            <div class="flex">
+                                <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(-1, 'ev')"> - </button>
+                                <input id="evSpotCount" class="text-black border-4 grow border-black text-center items-center" placeholder="Number of spots">
+                                <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(1, 'ev')"> + </button>
+                            </div>
+                        </li>
+                        <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
+                            <div class="flex mb-3">
+                                <label class="pb-3 text-left font-semibold">Handicap</label>
+                                <div class="grow mr-10"></div>
+                                <input type="number" id="handicapSpotPrice" placeholder="Hourly price" class="pl-12 text-center items-center">
+                            </div>
+                            <div class="flex">
+                                <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(-1, 'handicap')"> - </button>
+                                <input id="handicapSpotCount" class="text-black border-4 grow border-black text-center items-center" placeholder="Number of spots">
+                                <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(1, 'handicap')"> + </button>
+                            </div>
+                        </li>
+                        <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
+                            <div class="flex mb-3">
+                                <label class="pb-3 text-left font-semibold">Motorcycle</label>
+                                <div class="grow mr-10"></div>
+                                <input type="number" id="motoSpotPrice" placeholder="Hourly price" class="pl-12 text-center items-center">
+                            </div>
+                            <div class="flex">
+                                <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(-1, 'moto')"> - </button>
+                                <input id="motoSpotCount" class="text-black border-4 grow border-black text-center items-center" placeholder="Number of spots">
+                                <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(1, 'moto')"> + </button>
+                            </div>
+                        </li>
+                        <label class="notification-text" id="spot-notification-text"></label>
+                        <button id="spotSaveButton" class="long-main-button mt-1 mb-6">Save Changes</button>
+                    </ul>
                 </div>
-                
                 <div id="reservationList" class="editGarageTab" style="display:none">
                     <div class="h-full flex justify-center items-start pt-1/4 overflow-auto">
                         <table id = "reservationTable" class="w-full rounded-xl">
@@ -128,10 +179,10 @@
                                 <tr class="tracking-wide text-left [&>th]:p-3">
                                     <th>Customer</th>
                                     <th>Vehicle</th>
-                                    <th>Status</th>
+                                    <th>Plate</th>
                                     <th>Starting Time</th>
                                     <th>Ending Time</th>
-                                    <th>Spot-ID</th>
+                                    <th>Spot Type</th>
                                 </tr>
                             </thead>
                             <tbody id = "reservationBody">

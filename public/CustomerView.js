@@ -1,30 +1,62 @@
-var userLocation = [40.78343000, -73.96625000];
-var areaCode = 10024;
+var startLocation = [40.76343000, -73.98625000];
 var map;
+var mapCenter;
 var garageList = [];
-function initMap() {
+var markers = [];
+var selectedMarker = null;
+
+document.addEventListener("DOMContentLoaded", event => {
+    setDefaultValues();
+    mapCenter = new google.maps.LatLng(startLocation[0], startLocation[1]);
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
+        zoom: 15,
         streetViewControl: false,
         mapTypeControl: false,
-        center: {lat: userLocation[0], lng: userLocation[1]}
+        center: mapCenter,
+        mapId: "c6bd309a43d6680f"
     });
-    removedPOI = [
-        {featureType: "poi.business", stylers: [{ visibility: "off" }],},
-        {elementType: "labels.icon", stylers: [{ visibility: "off" }],}
-    ];
-    map.setOptions({styles: removedPOI});
-    navigator.geolocation.getCurrentPosition(setCoordinates, setDefaultCoordinates);
-    /* fillGarageList(); */
-    /* fillMapMarkers(); */
-}
+    navigator.geolocation.getCurrentPosition(setCoordinates);
+    google.maps.event.addListener(map, "dragend", async function() {
+        mapCenter = await this.getCenter();
+        replaceGarages();
+    });
+    fillGarageList();
+});
 
 async function fillGarageList() {
-    await firebase.firestore().collection("Garage").where("AreaCode", "==", areaCode).get()
+    const sDate = document.getElementById("sDate").value;
+    const sTime = document.getElementById("startTime").value;
+    const eTime = document.getElementById("endTime").value;
+    const price = document.getElementById("price").value;
+    await firebase.firestore().collection("Garage")
+    .where("Lng", ">", mapCenter.lng() - 0.02)
+    .where("Lng", "<", mapCenter.lng() + 0.02)
+    .where("Lat", ">", mapCenter.lat() - 0.015)
+    .where("Lat", "<", mapCenter.lat() + 0.015)
+    .orderBy("Lng")
+    .get()
     .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            console.log(doc.id + " => " + doc.data());
-            garageList.push({id: doc.id, data: doc.data()});
+        deleteGarageCards();
+        querySnapshot.forEach(async (doc) => {
+            //TODO: check date to see if we should add the garage
+            //TODO: check price to see if garage should be added (for the spot they specifically want)
+            const data = doc.data()
+            var openTimeDate = data.OpenTime.toDate();
+            let [sHours, sMins] = sTime.value.split(":");
+            var requestStartTime = parseInt(sHours)*100 + parseInt(sMins);
+            var actualStartTime = openTimeDate.getHours()*100 + openTimeDate.getMinutes();
+
+            var closeTimeDate = data.CloseTime.toDate();
+            let [eHours, eMins] = eTime.split(":");
+            var requestEndTime = parseInt(eHours)*100 + parseInt(eMins);
+            var actualEndTime = closeTimeDate.getHours()*100 + closeTimeDate.getMinutes();
+
+            if(requestStartTime >= actualStartTime 
+            && requestEndTime <= actualEndTime 
+            && requestEndTime > requestStartTime) {
+                garageList.push(data);
+                await addMapMarker(data, doc.id);
+            }
         });
     })
     .catch((error) => {
@@ -32,46 +64,139 @@ async function fillGarageList() {
     });
 }
 
-function setLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(setCoordinates, setDefaultCoordinates)
+async function setCoordinates(position) {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    const latlng = new google.maps.LatLng(lat, lng);
+    map.setCenter(latlng);
+    mapCenter = latlng;
+    garageList = [];
+    deleteMarkers();
+    await fillGarageList();
+}
+
+async function addMapMarker(garageData, garageID) {
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    const { PinElement } = await google.maps.importLibrary("marker");
+    var pin = new PinElement({
+        borderColor: "#ebab59",
+        background: "#ebab59",
+        glyphColor: "#db741f",
+        scale: 1.0,
+    });
+    var marker = new AdvancedMarkerElement({
+        position: new google.maps.LatLng(garageData.Lat, garageData.Lng),
+        map: map,
+        title: garageData.Name,
+        content: pin.element
+    });
+    marker.addListener('click', function() {
+        selectGarageMarker(marker);
+        selectGarageCard(garageID);
+    });
+    displayOneGarage(garageData, garageID, marker);
+    markers.push(marker);
+}
+
+function setMapOnAll(map) {
+    for (let i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
     }
+  }
+  
+function deleteMarkers() {
+    setMapOnAll(null);
+    markers = [];
 }
 
-function setCoordinates(position) {
-    userLocation = [position.coords.latitude, position.coords.longitude];
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
-        streetViewControl: false,
-        mapTypeControl: false,
-        center: {lat: userLocation[0], lng: userLocation[1]}
+function displayOneGarage(data, garageID, marker) {
+    let garageList = document.getElementById('GarageList');
+    var newGarage = document.createElement('li');
+    newGarage.className = 'bg-slate-300 p-3 mb-3 rounded-xl hover:bg-slate-400';
+    var pName = document.createElement('p');
+    var pAddress = document.createElement('p');
+    var bookButton = document.createElement('button');
+    bookButton.className = "object-right text-white text- p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange";
+    bookButton.innerHTML = "Book"
+    bookButton.onclick = function() {
+        //TODO: Add reservation method here
+        console.log("Add reservation method here");
+    };
+    var bottomRow = document.createElement('div');
+    var growBox = document.createElement('div');
+    growBox.className = "grow mr-4"
+    bottomRow.className = "flex"
+    bottomRow.appendChild(pAddress);
+    bottomRow.appendChild(growBox);
+    bottomRow.appendChild(bookButton);
+    const gName = data.Name;
+    const gAddress = data.Address + ", " + data.AreaCode;
+    pName.innerHTML = gName;
+    pAddress.innerHTML = gAddress;
+    newGarage.id = garageID;
+    newGarage.appendChild(pName);
+    newGarage.appendChild(bottomRow);
+    newGarage.onclick = function() {
+        selectGarageMarker(marker);
+        selectGarageCard(garageID);
+    };
+    garageList.appendChild(newGarage);
+}
+
+function deleteGarageCards() {
+    let garageList = document.getElementById('GarageList');
+    garageList.innerHTML = "";
+}
+
+function selectGarageCard(garageID) {
+    let garageList = document.getElementById("GarageList");
+    for (var child of garageList.children) {
+        child.classList.remove("bg-slate-400");
+        child.classList.add("bg-slate-300");
+    }
+    let card = document.getElementById(garageID);
+    card.classList.remove("bg-slate-300");
+    card.classList.add("bg-slate-400");
+}
+
+async function selectGarageMarker(marker) {
+    const { PinElement } = await google.maps.importLibrary("marker");
+    var smallPin = new PinElement({
+        borderColor: "#ebab59",
+        background: "#ebab59",
+        glyphColor: "#db741f",
+        scale: 1.0,
     });
-    removedPOI = [
-        {featureType: "poi.business", stylers: [{ visibility: "off" }],},
-        {elementType: "labels.icon", stylers: [{ visibility: "off" }],}
-    ];
-    map.setOptions({styles: removedPOI});
-}
-
-function setDefaultCoordinates() {
-    userLocation = [40.78343000, -73.96625000];
-}
-
-function fillMapMarkers() {
-    garageList.forEach((parkingGarage) => {
-        var marker = new google.maps.Marker({
-            position: parkingGarage.location,
-            map: map,
-            title: parkingGarage.name
-        });
-
-        var infoWindow = new google.maps.InfoWindow({
-            content: '<div><strong>' + parkingGarage.name + '</strong><br>' +
-                    'Some information about the garage</div>'
-        });
-
-        marker.addListener('click', function() {
-            infoWindow.open(map, marker);
-        });
+    var largePin = new PinElement({
+        borderColor: "#ebab59",
+        background: "#ebab59",
+        glyphColor: "#db741f",
+        scale: 1.5,
     });
+    if (selectedMarker != null) {
+        selectedMarker.content = smallPin.element;
+    }
+    marker.content = largePin.element;
+    selectedMarker = marker;
+    map.panTo(selectedMarker.position);
+}
+
+function handleBookButton() {
+
+}
+
+function setDefaultValues(){
+    var today = new Date();
+    var currentDate = today.toISOString().substring(0,10);
+    var currentTime = today.toISOString().substring(11,16);
+    document.getElementById("sDate").value = currentDate;
+    document.getElementById("startTime").value = currentTime;
+    document.getElementById("endTime").value = currentTime;
+    document.getElementById("price").value = "10";
+}
+
+async function replaceGarages() {
+    garageList = [];
+    deleteMarkers();
+    await fillGarageList();
 }
