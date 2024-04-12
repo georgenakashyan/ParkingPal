@@ -124,4 +124,3 @@ function makeAccountEmailAndPassword(email, firstName, lastName, password, retyp
         });
     }
 }
-//TODO Delete other JS and use this one
