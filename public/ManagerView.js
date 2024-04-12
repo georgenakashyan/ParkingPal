@@ -80,7 +80,7 @@ async function addGarage(){
     var areaCode = "" + document.getElementById("addGarageAreaCode").value;
     var openDate = new Date();
     var opentimeParts = document.getElementById("addGarageOpenTime").value.split(":");
-    var latlng = await geocodeAddress(address, areaCode);
+    var latlng = await geocodeAddress(address, areaCode, errorField);
     var lat = latlng[0];
     var lng = latlng[1];
     var openhours = parseInt(opentimeParts[0], 10);
@@ -263,7 +263,7 @@ async function saveGarageChanges(garageID){
     name = document.getElementById('editGarageName').value;
     address = document.getElementById('editGarageAddress').value;
     areaCode = document.getElementById('editGarageAreaCode').value;
-    var latlng = await geocodeAddress(address, areaCode);
+    var latlng = await geocodeAddress(address, areaCode, errorField);
     var lat = latlng[0];
     var lng = latlng[1];
     var openTimeInput = document.getElementById('editGarageOpenTime').value;
@@ -349,7 +349,7 @@ async function displayEditGarage(garageID){
     displayAllReservations(garageID);
 }
 
-async function geocodeAddress(addr, areacode) {
+async function geocodeAddress(addr, areacode, errorField) {
     var address = "" + addr + ", " + areacode 
     var lat, lng = null;
     await geocoder.geocode( { 'address': address}, function(results, status) {
@@ -358,9 +358,12 @@ async function geocodeAddress(addr, areacode) {
             lat = location.lat()
             lng = location.lng();
         } else {
-            alert('Geocode was not successful for the following reason: ' + status);
+            errorField.style.setProperty("color", "red");
+            errorField.innerHTML = "Enter a valid address and area code";
         }
     });
+    errorField.style.setProperty("color", "green");
+    errorField.innerHTML = "";
     return [lat, lng];
 }
 
