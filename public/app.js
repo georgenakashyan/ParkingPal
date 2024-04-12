@@ -129,6 +129,28 @@ function mainPage() {
     });
 }
 
+function settingsPage(){
+    return new Promise((resolve, reject) => {
+        getAccountType()
+        .then((accType) => {
+            switch (accType) {
+                case "Customer":
+                    location.href = "CustomerSettings.html";
+                    break;
+                case "Manager":
+                    location.href = "ManagerSettings.html";
+                    break;
+            }
+            resolve();
+        })
+        .catch((error) => {
+            console.error("Error in mainPage:", error);
+            reject(error);
+        });
+    });
+
+}
+
 function createAccountDocument(user, email, firstName, lastName) {
     var newAccount = {
         Email: email,
