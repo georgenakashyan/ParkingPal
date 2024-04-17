@@ -730,6 +730,14 @@ video {
   width: 16.666667%;
 }
 
+.max-w-6 {
+  max-width: 1.5rem;
+}
+
+.max-w-24 {
+  max-width: 6rem;
+}
+
 .grow {
   flex-grow: 1;
 }
@@ -1010,6 +1018,11 @@ video {
   line-height: 1.75rem;
 }
 
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -1277,6 +1290,10 @@ a:hover {
 
   .md\:w-2\/3 {
     width: 66.666667%;
+  }
+
+  .md\:max-w-40 {
+    max-width: 10rem;
   }
 
   .md\:grid-cols-4 {
