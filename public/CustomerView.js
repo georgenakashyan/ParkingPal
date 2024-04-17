@@ -6,6 +6,10 @@ var markers = [];
 var selectedMarker = null;
 
 document.addEventListener("DOMContentLoaded", event => {
+    const auth = firebase.auth();
+    auth.onAuthStateChanged((user) => {
+        fillVehicleList();
+    });
     setDefaultValues();
     mapCenter = new google.maps.LatLng(startLocation[0], startLocation[1]);
     map = new google.maps.Map(document.getElementById('map'), {
@@ -20,6 +24,7 @@ document.addEventListener("DOMContentLoaded", event => {
         mapCenter = await this.getCenter();
         replaceGarages();
     });
+    document.getElementById("vehicleList").onchange = replaceGarages;
     fillGarageList();
 });
 
@@ -30,9 +35,13 @@ async function fillGarageList() {
     const eTime = document.getElementById("endTime").value;
     const price = document.getElementById("price").value;
     const vehicle = document.querySelector('vehicleList');
-    const selectedVehicle = selectElement.value;
+    /* const selectedVehicle = vehicle.value;
 
-    const vehicleType = await db.collection("Vehicle").doc(selectedVehicle)
+    const vehicleType = "null"
+    await db.collection("Vehicle").doc(selectedVehicle).get()
+    .then((doc) => {
+        vehicleType = doc.data().FuelType;
+    }); */
 
     await db.collection("Garage")
     .where("Lng", ">", mapCenter.lng() - 0.02)
@@ -44,12 +53,14 @@ async function fillGarageList() {
     .then((querySnapshot) => {
         deleteGarageCards();
         querySnapshot.forEach(async (doc) => {
-
-
-
             //TODO: check date to see if we should add the garage
             //TODO: check price to see if garage should be added (for the spot they specifically want)
-            const data = doc.data()
+            const data = doc.data();
+            data.Reservations.forEach(async (reservation) => {
+                await db.collection("Reservation").doc(reservation.slice(12)).get();
+
+            });
+
             var openTimeDate = data.OpenTime.toDate();
             let [sHours, sMins] = sTime.split(":");
             var requestStartTime = parseInt(sHours)*100 + parseInt(sMins);
@@ -235,4 +246,34 @@ async function replaceGarages() {
     garageList = [];
     deleteMarkers();
     await fillGarageList();
+}
+
+async function fillVehicleList() {
+    const db = firebase.firestore();
+    var user = firebase.auth().currentUser;
+    vehicleList = document.getElementById("vehicleList");
+
+    db.collection("Account").doc(user.uid).get()
+    .then((doc) => {
+        const customerRef = doc.data().Profile.slice(9);
+        db.collection("Customer").doc(customerRef).get()
+        .then((doc) => {
+            var vehicles = doc.data().Vehicles;
+            vehicles.forEach((vehicle) => {
+                var newVehicle = document.createElement("option");
+                newVehicle.value = vehicle.slice(8);
+                db.collection("Vehicle").doc(vehicle.slice(8)).get()
+                .then((doc) => {
+                    var data = doc.data();
+                    const vehicleName = "" + data.Year + " " + data.Make + " " + data.Model;
+                    newVehicle.innerHTML = vehicleName;
+                    vehicleList.appendChild(newVehicle);
+                });
+            });
+        })
+    })
+    .catch((error) => {
+        console.log("Failed to get Customer Account");
+        return;
+    });
 }
