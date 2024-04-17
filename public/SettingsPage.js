@@ -2,21 +2,22 @@
  * this adds a vehicle doc to the Vehicle collection
  * adds the doc reference to customer vehicle map
  */
-async function addVehicles(){
+async function addVehicles(FuelTypeRef,LicensePlateRef,MakeRef,ModelRef,SizeRef,YearRef){
     //variables
     var fuelType,licensePlate,make,model,size,year;
     //link db
     const user=firebase.auth().currentUser,db=firebase.firestore();
     //assign specific collection
-    const customerID=db.collection("Account").doc(user).Profile.slice(9);
+    /* error on line 12 fix later */
+    const customerID=await db.collection("Account").doc(user).data().Profile.slice(9);
     const vehicleDB=db.collection("Vehicle"),customerDB=db.collection(customerID);
     //get info from HTML
-    fuelType=document.getElementById("").value;
-    licensePlate=document.getElementById("").value;
-    make=document.getElementById("").value;
-    model=document.getElementById("").value;
-    size=document.getElementById("").value;
-    year=document.getElementById("").value;
+    fuelType=/* document.getElementById("").value */FuelTypeRef;
+    licensePlate=/* document.getElementById("").value */LicensePlateRef;
+    make=/* document.getElementById("").value */MakeRef;
+    model=/* document.getElementById("").value */ModelRef;
+    size=/* document.getElementById("").value */SizeRef;
+    year=/* document.getElementById("").value  */YearRef;
     //catches errors
     if(inputNullorEmpty(fuelType)){
         errorField.innerHTML="Please enter the fuel type";
