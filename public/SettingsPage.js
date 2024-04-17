@@ -61,3 +61,4 @@ async function addVehicles(){
         console.log(errorCode + " --- " + errorMessage);  
     });
 }
+//hour log: 1.5 hours
