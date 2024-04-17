@@ -24,11 +24,17 @@ document.addEventListener("DOMContentLoaded", event => {
 });
 
 async function fillGarageList() {
+    const db = firebase.firestore();
     const sDate = document.getElementById("sDate").value;
     const sTime = document.getElementById("startTime").value;
     const eTime = document.getElementById("endTime").value;
     const price = document.getElementById("price").value;
-    await firebase.firestore().collection("Garage")
+    const vehicle = document.querySelector('vehicleList');
+    const selectedVehicle = selectElement.value;
+
+    const vehicleType = await db.collection("Vehicle").doc(selectedVehicle)
+
+    await db.collection("Garage")
     .where("Lng", ">", mapCenter.lng() - 0.02)
     .where("Lng", "<", mapCenter.lng() + 0.02)
     .where("Lat", ">", mapCenter.lat() - 0.015)
@@ -38,6 +44,9 @@ async function fillGarageList() {
     .then((querySnapshot) => {
         deleteGarageCards();
         querySnapshot.forEach(async (doc) => {
+
+
+
             //TODO: check date to see if we should add the garage
             //TODO: check price to see if garage should be added (for the spot they specifically want)
             const data = doc.data()
