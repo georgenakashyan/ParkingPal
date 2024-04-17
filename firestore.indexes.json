@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "Garage",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "Lng",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "Lat",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
