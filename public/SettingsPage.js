@@ -62,3 +62,20 @@ async function addVehicles(){
     });
 }
 //hour log: 1.5 hours
+
+/**
+ * This will save any changes that have been made to a vehicles information
+ * @param {*} VehicleRef 
+ */
+async function saveVehicleChanges(VehicleRef){
+
+}
+
+/**
+ * this will delete the vehicle document
+ * this will remove the reference from customer
+ * @param {*} VehicleRef 
+ */
+async function deleteVehicle(VehicleRef){
+
+}
