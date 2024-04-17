@@ -644,6 +644,14 @@ video {
   margin-top: 0.25rem;
 }
 
+.mt-5 {
+  margin-top: 1.25rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
 .block {
   display: block;
 }
@@ -716,6 +724,10 @@ video {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-1\/6 {
+  width: 16.666667%;
 }
 
 .grow {
@@ -966,6 +978,10 @@ video {
 
 .pt-3 {
   padding-top: 0.75rem;
+}
+
+.pl-6 {
+  padding-left: 1.5rem;
 }
 
 .text-left {
