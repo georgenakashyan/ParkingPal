@@ -119,8 +119,7 @@ function displayOneGarage(data, garageID, marker) {
     bookButton.className = "object-right text-white text- p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange";
     bookButton.innerHTML = "Book"
     bookButton.onclick = function() {
-        //TODO: Add reservation method here
-        console.log("Add reservation method here");
+        handleBookButton(garageID);
     };
     var bottomRow = document.createElement('div');
     var growBox = document.createElement('div');
@@ -181,8 +180,17 @@ async function selectGarageMarker(marker) {
     map.panTo(selectedMarker.position);
 }
 
-function handleBookButton() {
+function handleBookButton(GarageRef) {
+    console.log("Enter Reservation code here");
+    //TODO: make this reservation code work
+    var SpotType = null; //TODO FIX THIS
+    var SpotPrice = null; //TODO FIX THIS
+    var VehicleRef = null; //TODO FIX THIS
+    var PaymentRef = null; //TODO FIX THIS
+    var StartTime = null; //TODO FIX THIS
+    var EndTime = null; //TODO FIX THIS
 
+    addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, PaymentRef, StartTime, EndTime);
 }
 
 function setDefaultValues(){
@@ -190,7 +198,10 @@ function setDefaultValues(){
     var isoTime = today.toISOString();
     var currentDate = isoTime.substring(0,10);
     var currentTime = isoTime.substring(11,16);
-    var laterTime = "" + (parseInt(isoTime.substring(11,13)) + 1) + isoTime.substring(13,16);
+    const zeroPad = (num, places) => String(num).padStart(places, '0');
+    var laterHours = parseInt(isoTime.substring(11,13)) + 1;
+    var laterMinutes = isoTime.substring(13,16);
+    var laterTime = "" + zeroPad(laterHours, 2) + laterMinutes;
     document.getElementById("sDate").value = currentDate;
     document.getElementById("startTime").value = currentTime;
     document.getElementById("endTime").value = laterTime;
