@@ -183,25 +183,39 @@ async function selectGarageMarker(marker) {
 function handleBookButton(GarageRef) {
     console.log("Enter Reservation code here");
     //TODO: make this reservation code work
-    var SpotType = null; //TODO FIX THIS
-    var SpotPrice = null; //TODO FIX THIS
-    var VehicleRef = null; //TODO FIX THIS
-    var PaymentRef = null; //TODO FIX THIS
-    var StartTime = null; //TODO FIX THIS
-    var EndTime = null; //TODO FIX THIS
+    var SpotType = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
+    var SpotPrice = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
+    var VehicleRef = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
+    var PaymentRef = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
 
-    addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, PaymentRef, StartTime, EndTime);
+    var startTimeInput = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
+    var startTimeHours = startTimeInput.substr(0,2);
+    var startTimeMinutes = startTimeInput.substr(3,2);
+    var startTime = firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,startTimeHours,startTimeMinutes));
+
+    var endTimeInput = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
+    var endTimeHours = endTimeInput.substr(0,2);
+    var endTimeMinutes = endTimeInput.substr(3,2);
+    var endTime = firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,endTimeHours,endTimeMinutes));
+
+    addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, PaymentRef, startTime, endTime);
 }
 
 function setDefaultValues(){
-    var today = new Date();
-    var isoTime = today.toISOString();
-    var currentDate = isoTime.substring(0,10);
-    var currentTime = isoTime.substring(11,16);
     const zeroPad = (num, places) => String(num).padStart(places, '0');
-    var laterHours = parseInt(isoTime.substring(11,13)) + 1;
-    var laterMinutes = isoTime.substring(13,16);
-    var laterTime = "" + zeroPad(laterHours, 2) + laterMinutes;
+    var today = new Date();
+    var currentDate = "" + today.getFullYear() + "-" + (parseInt(today.getMonth()) + 1) + "-" + today.getDate();
+    var currentHours = zeroPad(today.getHours(), 2);
+    var currentMinutes = zeroPad(today.getMinutes(), 2);
+    var currentTime = currentHours + ":" + currentMinutes;
+
+    var laterHours = today.getHours() + 1;
+    if (laterHours > 23) {
+        laterHours = 23;
+        currentMinutes = 59;
+    }
+    var laterTime = "" + zeroPad(laterHours, 2) + ":" + currentMinutes;
+
     document.getElementById("sDate").value = currentDate;
     document.getElementById("startTime").value = currentTime;
     document.getElementById("endTime").value = laterTime;
