@@ -108,7 +108,7 @@ async function getStringFromReservation(coll, reference) {
  * @param {*} StartTime
  * @param {*} EndTime
  */
-async function addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, PaymentRef, StartTime, EndTime){
+async function addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, PaymentRef, Date, StartTime, EndTime){
     //links database
     const user = firebase.auth().currentUser;
     const db = firebase.firestore();
@@ -128,7 +128,7 @@ async function addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, Paymen
     var reservation={
         Customer_ID: customerID,
         End: EndTime,
-        Garage_ID: GarageRef,
+        Garage_ID: "Garage/" + GarageRef,
         Payment_ID: PaymentRef,
         Start: StartTime,
         Vehicle_ID: VehicleRef,
