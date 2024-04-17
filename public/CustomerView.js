@@ -253,16 +253,16 @@ async function fillVehicleList() {
     var user = firebase.auth().currentUser;
     vehicleList = document.getElementById("vehicleList");
 
-    db.collection("Account").doc(user.uid).get()
-    .then((doc) => {
+    await db.collection("Account").doc(user.uid).get()
+    .then(async (doc) => {
         const customerRef = doc.data().Profile.slice(9);
-        db.collection("Customer").doc(customerRef).get()
-        .then((doc) => {
+        await db.collection("Customer").doc(customerRef).get()
+        .then(async (doc) => {
             var vehicles = doc.data().Vehicles;
-            vehicles.forEach((vehicle) => {
+            vehicles.forEach(async (vehicle) => {
                 var newVehicle = document.createElement("option");
                 newVehicle.value = vehicle.slice(8);
-                db.collection("Vehicle").doc(vehicle.slice(8)).get()
+                await db.collection("Vehicle").doc(vehicle.slice(8)).get()
                 .then((doc) => {
                     var data = doc.data();
                     const vehicleName = "" + data.Year + " " + data.Make + " " + data.Model;
