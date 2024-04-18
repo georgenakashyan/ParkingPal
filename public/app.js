@@ -129,15 +129,15 @@ function mainPage() {
     });
 }
 
-function createAccountDocument(user, email, firstName, lastName) {
+async function createAccountDocument(user, email, firstName, lastName) {
     var newAccount = {
         Email: email,
         FirstName: firstName,
         LastName: lastName,
         Profile: "",
-        Type_ID: ""
+        Type_ID: "Unfinished"
     };
-    firebase.firestore().collection("Account").doc(user.uid).set(newAccount)
+    await firebase.firestore().collection("Account").doc(user.uid).set(newAccount)
     .then(() => {
         console.log("document created");
         mainPage();
