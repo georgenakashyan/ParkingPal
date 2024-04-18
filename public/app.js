@@ -104,8 +104,27 @@ function logOut() {
     firebase.auth().signOut();
     location.href = "index.html";
 }
+
 function resetPasswordPage(){
-    location.href = "PasswordReset.html";
+    return new Promise((resolve, reject) => {
+        getAccountType()
+        .then((accType) => {
+            switch (accType) {
+                case "Customer":
+                    location.href = "PasswordReset.html";
+                    break;
+                case "Manager":
+                    location.href = "PasswordReset.html";
+                    break;
+                default:
+            }
+            resolve();
+        })
+        .catch((error) => {
+            console.error("Error in mainPage:", error);
+            reject(error);
+        });
+    });
 }
 function mainPage() {
     return new Promise((resolve, reject) => {
