@@ -83,3 +83,7 @@ async function deleteVehicle(VehicleRef){
 function showSaveButton() {
     document.getElementById('saveButton').classList.remove('hidden');
   }
+
+function SaveChanges() {
+    document.getElementById('saveButton').classList.add('hidden');
+  }
