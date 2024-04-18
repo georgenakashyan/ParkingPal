@@ -104,7 +104,9 @@ function logOut() {
     firebase.auth().signOut();
     location.href = "index.html";
 }
-
+function resetPasswordPage(){
+    location.href = "PasswordReset.html";
+}
 function mainPage() {
     return new Promise((resolve, reject) => {
         getAccountType()
