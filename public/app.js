@@ -105,27 +105,6 @@ function logOut() {
     location.href = "index.html";
 }
 
-function resetPasswordPage(){
-    return new Promise((resolve, reject) => {
-        getAccountType()
-        .then((accType) => {
-            switch (accType) {
-                case "Customer":
-                    location.href = "PasswordReset.html";
-                    break;
-                case "Manager":
-                    location.href = "PasswordReset.html";
-                    break;
-                default:
-            }
-            resolve();
-        })
-        .catch((error) => {
-            console.error("Error in mainPage:", error);
-            reject(error);
-        });
-    });
-}
 function mainPage() {
     return new Promise((resolve, reject) => {
         getAccountType()
