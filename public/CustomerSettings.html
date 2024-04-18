@@ -107,7 +107,44 @@
                 </div>
                 <div class="grow"></div>
             </div>
-            
+
+            <div class="bg-black bg-opacity-50 absolute hidden top-0 w-full h-full justify-center z-10" id="addVehiclePopup">
+                <div class="grow"></div>
+                <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
+                    <div class="flex overflow-hidden text-white pl-2 pr-2">
+                        <div class="grow w-80"></div>
+                        <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('addVehicle')">&times;</button>
+                    </div>
+                    <div >
+                        <form id="addVehicleForm">
+                            <input type="text" id="carMake" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Make"><br>
+                            <input type="text" id="addCarModel" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Model"><br>
+                            <input type="number" id="addCarYear" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Year - (YYYY)"><br>
+                            <input type="text" id="addLicensePlate" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="License Plate"><br>
+                        </form>
+                        <div class="mb-6 mt-6">
+                            <label for="FuelType" class="">Select fuel type:</label>
+                            <select id="FuelType" class=" p-2 border rounded-md border-gray-300 pl-1">
+                                <option value="" disabled selected>Select fuel type</option>
+                                <option value="gas">Gas</option>
+                                <option value="electric">Electric</option>
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                            <label for="vehicleSize" class="">Select vehicle size:</label>
+                            <select id="vehicleSize" value = "none" class=" p-2 border rounded-md border-gray-300 pl-1">
+                                <option value="" disabled selected>Select vehicle size</option>
+                                <option value="gas">Small</option>
+                                <option value="electric">Normal</option>
+                                <option value="electric">Large</option>
+                            </select>
+                        </div>
+                        <label class="notification-text" id="add-notification-text"></label>
+                    <button class="long-main-button mt-1 mb-6" onclick="addVehicle()" style="width: 80% !important;">Add Vehicle</button>
+                    </div>
+                </div>
+                <div class="grow"></div>
+            </div>
             
         
         </div>
