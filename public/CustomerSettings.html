@@ -16,8 +16,9 @@
         <script defer src="/__/firebase/init.js?useEmulator=true"></script>
         <script src="app.js"></script>
         <script src="ManagerView.js"></script>
-        <script src="Reservation.js"></script>
         <script src="SettingsPage.js"></script>
+        <script src="SettingsPage.js"></script>
+
         <title>Parking Pal - Manager Home</title>
         <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
         <script loading=async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEw4uAP37UWhAS8P9RHrx_PrA-08vutk"></script>
@@ -53,9 +54,7 @@
                                 <input type="text" readonly value="davejones@gmail.com" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
                             </div>
                             <div class="flex flex-col mb-8">
-                                <label class="text-white">Password:</label>
-                                <input type="text" readonly value="pass123" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
-                                <button type="button" class="long-main-button mt-2 mb-2 text" onclick="resetPasswordPage()" style="width: 20%  !important; height: 20%"> Reset </button>
+                                <button type="button" class="long-main-button mt-2 mb-1 text" onclick="resetPassword()" style="width: 40%  !important; "> Reset Password </button>
                             </div>
                            
                             <button id="saveButton" type="button" class="hidden long-main-button mt-1 " onclick="saveChanges()" style="width: 40% !important; "> Save </button>
