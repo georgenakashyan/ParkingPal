@@ -24,7 +24,6 @@ function updateUserType(type) {
         });
     }else{
         typeDoc.add({
-            Accessibility: false,
             Account: "Account/" + user.uid,
             Favorites: [],
             Payments: [],
