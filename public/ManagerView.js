@@ -194,12 +194,22 @@ async function deleteGarage(garageID){
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 db.collection("Favorite").doc(doc.id).delete();
+                var customerRef = doc.data().Customer_ID.slice(9);
+                db.collection("Customer").doc(customerRef)
+                .update({
+                    Favorites: firebase.firestore.FieldValue.arrayRemove("Favorite/" + doc.id)
+                });
             });
         });
         db.collection("Review").where("Garage_ID", "==", garageLink).get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 db.collection("Review").doc(doc.id).delete();
+                var customerRef = doc.data().Customer_ID.slice(9);
+                db.collection("Customer").doc(customerRef)
+                .update({
+                    Reviews: firebase.firestore.FieldValue.arrayRemove("Review/" + doc.id)
+                });
             });
         });
         db.collection("Manager").doc(managerID)
