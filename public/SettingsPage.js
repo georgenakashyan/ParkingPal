@@ -1,59 +1,66 @@
+
 /**
  * this adds a vehicle doc to the Vehicle collection
  * adds the doc reference to customer vehicle map
  */
-async function addVehicles(FuelTypeRef,LicensePlateRef,MakeRef,ModelRef,SizeRef,YearRef){
+async function addVehicles(){
     //variables
-    var fuelType,licensePlate,make,model,size,year;
+    var fuelType,handicapBool,licensePlate,make,model,motoBool,year,customerID;
     //link db
-    const user=firebase.auth().currentUser,db=firebase.firestore();
+    const user=firebase.auth().currentUser;
+    const db=firebase.firestore();
     //assign specific collection
-    /* error on line 12 fix later */
-    const customerID=await db.collection("Account").doc(user).data().Profile.slice(9);
-    const vehicleDB=db.collection("Vehicle"),customerDB=db.collection(customerID);
+    const vehicleDB=db.collection("Vehicle");
+    await db.collection("Account").doc(user.uid).get()
+    .then((userDoc)=>{
+        customerID=userDoc.data().Profile.slice(9);
+    })
+    .catch((error)=>{
+        console.log("Failed to find Customer doc: "+error);
+    });
+    const customerDB=db.collection("Customer").doc(customerID);
     //get info from HTML
-    fuelType=/* document.getElementById("").value */FuelTypeRef;
-    licensePlate=/* document.getElementById("").value */LicensePlateRef;
-    make=/* document.getElementById("").value */MakeRef;
-    model=/* document.getElementById("").value */ModelRef;
-    size=/* document.getElementById("").value */SizeRef;
-    year=/* document.getElementById("").value  */YearRef;
+    fuelType=document.getElementById("").value;
+    handicapBool=document.getElementById("").value;
+    licensePlate=document.getElementById("").value;
+    make=document.getElementById("").value;
+    model=document.getElementById("").value;
+    motoBool=document.getElementById("").value;
+    year=document.getElementById("").value;
     //catches errors
-    if(inputNullorEmpty(fuelType)){
+    if(inputNullOrEmpty(fuelType)){
         errorField.innerHTML="Please enter the fuel type";
     }
-    else if(inputNullorEmpty(licensePlate)){
+    else if(inputNullOrEmpty(licensePlate)){
         errorField.innerHTML="Please enter the license plate number";
     }
-    else if(inputNullorEmpty(make)){
+    else if(inputNullOrEmpty(make)){
         errorField.innerHTML="Please enter the make of the car";
     }
-    else if(inputNullorEmpty(model)){
+    else if(inputNullOrEmpty(model)){
         errorField.innerHTML="Please enter the model of the car";
     }
-    else if(inputNullorEmpty(size)){
+    else if(inputNullOrEmpty(size)){
         errorField.innerHTML="Please enter the size of the car";
     }
-    else if(inputNullorEmpty(year)){
+    else if(inputNullOrEmpty(year)){
         errorField.innerHTML="Please enter the make year of the car";
-    }
-    else if(!db.collection("Account").Type_ID.equals("Customer")){
-        errorField.innerHTML="You are not a customer please switch your account before contining";
     }
     //adds it to a doc
     var vehicleDoc={
         FuelType: fuelType,
+        HandiCap: handicapBool,
         LicensePlate: licensePlate,
         Make: make,
         Model: model,
-        Size: size,
+        Moto: motoBool,
         Year: year
     };
     //adds it do database
     await vehicleDB.add(vehicleDoc)
     .then((document)=>{
         customerDB.update({
-            Vehicles: [{vehicle: "Vehicle/"+document.id}]
+            Vehicles: firebase.firestore.FieldValue.arrayUnion("Vehicle/"+document.id)
         });
     })
     .catch((error)=>{
@@ -70,48 +77,49 @@ async function addVehicles(FuelTypeRef,LicensePlateRef,MakeRef,ModelRef,SizeRef,
  */
 async function saveVehicleChanges(VehicleRef){
     //variables
-    var fuelType,licensePlate,make,model,size,year;
+    var fuelType,handicapBool,licensePlate,make,model,motoBool,year;
     //link db
     const user=firebase.auth().currentUser,db=firebase.firestore();
     //assign specific collection
     const vehicleDB=db.collection("Vehicle").doc(VehicleRef);
     //get info from HTML
-    /* will keep Ref var for testing will delete afterwards */
-    fuelType=/* document.getElementById("").value */FuelTypeRef;
-    licensePlate=/* document.getElementById("").value */LicensePlateRef;
-    make=/* document.getElementById("").value */MakeRef;
-    model=/* document.getElementById("").value */ModelRef;
-    size=/* document.getElementById("").value */SizeRef;
-    year=/* document.getElementById("").value  */YearRef;
+    fuelType=document.getElementById("").value;
+    handicapBool=document.getElementById("").value;
+    licensePlate=document.getElementById("").value;
+    make=document.getElementById("").value;
+    model=document.getElementById("").value;
+    motoBool=document.getElementById("").value;
+    year=document.getElementById("").value;
     //catches errors
-    if(inputNullorEmpty(fuelType)){
+    if(inputNullOrEmpty(fuelType)){
         errorField.innerHTML="Please enter the fuel type";
     }
-    else if(inputNullorEmpty(licensePlate)){
+    else if(inputNullOrEmpty(handicapBool)){
+        errorField.innerHTML="Please enter if you are handicaped or not";
+    }
+    else if(inputNullOrEmpty(licensePlate)){
         errorField.innerHTML="Please enter the license plate number";
     }
-    else if(inputNullorEmpty(make)){
+    else if(inputNullOrEmpty(make)){
         errorField.innerHTML="Please enter the make of the car";
     }
-    else if(inputNullorEmpty(model)){
+    else if(inputNullOrEmpty(model)){
         errorField.innerHTML="Please enter the model of the car";
     }
-    else if(inputNullorEmpty(size)){
+    else if(inputNullOrEmpty(motoBool)){
         errorField.innerHTML="Please enter the size of the car";
     }
-    else if(inputNullorEmpty(year)){
+    else if(inputNullOrEmpty(year)){
         errorField.innerHTML="Please enter the make year of the car";
-    }
-    else if(!db.collection("Account").Type_ID.equals("Customer")){
-        errorField.innerHTML="You are not a customer please switch your account before contining";
     }
     //adds it to a doc
     var vehicleDoc={
         FuelType: fuelType,
+        HandiCap: handicapBool,
         LicensePlate: licensePlate,
         Make: make,
         Model: model,
-        Size: size,
+        Moto: motoBool,
         Year: year
     };
     //updates database by merging the docs
@@ -125,28 +133,27 @@ async function saveVehicleChanges(VehicleRef){
  */
 async function deleteVehicle(VehicleRef){
     //variables
-    var customerID,accountType;
+    var customerID;
     var vehicleLink="Vehicle/"+VehicleRef;
     //link db
     const user=firebase.auth().currentUser,db=firebase.firestore();
     //gets customer doc id
-    const userAccount=await db.collection("Account").doc(user);
-    customerID=userAccount.Profile.slice(9);
-    accountType=userAccount.Type_ID;
+    const userAccount=await db.collection("Account").doc(user.uid);
+    await db.collection("Account").doc(user.uid).get()
+    .then((userDoc)=>{
+        customerID=userDoc.data().Profile.slice(9);
+    })
+    .catch((error)=>{
+        console.log("Failed to find Customer doc: "+error);
+    });
     //error check
-    if(!Type_ID.equals("Customer")){
-        errorField.innerHTML="You are not a customer please switch your account before contining";
-    }
-    else if(inputNullorEmpty(VehicleRef)){
+    if(inputNullOrEmpty(VehicleRef)){
         errorField.innerHTML="Ngl I don't even know how the fuck you go here";
-    }
-    else if(inputNullorEmpty(customerID)||inputNullorEmpty(accountType)){
-        errorField.innerHTML="An error has occured while trying to access the database please contact an Admin as soon as possible";
     }
     //deletes from customer array
     await db.collection("Customer").doc(customerID)
     .update({
-        Garages: firebase.firestore.FieldValue.arrayRemove(vehicleLink)
+        Vehicles: firebase.firestore.FieldValue.arrayRemove(vehicleLink)
     });
     //deletes doc from database
     await db.collection("Vehicle").doc(VehicleRef).delete();
