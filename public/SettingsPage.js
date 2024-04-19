@@ -166,3 +166,18 @@ async function deleteVehicle(VehicleRef){
 function SaveChanges() {
     document.getElementById('saveButton').classList.add('hidden');
   }
+
+/**
+ * This will add a payment method and link it to the customer
+ */
+async function addPayment(){
+
+}
+
+/**
+ * this will remove a payment method and delink it from the customer
+ * @param {*} PaymentRef 
+ */
+async function removePayment(PaymentRef){
+
+}
