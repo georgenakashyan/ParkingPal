@@ -69,7 +69,7 @@ async function addVehicles(){
         console.log(errorCode + " --- " + errorMessage);  
     });
 }
-//hour log: 1.5 hours
+//hour log: 5 hours
 
 /**
  * This will save any changes that have been made to a vehicles information
@@ -171,7 +171,60 @@ function SaveChanges() {
  * This will add a payment method and link it to the customer
  */
 async function addPayment(){
-
+    //variables
+    var cvvNum,cardNum,expire=new Date(),customerID,copyCheck=false;
+    //links to database
+    const user=firebase.auth().currentUser,db=firebase.firestore();
+    await db.collection("Account").doc(user.uid).get()
+    .then((userDoc)=>{
+        customerID=userDoc.data().Profile.slice(9);
+    })
+    .catch((error)=>{
+        console.log("Failed to find Customer doc: "+error);
+    });
+    const paymentDB=db.collection("Payment");
+    //gets info from the HTML
+    cvvNum=document.getElementById("").value;
+    cardNum=document.getElementById("").value;
+    expire=document.getElementById("").value;
+    //error check
+    await paymentDB.where('CardNum','==',cardNum).get()
+    .then((noCopyDoc)=>{
+        copyCheck=true;
+    })
+    .catch((error)=>{
+        console.log("There was issue: "+error);
+    })
+    if(inputNullOrEmpty(cvvNum)&&cvvNum>99&&cvvNum<1000){
+        ErrorField.innerHTML("Please enter a valid CVV");
+    }
+    else if(inputNullOrEmpty(cardNum)){
+        ErrorField.innerHTML("Please enter a card number");
+    }
+    else if(inputNullOrEmpty(expire)){
+        ErrorField.innerHTML("Please enter an experation date for your card");
+    }
+    else if(copyCheck){
+        ErrorField.innerHTML("This card is already in your system, please delete the card before continuing");
+    }
+    //makes doc
+    var paymentDoc={
+        CVV: cvvNum,
+        CardNum: cardNum,
+        Expiration: expire
+    };
+    await paymentDB.add(paymentDoc)
+    .then((updateDoc)=>{
+        db.collection("Customer").update({
+            Payments: firebase.firestore.FieldValue.arrayUnion("Payment/"+updateDoc.id)
+        })
+        ,then((error)=>{
+            console.log("There has been an issue: "+error);
+        });
+    })
+    .catch((error)=>{
+        console.log("There has been an issue: "+error);
+    });
 }
 
 /**
