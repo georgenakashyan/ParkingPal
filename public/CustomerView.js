@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", event => {
 
 async function fillGarageList() {
     const db = firebase.firestore();
+    const zeroPad = (num, places) => String(num).padStart(places, '0');
     const sDate = document.getElementById("sDate").value;
     const sTime = document.getElementById("startTime").value;
     const eTime = document.getElementById("endTime").value;
@@ -94,21 +95,16 @@ async function fillGarageList() {
         deleteGarageCards();
         querySnapshot.forEach(async (doc) => {
             const data = doc.data();
-            var options = "";
-            var takenSpots = 0;
             //Calculating taken spots
+            var takenSpots = 0;
             await data.Reservations.forEach(async (reservation) => {
                 await db.collection("Reservation").doc(reservation.slice(12)).get()
                 .then((doc) => {
                     const data = doc.data();
                     const spotType = data.SpotInfo.Type;
                     var startDate = data.Start.toDate();
-                    console.log("Reservation Date: " + startDate.toDateString());
-                    console.log("Wanted Date: " + new Date(sDate).toDateString());
-                    if (spotType === sTypeSelected) {
-                        console.log("Types are the same")
-                    }
-                    if (new Date(sDate).toDateString() === startDate.toDateString()
+                    var formatStartDate = "" + startDate.getFullYear() + "-" + zeroPad(parseInt(startDate.getMonth()) + 1, 2) + "-" + zeroPad(startDate.getDate(), 2);
+                    if (sDate === formatStartDate
                     && spotType === sTypeSelected) {
                         takenSpots += 1;
                     }
@@ -133,23 +129,25 @@ async function fillGarageList() {
                     totalSpots = data.Spots_Moto.Total;
                     break;
             }
-            
+            // Calculating open time
             var openTimeDate = data.OpenTime.toDate();
             let [sHours, sMins] = sTime.split(":");
             var requestStartTime = parseInt(sHours)*100 + parseInt(sMins);
             var actualStartTime = openTimeDate.getHours()*100 + openTimeDate.getMinutes();
-
+            // Calculating close time
             var closeTimeDate = data.CloseTime.toDate();
             let [eHours, eMins] = eTime.split(":");
             var requestEndTime = parseInt(eHours)*100 + parseInt(eMins);
             var actualEndTime = closeTimeDate.getHours()*100 + closeTimeDate.getMinutes();
-            await new Promise(r => setTimeout(r, 1000));
+
+            await new Promise(r => setTimeout(r, 500));
+
             if(requestStartTime >= actualStartTime 
             && requestEndTime <= actualEndTime 
             && requestEndTime > requestStartTime
             && totalSpots > takenSpots) {
                 garageList.push(data);
-                await addMapMarker(data, doc.id, options);
+                await addMapMarker(data, doc.id);
             }
         });
     })
