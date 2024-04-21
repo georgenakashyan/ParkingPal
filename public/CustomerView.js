@@ -7,8 +7,12 @@ var selectedMarker = null;
 
 document.addEventListener("DOMContentLoaded", event => {
     const auth = firebase.auth();
-    auth.onAuthStateChanged((user) => {
-        fillVehicleList();
+    document.getElementById("vehicleList").onchange = replaceGarages;
+    document.getElementById("spotRequest").onchange = replaceGarages;
+    auth.onAuthStateChanged(async (user) => {
+        await fillVehicleList();
+        await new Promise(r => setTimeout(r, 1000));
+        fillGarageList();
     });
     setDefaultValues();
     mapCenter = new google.maps.LatLng(startLocation[0], startLocation[1]);
@@ -24,8 +28,6 @@ document.addEventListener("DOMContentLoaded", event => {
         mapCenter = await this.getCenter();
         replaceGarages();
     });
-    document.getElementById("vehicleList").onchange = replaceGarages;
-    fillGarageList();
 });
 
 async function fillGarageList() {
@@ -34,33 +36,99 @@ async function fillGarageList() {
     const sTime = document.getElementById("startTime").value;
     const eTime = document.getElementById("endTime").value;
     const price = document.getElementById("price").value;
-    const vehicle = document.querySelector('vehicleList');
-    /* const selectedVehicle = vehicle.value;
+    const vehicle = document.getElementById("vehicleList").value;
+    const sTypeSelector = document.getElementById("spotRequest");
+    const sTypeEV = document.getElementById("spotRequestEV");
+    const sTypeHandicap = document.getElementById("spotRequestHandicap");
+    const sTypeMoto = document.getElementById("spotRequestMoto");
+    const sTypeSelected = sTypeSelector.value;
+    sTypeEV.classList.add("hidden");
+    sTypeHandicap.classList.add("hidden");
+    sTypeMoto.classList.add("hidden");
 
-    const vehicleType = "null"
-    await db.collection("Vehicle").doc(selectedVehicle).get()
+    var FuelType = null;
+    var Handicap = false;
+    var Moto = false;
+    await db.collection("Vehicle").doc(vehicle).get()
     .then((doc) => {
-        vehicleType = doc.data().FuelType;
-    }); */
+        const data = doc.data();
+        FuelType = data.FuelType;
+        Handicap = data.Handicap;
+        Moto = data.Moto;
+    })
+    .catch((error) => {
+        console.log("Error finding garage: " + error);
+    });
+
+    if (FuelType == "Electric") {sTypeEV.classList.remove("hidden");}
+    if (Handicap) {sTypeHandicap.classList.remove("hidden");}
+    if (Moto) {sTypeMoto.classList.remove("hidden");}
+    
+    sTypeSelector.value = sTypeSelected;
+
+    var dbSpotName = null;
+    switch (sTypeSelected) {
+        case "Normal":
+            dbSpotName = "Spots_Normal";
+            break;
+        case "EV":
+            dbSpotName = "Spots_EV";
+            break;
+        case "Handicap":
+            dbSpotName = "Spots_Handicap";
+            break;   
+        case "Moto":
+            dbSpotName = "Spots_Moto";
+            break;
+    }
 
     await db.collection("Garage")
     .where("Lng", ">", mapCenter.lng() - 0.02)
     .where("Lng", "<", mapCenter.lng() + 0.02)
     .where("Lat", ">", mapCenter.lat() - 0.015)
     .where("Lat", "<", mapCenter.lat() + 0.015)
+    .where("" + dbSpotName + ".Price", "<=", price)
     .orderBy("Lng")
     .get()
-    .then((querySnapshot) => {
+    .then(async (querySnapshot) => {
         deleteGarageCards();
         querySnapshot.forEach(async (doc) => {
-            //TODO: check date to see if we should add the garage
-            //TODO: check price to see if garage should be added (for the spot they specifically want)
             const data = doc.data();
+            var options = "";
+            var takenSpots = 0;
+            //Calculating taken spots
             data.Reservations.forEach(async (reservation) => {
-                await db.collection("Reservation").doc(reservation.slice(12)).get();
-
+                await db.collection("Reservation").doc(reservation.slice(12)).get()
+                .then((doc) => {
+                    const data = doc.data();
+                    const spotType = data.SpotInfo.Type;
+                    var startDate = data.Start.toDate();
+                    if (new Date(sDate).toDateString() == startDate.toDateString()
+                    && spotType == sTypeSelected) {
+                        takenSpots++;
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error finding reservation: " + error);
+                });
             });
-
+            // Calculating total spots
+            var totalSpots = 0;
+            switch (sTypeSelected) {
+                case "Normal":
+                    totalSpots = data.Spots_Normal.Total;
+                    break;
+                case "EV":
+                    totalSpots = data.Spots_EV.Total;
+                    break;
+                case "Handicap":
+                    totalSpots = data.Spots_Handicap.Total;
+                    break;   
+                case "Moto":
+                    totalSpots = data.Spots_Moto.Total;
+                    break;
+            }
+            
             var openTimeDate = data.OpenTime.toDate();
             let [sHours, sMins] = sTime.split(":");
             var requestStartTime = parseInt(sHours)*100 + parseInt(sMins);
@@ -73,9 +141,10 @@ async function fillGarageList() {
 
             if(requestStartTime >= actualStartTime 
             && requestEndTime <= actualEndTime 
-            && requestEndTime > requestStartTime) {
+            && requestEndTime > requestStartTime
+            && totalSpots > takenSpots) {
                 garageList.push(data);
-                await addMapMarker(data, doc.id);
+                await addMapMarker(data, doc.id, options);
             }
         });
     })
