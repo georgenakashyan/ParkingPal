@@ -83,10 +83,20 @@
                       <input class="text-black w-10 text-center" type="number" id="price" name="price"placeholder="Enter Price">
                     </div>
                     <div class="p-2">
-                      <button class="p-2 text-white text-outline-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange" onclick=replaceGarages()>Search</button>
+                      <label class="text-gray-200 font-bold">Select your vehicle</label>
+                      <select id="vehicleList"></select>
                     </div>
                     <div class="p-2">
-                      <select id="vehicleList"></select>
+                      <label class="text-gray-200 font-bold">Spot Type</label>
+                      <select id="spotRequest">
+                        <option id="spotRequestNormal" value="Normal">Normal</option>
+                        <option class="hidden" id="spotRequestEV" value="EV">Electric Vehicle</option>
+                        <option class="hidden" id="spotRequestHandicap" value="Handicap">Handicap</option>
+                        <option class="hidden" id="spotRequestMoto" value="Moto">Motorcycle</option>
+                      </select>
+                    </div>
+                    <div class="p-2">
+                      <button class="p-2 text-white text-outline-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange" onclick=replaceGarages()>Search</button>
                     </div>
                   </div>
                   <ul id="GarageList" class="bg-PP-blue pt-3"></ul>
