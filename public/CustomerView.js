@@ -97,15 +97,20 @@ async function fillGarageList() {
             var options = "";
             var takenSpots = 0;
             //Calculating taken spots
-            data.Reservations.forEach(async (reservation) => {
+            await data.Reservations.forEach(async (reservation) => {
                 await db.collection("Reservation").doc(reservation.slice(12)).get()
                 .then((doc) => {
                     const data = doc.data();
                     const spotType = data.SpotInfo.Type;
                     var startDate = data.Start.toDate();
-                    if (new Date(sDate).toDateString() == startDate.toDateString()
-                    && spotType == sTypeSelected) {
-                        takenSpots++;
+                    console.log("Reservation Date: " + startDate.toDateString());
+                    console.log("Wanted Date: " + new Date(sDate).toDateString());
+                    if (spotType === sTypeSelected) {
+                        console.log("Types are the same")
+                    }
+                    if (new Date(sDate).toDateString() === startDate.toDateString()
+                    && spotType === sTypeSelected) {
+                        takenSpots += 1;
                     }
                 })
                 .catch((error) => {
@@ -138,7 +143,7 @@ async function fillGarageList() {
             let [eHours, eMins] = eTime.split(":");
             var requestEndTime = parseInt(eHours)*100 + parseInt(eMins);
             var actualEndTime = closeTimeDate.getHours()*100 + closeTimeDate.getMinutes();
-
+            await new Promise(r => setTimeout(r, 1000));
             if(requestStartTime >= actualStartTime 
             && requestEndTime <= actualEndTime 
             && requestEndTime > requestStartTime
