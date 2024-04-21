@@ -268,12 +268,20 @@ async function fillVehicleList() {
                     const vehicleName = "" + data.Year + " " + data.Make + " " + data.Model;
                     newVehicle.innerHTML = vehicleName;
                     vehicleList.appendChild(newVehicle);
+                })
+                .catch((error) => {
+                    console.log("Failed to get vehicle data: " + error);
+                    return;
                 });
             });
         })
+        .catch((error) => {
+            console.log("Failed to get Customer Account");
+            return;
+        });
     })
     .catch((error) => {
-        console.log("Failed to get Customer Account");
+        console.log("Failed to get Account");
         return;
     });
 }
