@@ -1,106 +1,98 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-    <script src="app.js"></script>
-    <script src="CustomerView.js"></script>
-    <script src="Reservation.js"></script>
-    <script loading=async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEw4uAP37UWhAS8P9RHrx_PrA-08vutk"></script>
-    <link rel="stylesheet" href="output.css" />
-    <title>ParkingPal Home</title>
-    <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
+  <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <script src="app.js"></script>
+  <script src="CustomerView.js"></script>
+  <script src="Reservation.js"></script>
+  <script loading=async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEw4uAP37UWhAS8P9RHrx_PrA-08vutk"></script>
+  <link rel="stylesheet" href="output.css" />
+  <title>ParkingPal Home</title>
+  <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
 </head>
+
 <body class="globalFont">
-    <div class="bg-slate-400"></div>
-    <div class="bg-PP-dark-blue grid grid-cols-1 grid-rows-10 h-screen w-screen font-semibold">
-        <div class="row-span-1 p-3 flex items-center text-white">
-          <img src="./images/ParkingPal.png" alt="Parking Pal Logo" class="h-full max-w-24 block ml-auto mr-auto">
-          <div class="-ml-4 p-3 mr-4 text-3xl text-PP-orange select-none">arkingPal</div>
-            <div class="grow mr-4"></div>
-            <div class="object-right mr-4 p-2 text-outline-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="">Settings</button></div>
-            <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="logOut()">Log Out</button></div>
-        </div>
-        <div class="bookReservationTab">
-            <form id="bookReservationForm">
-                <div class="block">
-                  <h3>Account</h3>
-                  <div class="block-content">
-                    <p>This is some information about the account.</p>
-                  </div>
-                </div>
-                <div class="block">
-                  <h3>Details</h3>
-                  <div class="block-content">
-                    <p>Here are some details.</p>
-                  </div>
-                </div>
-                <div class="block">
-                  <h3>Payment Details</h3>
-                  <div class="block-content">
-                    <p>Payment details go here.</p>
-                  </div>
-                </div>
-                <div class="content-right">
-                  <img src="image.jpg" alt="Image" width="200">
-                  <p>Some text about the image.</p>
-                </div>
-                <div class="summary-block">
-                  <h3>Summary</h3>
-                  <p>This is a summary of everything.</p>
-                </div>
-              </form>
-        </div>
-        <div class="p-0 row-span-9 w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
-            <div class="bg-PP-blue min-h-full col-span-full row-span-1 grid p-3 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">
-                <div class="min-h-full">
-                  <div>
-                    <div class="p-2">
-                      <label for="datepicker" class="text-gray-200 font-bold">Date</label>
-                      <input class = "text-black" type="date" id="sDate" placeholder="Select Date">
-                    </div>
-                    <div class="p-2">
-                      <label for="startTime" class="text-gray-200 font-bold">Start Time</label>
-                      <input class = "text-black" type="time" id="startTime" name="startTime">
-                    </div>
-                    <div class="p-2">
-                      <label for="endTime" class="text-gray-200 font-bold">End Time</label>
-                      <input class="text-black" type="time" id="endTime" name="endTime">
-                    </div>
-                    <div class="p-2">
-                      <label for="price" class="text-gray-200 font-bold">Max hourly price</label>
-                      <input class="text-black w-10 text-center" type="number" id="price" name="price"placeholder="Enter Price">
-                    </div>
-                    <div class="p-2">
-                      <label class="text-gray-200 font-bold">Select your vehicle</label>
-                      <select id="vehicleList"></select>
-                    </div>
-                    <div class="p-2">
-                      <label class="text-gray-200 font-bold">Spot Type</label>
-                      <select id="spotRequest">
-                        <option id="spotRequestNormal" value="Normal">Normal</option>
-                        <option class="hidden" id="spotRequestEV" value="EV">Electric Vehicle</option>
-                        <option class="hidden" id="spotRequestHandicap" value="Handicap">Handicap</option>
-                        <option class="hidden" id="spotRequestMoto" value="Moto">Motorcycle</option>
-                      </select>
-                    </div>
-                  </div>
-                  <ul id="GarageList" class="bg-PP-blue pt-3"></ul>
-                </div>
-            </div>
-            <div class="min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full" id="map">Map</div>
-        </div>
+  <div class="bg-slate-400"></div>
+  <div class="bg-PP-dark-blue grid grid-cols-1 grid-rows-10 h-screen w-screen font-semibold">
+    <div class="row-span-1 p-3 flex items-center text-white">
+      <img src="./images/ParkingPal.png" alt="Parking Pal Logo" class="h-full max-w-24 block ml-auto mr-auto">
+      <div class="-ml-4 p-3 mr-4 text-3xl text-PP-orange select-none">arkingPal</div>
+      <div class="grow mr-4"></div>
+      <div
+        class="object-right mr-4 p-2 text-outline-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange">
+        <button onclick="">Settings</button></div>
+      <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button
+          onclick="logOut()">Log Out</button></div>
     </div>
+    <div class="p-0 row-span-9 w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
+      <div
+        class="bg-PP-blue min-h-full col-span-full row-span-1 grid p-3 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">
+        <div class="min-h-full">
+          <div>
+            <div class="p-2">
+              <label for="datepicker" class="text-gray-200 font-bold">Date</label>
+              <input class="text-black" type="date" id="sDate" placeholder="Select Date">
+            </div>
+            <div class="p-2">
+              <label for="startTime" class="text-gray-200 font-bold">Start Time</label>
+              <input class="text-black" type="time" id="startTime" name="startTime">
+            </div>
+            <div class="p-2">
+              <label for="endTime" class="text-gray-200 font-bold">End Time</label>
+              <input class="text-black" type="time" id="endTime" name="endTime">
+            </div>
+            <div class="p-2">
+              <label for="price" class="text-gray-200 font-bold">Max hourly price</label>
+              <input class="text-black w-10 text-center" type="number" id="price" name="price"
+                placeholder="Enter Price">
+            </div>
+            <div class="p-2">
+              <label class="text-gray-200 font-bold">Select your vehicle</label>
+              <select id="vehicleList"></select>
+            </div>
+            <div class="p-2">
+              <label class="text-gray-200 font-bold">Spot Type</label>
+              <select id="spotRequest">
+                <option id="spotRequestNormal" value="Normal">Normal</option>
+                <option class="hidden" id="spotRequestEV" value="EV">Electric Vehicle</option>
+                <option class="hidden" id="spotRequestHandicap" value="Handicap">Handicap</option>
+                <option class="hidden" id="spotRequestMoto" value="Moto">Motorcycle</option>
+              </select>
+            </div>
+          </div>
+          <ul id="GarageList" class="bg-PP-blue pt-3"></ul>
+        </div>
+      </div>
+      <div class="min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full" id="map">Map</div>
+    </div>
+  </div>
+  <div class="bg-black bg-opacity-50 absolute hidden top-0 w-full h-full justify-center z-10" id="editGaragePopup">
+    <div class="grow"></div>
+    <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
+      <div class="flex overflow-hidden bg-PP-blue rounded-md text-white mb-5 pl-2 pr-2">
+        <div class="mr-1 font-bold">
+          <label class="p-2 float-left w-auto border-none block outline-none">Booking for</label>
+        </div>
+        <div class="grow w-fit"></div>
+        <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('editGarage')">&times;</button>
+      </div>
+    </div>
+    <div class="grow"></div>
+  </div>
 </body>
+
 </html>
