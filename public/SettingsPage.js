@@ -232,5 +232,32 @@ async function addPayment(){
  * @param {*} PaymentRef 
  */
 async function removePayment(PaymentRef){
-
+    //variables
+    var customerID;
+    var paymentLink="Payment/"+PaymentRef;
+    //links to database
+    const user=firebase.auth().currentUser,db=firebase.firestore();
+    const paymentDB=db.collection("Payment");
+    //gets customer doc id
+    await db.collection("Account").doc(user.uid).get()
+    .then((userDoc)=>{
+        customerID=userDoc.data().Profile.slice(9);
+    })
+    .catch((error)=>{
+        console.log("Failed to find Customer doc: "+error);
+    });
+    //error check
+    if(inputNullOrEmpty(PaymentRef)){
+        errorField.innerHTML="Ngl I don't even know how the fuck you go here";
+    }
+    //deletes from customer array
+    await db.collection("Customer").doc(customerID)
+    .update({
+        Payment: firebase.firestore.FieldValue.arrayRemove(paymentLink)
+    });
+    //deletes doc from database
+    await paymentDB.doc(PaymentRef).delete();
+    //updates HTML code
+    document.getElementById(PaymentRef).remove();
+    closePopup("");
 }
