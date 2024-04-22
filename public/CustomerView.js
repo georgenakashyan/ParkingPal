@@ -151,7 +151,7 @@ async function fillGarageList() {
             && requestEndTime > requestStartTime
             && totalSpots > takenSpots) {
                 garageList.push(data);
-                await addMapMarker(data, doc.id);
+                await addMapMarker(data, doc.id, sTypeSelected);
             }
         });
     })
@@ -171,7 +171,7 @@ async function setCoordinates(position) {
     await fillGarageList();
 }
 
-async function addMapMarker(garageData, garageID) {
+async function addMapMarker(garageData, garageID, spotType) {
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const { PinElement } = await google.maps.importLibrary("marker");
     var pin = new PinElement({
@@ -190,7 +190,7 @@ async function addMapMarker(garageData, garageID) {
         selectGarageMarker(marker);
         selectGarageCard(garageID);
     });
-    displayOneGarage(garageData, garageID, marker);
+    displayOneGarage(garageData, garageID, marker, spotType);
     markers.push(marker);
 }
 
@@ -205,12 +205,13 @@ function deleteMarkers() {
     markers = [];
 }
 
-function displayOneGarage(data, garageID, marker) {
+function displayOneGarage(data, garageID, marker, spotType) {
     let garageList = document.getElementById('GarageList');
     var newGarage = document.createElement('li');
     newGarage.className = 'bg-slate-300 p-3 mb-3 rounded-xl hover:bg-slate-400';
     var pName = document.createElement('p');
     var pAddress = document.createElement('p');
+    var pPrice = document.createElement('p');
     var bookButton = document.createElement('button');
     bookButton.className = "object-right text-white text- p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange";
     bookButton.innerHTML = "Book"
@@ -221,15 +222,32 @@ function displayOneGarage(data, garageID, marker) {
     var growBox = document.createElement('div');
     growBox.className = "grow mr-4"
     bottomRow.className = "flex"
-    bottomRow.appendChild(pAddress);
+    bottomRow.appendChild(pPrice);
     bottomRow.appendChild(growBox);
     bottomRow.appendChild(bookButton);
     const gName = data.Name;
     const gAddress = data.Address + ", " + data.AreaCode;
+    var gPrice
+    switch (spotType) {
+        case "Normal":
+            gPrice = data.Spots_Normal.Price;
+            break;
+        case "EV":
+            gPrice = data.Spots_EV.Price;
+            break;
+        case "Handicap":
+            gPrice = data.Spots_Handicap.Price;
+            break;   
+        case "Moto":
+            gPrice = data.Spots_Moto.Price;
+            break;
+    }
     pName.innerHTML = gName;
     pAddress.innerHTML = gAddress;
+    pPrice.innerHTML = "$" + gPrice + "/Hour";
     newGarage.id = garageID;
     newGarage.appendChild(pName);
+    newGarage.appendChild(pAddress);
     newGarage.appendChild(bottomRow);
     newGarage.onclick = function() {
         selectGarageMarker(marker);
