@@ -191,3 +191,13 @@ function timeConvert (time) {
     }
     return time.join (''); // return adjusted time or original string
 }
+
+function openPopup(popupID){
+    document.querySelector("#" + popupID + "Popup").classList.remove("hidden");
+    document.querySelector("#" + popupID + "Popup").classList.add("flex");
+}
+function closePopup(popupID){
+    document.querySelector("#" + popupID + "Popup").classList.remove("flex");
+    document.querySelector("#" + popupID + "Popup").classList.add("hidden");
+    document.querySelector("#" + popupID + "Form").reset();
+}
