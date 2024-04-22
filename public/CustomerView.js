@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", event => {
     const auth = firebase.auth();
     document.getElementById("vehicleList").onchange = replaceGarages;
     document.getElementById("spotRequest").onchange = replaceGarages;
+    document.getElementById("sDate").onchange = replaceGarages;
+    document.getElementById("startTime").onchange = replaceGarages;
+    document.getElementById("endTime").onchange = replaceGarages;
+    document.getElementById("price").onchange = replaceGarages;
     auth.onAuthStateChanged(async (user) => {
         await fillVehicleList();
         await new Promise(r => setTimeout(r, 1000));
