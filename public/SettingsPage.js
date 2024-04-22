@@ -261,3 +261,28 @@ async function removePayment(PaymentRef){
     document.getElementById(PaymentRef).remove();
     closePopup("");
 }
+
+/**
+ * adds billing information to database
+ * links to manager doc
+ */
+async function addBilling(){
+
+}
+
+/**
+ * changes billing in database
+ * @param {*} BillingRef 
+ */
+async function saveBillingChanges(BillingRef){
+
+}
+
+/**
+ * checks to see if there is a billing doc
+ * if there is a billing doc it will send it to saveBillingChanges(BillingRef)
+ * if there is no billing doc it will send it to addBilling()
+ */
+async function checkBilling(){
+
+}
