@@ -385,20 +385,20 @@ async function updateSpotInfo(garageID) {
 
     var spotData = {
         Spots_Normal: {
-            Price: normalSpotPrice.value,
-            Total: normalSpotCount.value
+            Price: parseInt(normalSpotPrice.value),
+            Total: parseInt(normalSpotCount.value)
         },
         Spots_EV: {
-            Price: evSpotPrice.value,
-            Total: evSpotCount.value
+            Price: parseInt(evSpotPrice.value),
+            Total: parseInt(evSpotCount.value)
         },
         Spots_Handicap: {
-            Price: handicapSpotPrice.value,
-            Total: handicapSpotCount.value
+            Price: parseInt(handicapSpotPrice.value),
+            Total: parseInt(handicapSpotCount.value)
         },
         Spots_Moto: {
-            Price: motoSpotPrice.value,
-            Total: motoSpotCount.value
+            Price: parseInt(motoSpotPrice.value),
+            Total: parseInt(motoSpotCount.value)
         }
     }
 
