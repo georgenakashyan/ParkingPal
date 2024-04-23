@@ -318,7 +318,38 @@ async function addBilling(ManagerRef){
  * @param {*} BillingRef 
  */
 async function saveBillingChanges(BillingRef){
-
+    //variables
+    var accountNum,address,org,routingNum;
+    //links to database
+    const user=firebase.auth().currentUser,db=firebase.firestore();
+    const billingDB=db.collection("Billing").doc(BillingRef);
+    //gets data from HTML
+    accountNum=document.getElementById("").value;
+    address=document.getElementById("").value;
+    org=document.getElementById("").value;
+    routingNum=document.getElementById("").value;
+    //error checking
+    if(inputNullOrEmpty(accountNum)){
+        ErrorField.innerHTML("Please enter a valid account number");
+    }
+    else if(inputNullOrEmpty(address)){
+        ErrorField.innerHTML("Please enter a valid address");
+    }
+    else if(inputNullOrEmpty(org)){
+        ErrorField.innerHTML("Please enter a valid organization");
+    }
+    else if(inputNullOrEmpty(routingNum)){
+        ErrorField.innerHTML("Please enter a valid routingNum");
+    }
+    //making doc
+    var billingDoc={
+        accountNum: accountNum,
+        Address: address,
+        Organization: org,
+        RoutingNum:routingNum
+    };
+    //merges doc
+    await billingDB.set(billingDoc,{merge:true});
 }
 
 /**
@@ -349,8 +380,8 @@ async function checkBilling(){
     });
     //sends to approate function
     if(inputNullOrEmpty(billingID)){
-       await addBilling(managerID);
-       return;
+        await addBilling(managerID);
+        return;
     }
     else{
         await saveBillingChanges(billingID);
