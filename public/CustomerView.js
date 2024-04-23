@@ -87,6 +87,11 @@ async function fillGarageList() {
             break;
     }
 
+    let [sHours, sMins] = sTime.split(":");
+    var requestStartTime = parseInt(sHours)*100 + parseInt(sMins);
+    let [eHours, eMins] = eTime.split(":");
+    var requestEndTime = parseInt(eHours)*100 + parseInt(eMins);
+
     await db.collection("Garage")
     .where("Lng", ">", mapCenter.lng() - 0.02)
     .where("Lng", "<", mapCenter.lng() + 0.02)
@@ -106,10 +111,15 @@ async function fillGarageList() {
                 .then((doc) => {
                     const data = doc.data();
                     const spotType = data.SpotInfo.Type;
-                    var startDate = data.Start.toDate();
-                    var formatStartDate = "" + startDate.getFullYear() + "-" + zeroPad(parseInt(startDate.getMonth()) + 1, 2) + "-" + zeroPad(startDate.getDate(), 2);
-                    if (sDate === formatStartDate
-                    && spotType === sTypeSelected) {
+                    var resStart = data.Start.toDate();
+                    var resStartDate = "" + resStart.getFullYear() + "-" + zeroPad(parseInt(resStart.getMonth()) + 1, 2) + "-" + zeroPad(resStart.getDate(), 2);
+                    var resStartTime = parseInt(resStart.getHours())*100 + parseInt(resStart.getMinutes());
+                    var resEnd = data.End.toDate();
+                    var resEndTime = parseInt(resEnd.getHours())*100 + parseInt(resEnd.getMinutes());
+
+                    if (sDate === resStartDate && spotType === sTypeSelected
+                    && ((requestStartTime >= resStartTime && requestStartTime <= resEndTime) 
+                    || (requestEndTime >= resStartTime && requestEndTime <= resEndTime))) {
                         takenSpots += 1;
                     }
                 })
@@ -135,13 +145,9 @@ async function fillGarageList() {
             }
             // Calculating open time
             var openTimeDate = data.OpenTime.toDate();
-            let [sHours, sMins] = sTime.split(":");
-            var requestStartTime = parseInt(sHours)*100 + parseInt(sMins);
             var actualStartTime = openTimeDate.getHours()*100 + openTimeDate.getMinutes();
             // Calculating close time
             var closeTimeDate = data.CloseTime.toDate();
-            let [eHours, eMins] = eTime.split(":");
-            var requestEndTime = parseInt(eHours)*100 + parseInt(eMins);
             var actualEndTime = closeTimeDate.getHours()*100 + closeTimeDate.getMinutes();
 
             await new Promise(r => setTimeout(r, 500));
