@@ -215,10 +215,10 @@ async function addPayment(){
     };
     await paymentDB.add(paymentDoc)
     .then((updateDoc)=>{
-        db.collection("Customer").update({
+        db.collection("Customer").doc(customerID).update({
             Payments: firebase.firestore.FieldValue.arrayUnion("Payment/"+updateDoc.id)
         })
-        ,then((error)=>{
+        .then((error)=>{
             console.log("There has been an issue: "+error);
         });
     })
@@ -265,9 +265,52 @@ async function removePayment(PaymentRef){
 /**
  * adds billing information to database
  * links to manager doc
+ * @param {*} ManagerRef
  */
-async function addBilling(){
-
+async function addBilling(ManagerRef){
+    //variables
+    var accountNum,address,org,routingNum;
+    //links database
+    const user=firebase.auth().currentUser,db=firebase.firestore();
+    const billingDB=db.collection("Billing"),managerDB=db.collection("Manager").doc(ManagerRef);
+    //gets data from HTML
+    accountNum=document.getElementById("").value;
+    address=document.getElementById("").value;
+    org=document.getElementById("").value;
+    routingNum=document.getElementById("").value;
+    //error checking
+    if(inputNullOrEmpty(accountNum)){
+        ErrorField.innerHTML("Please enter a valid account number");
+    }
+    else if(inputNullOrEmpty(address)){
+        ErrorField.innerHTML("Please enter a valid address");
+    }
+    else if(inputNullOrEmpty(org)){
+        ErrorField.innerHTML("Please enter a valid organization");
+    }
+    else if(inputNullOrEmpty(routingNum)){
+        ErrorField.innerHTML("Please enter a valid routingNum");
+    }
+    //making doc
+    var billingDoc={
+        accountNum: accountNum,
+        Address: address,
+        Organization: org,
+        RoutingNum:routingNum
+    };
+    //add to database
+    await billingDB.add(billingDoc)
+    .then((updateDoc)=>{
+        managerDB.update({
+            Billing: "Billing/"+updateDoc.id
+        })
+        .catch((error)=>{
+            console.log("Couldn't find Manager doc: "+error);
+        });
+    })
+    .catch((error)=>{
+        console.log("Couldn't add the doc to billing: "+error);
+    });
 }
 
 /**
@@ -282,7 +325,35 @@ async function saveBillingChanges(BillingRef){
  * checks to see if there is a billing doc
  * if there is a billing doc it will send it to saveBillingChanges(BillingRef)
  * if there is no billing doc it will send it to addBilling()
- */
+ */ 
 async function checkBilling(){
-
+    //variables
+    var managerID,billingID;
+    //links to database
+    const user=firebase.auth().currentUser,db=firebase.firestore();
+    //gets manager doc link
+    await db.collection("Account").doc(user.uid).get()
+    .then((userDoc)=>{
+        managerID=userDoc.data().Profile.slice(8);
+    })
+    .catch((error)=>{
+        console.log("Failed to find Manager doc: "+error);
+    });
+    //gets billing from manager doc
+    await db.collection("Billing").doc(managerID).get()
+    .then((managerDoc)=>{
+        billingID=managerDoc.data().Billing.slice(8);
+    })
+    .catch((error)=>{
+        console.log("Failed to find Manager Doc: "+error);
+    });
+    //sends to approate function
+    if(inputNullOrEmpty(billingID)){
+       await addBilling(managerID);
+       return;
+    }
+    else{
+        await saveBillingChanges(billingID);
+        return;
+    }
 }
