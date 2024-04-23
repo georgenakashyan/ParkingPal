@@ -92,7 +92,7 @@ async function fillGarageList() {
     .where("Lng", "<", mapCenter.lng() + 0.02)
     .where("Lat", ">", mapCenter.lat() - 0.015)
     .where("Lat", "<", mapCenter.lat() + 0.015)
-    .where("" + dbSpotName + ".Price", "<=", price)
+    .where("" + dbSpotName + ".Price", "<=", parseInt(price))
     .orderBy("Lng")
     .get()
     .then(async (querySnapshot) => {
