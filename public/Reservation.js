@@ -145,14 +145,14 @@ async function addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, Paymen
     });
     //make document
     var reservation = {
-        Customer_ID: customerID,
+        Customer_ID: "Customer/" + customerID,
         End: EndTime,
-        Garage_ID: GarageRef,
-        Payment_ID: PaymentRef,
+        Garage_ID: "Garage/" + GarageRef,
+        Payment_ID: "Payment/" + PaymentRef,
         Start: StartTime,
-        Vechile_ID: VehicleRef,
+        Vechile_ID: "Vehicle/" + VehicleRef,
         SpotInfo: {
-            Price: SpotPrice,
+            Price: parseInt(SpotPrice),
             Type: SpotType
         }
     };
