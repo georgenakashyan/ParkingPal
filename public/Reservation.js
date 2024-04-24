@@ -131,54 +131,76 @@ async function getStringFromReservation(coll, reference) {
  */
 async function addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, PaymentRef, StartTime, EndTime) {
     //links database
-    const user = firebase.auth().currentUser;
+    var user = firebase.auth().currentUser;
     const db = firebase.firestore();
     //variables
     var customerID;
+    const errorField = document.getElementById("book-notification-text");
+    errorField.style.setProperty("color", "red");
+    errorField.innerHTML = "";
     //assigning values
     await db.collection("Account").doc(user.uid).get()
     .then((doc) => {
-        customerID = doc.data().Profile;
+        customerID = String(doc.data().Profile).slice(9);
     })
     .catch((error) => {
         console.log("Failed to find customer doc: " + error);
     });
-    //make document
-    var reservation = {
-        Customer_ID: "Customer/" + customerID,
-        End: EndTime,
-        Garage_ID: "Garage/" + GarageRef,
-        Payment_ID: "Payment/" + PaymentRef,
-        Start: StartTime,
-        Vechile_ID: "Vehicle/" + VehicleRef,
-        SpotInfo: {
-            Price: parseInt(SpotPrice),
-            Type: SpotType
-        }
-    };
-    //adds doc to database
-    await db.collection("Reservation").add(reservation)
-    .then((document) => {
-        reservationID = document.uid;
-    })
-    .catch((error) => {
-        console.log("Failed to add to Reservation: " + error);
-    });
-    //adds reference to other collections
-    await db.collection("Garage").doc(garageRef)
-    .set({
-        Reservations: firebase.firestore.FieldValue.arrayUnion("Reservations/" + reservationID)
-    })
-    .catch((error) => {
-        console.log("Failed to sync reservation list on Garage: " + error);
-    });
-    await db.collection("Customer")
-    .update({
-        Reservations: firebase.firestore.FieldValue.arrayUnion("Reservations/" + reservationID)
-    })
-    .catch((error) => {
-        console.log("Failed to sync reservation list on Customer: " + error);
-    });
+
+    if (inputNullOrEmpty(PaymentRef)) {
+        errorField.innerHTML = "Choose a form of payment";
+        return;
+    } else if (inputNullOrEmpty(VehicleRef)) {
+        errorField.innerHTML = "Choose a vehicle";
+        return;
+    } else if (inputNullOrEmpty(GarageRef) 
+            || inputNullOrEmpty(StartTime) 
+            || inputNullOrEmpty(EndTime)
+            || inputNullOrEmpty(SpotType) 
+            || isNaN(SpotPrice)) {
+        errorField.innerHTML = "Error: Reload the page";
+        return;
+    } else {
+        errorField.style.setProperty("color", "green");
+        errorField.innerHTML = "Reservation Booked!";
+
+        //make document
+        var reservation = {
+            Customer_ID: "Customer/" + customerID,
+            End: EndTime,
+            Garage_ID: "Garage/" + GarageRef,
+            Payment_ID: "Payment/" + PaymentRef,
+            Start: StartTime,
+            Vehicle_ID: "Vehicle/" + VehicleRef,
+            SpotInfo: {
+                Price: parseInt(SpotPrice),
+                Type: SpotType
+            }
+        };
+        //adds doc to database
+        await db.collection("Reservation").add(reservation)
+        .then((document) => {
+            reservationID = document.id;
+        })
+        .catch((error) => {
+            console.log("Failed to add to Reservation: " + error);
+        });
+        //adds reference to other collections
+        await db.collection("Garage").doc(GarageRef)
+        .update({
+            Reservations: firebase.firestore.FieldValue.arrayUnion("Reservation/" + String(reservationID))
+        })
+        .catch((error) => {
+            console.log("Failed to sync reservation list on Garage: " + error);
+        });
+        await db.collection("Customer").doc(customerID)
+        .update({
+            Reservations: firebase.firestore.FieldValue.arrayUnion("Reservation/" + String(reservationID))
+        })
+        .catch((error) => {
+            console.log("Failed to sync reservation list on Customer: " + error);
+        });
+    }
 }
 
 /**
@@ -195,7 +217,7 @@ async function editReservation(ReservationRef, GarageRef, VehicleRef, PaymentRef
     const user = firebase.auth().currentUser;
     const db = firebase.firestore();
     //variables
-    var customerID, startTime, endTime, garageID, vechileID, reservationID, paymentMethod;
+    var customerID, startTime, endTime, garageID, vehicleID, reservationID, paymentMethod;
     //assigns values to variables
     await db.collection("Account").doc(user.uid).get()
     .then((doc) => {
@@ -207,7 +229,7 @@ async function editReservation(ReservationRef, GarageRef, VehicleRef, PaymentRef
     startTime = StartTime;
     endTime = EndTime;
     garageID = GarageRef;
-    vechileID = VehicleRef;
+    vehicleID = VehicleRef;
     paymentMethod = PaymentRef;
     reservationID = ReservationRef;
     //make document
@@ -217,7 +239,7 @@ async function editReservation(ReservationRef, GarageRef, VehicleRef, PaymentRef
         Garage_ID: garageID,
         Payment_ID: paymentMethod,
         Start: startTime,
-        Vechile_ID: vechileID
+        Vehicle_ID: vehicleID
     };
     //merge information with doc
     await db.collection("Reservation").doc(reservationID)
