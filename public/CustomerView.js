@@ -314,15 +314,14 @@ function handleBookButton(GarageRef) {
     const vehicleRef = document.getElementById("vehicleList").value;
     const sTypeSelected = document.getElementById("spotRequest").value;
     const price = document.getElementById(GarageRef + "-price");
-    var paymentRef = null;
-    paymentRef = document.getElementById("bookReservationPayment").value;
-    startStr = "" + sDate.getMonth() + " " + sDate.getDate() + ", " + sDate.getFullYear() + ". " + timeConvert("" + sTime.substr(0,2) + ":" + sTime.substr(3,2))
+    var paymentRef = document.getElementById("bookReservationPayment").value;
+    startStr = "" + (parseInt(sDate.getMonth()) + 1) + "/" +  (parseInt(sDate.getDate()) + 1) + "/" + sDate.getFullYear() + " - " + timeConvert("" + sTime.substr(0,2) + ":" + sTime.substr(3,2))
     var startTime = firebase.firestore.Timestamp.fromDate(new Date(
         sDate.getFullYear(),sDate.getMonth(),sDate.getDate(),sTime.substr(0,2),sTime.substr(3,2)
     ));
-    endStr = "" + sDate.getMonth() + " " + sDate.getDate() + ", " + sDate.getFullYear() + ". " + timeConvert("" + eTime.substr(0,2) + ":" + eTime.substr(3,2))
+    endStr = "" + (parseInt(sDate.getMonth()) + 1) + "/" + (parseInt(sDate.getDate()) + 1) + "/" + sDate.getFullYear() + " - " + timeConvert("" + eTime.substr(0,2) + ":" + eTime.substr(3,2))
     var endTime = firebase.firestore.Timestamp.fromDate(new Date(
-        sDate.getFullYear(),sDate.getMonth(),sDate.getDate(),eTime.substr(0,2),eTime.substr(3,2)
+        sDate.getFullYear(),sDate.getMonth(),(parseInt(sDate.getDate()) + 1),eTime.substr(0,2),eTime.substr(3,2)
     ));
     // Fill info
     const bGarageName = document.getElementById("bookReservationGarageName");
@@ -333,7 +332,6 @@ function handleBookButton(GarageRef) {
     const bBookEndTime = document.getElementById("bookReservationEndTime");
     const bBookHourlyPrice = document.getElementById("bookReservationSpotHourlyPrice");
     const bBookTotalPrice = document.getElementById("bookReservationSpotTotalPrice");
-    const bBookPaymentMethod = document.getElementById("bookReservationPayment");
 
     bGarageName.innerHTML = document.getElementById(GarageRef + "-name").innerHTML;
     bGarageAddress.innerHTML = document.getElementById(GarageRef + "-address").innerHTML;
@@ -342,14 +340,13 @@ function handleBookButton(GarageRef) {
     bBookStartTime.innerHTML = startStr;
     bBookEndTime.innerHTML = endStr;
     bBookHourlyPrice.innerHTML = document.getElementById(GarageRef + "-price").innerHTML;
-    var totalPriceInt = parseInt(bBookHourlyPrice.innerHTML) * (parseInt(sTime.substr(0,2)) - parseInt(eTime.substr(0,2)));
-    if (totalPriceInt < 1) {totalPriceInt = 1;}
-    bBookTotalPrice.innerHTML = totalPriceInt;
-    bBookPaymentMethod.innerHTML = document.getElementById(GarageRef + "-address").value;
-
+    var hourlyPrice = parseInt(bBookHourlyPrice.innerHTML.replace("$","").replace("/Hour", ""));
+    var totalPriceInt = hourlyPrice * (parseInt(eTime.substr(0,2)) - parseInt(sTime.substr(0,2)));
+    if (totalPriceInt < 1) {totalPriceInt = hourlyPrice;}
+    bBookTotalPrice.innerHTML = "$" + totalPriceInt;
 
     document.getElementById("finalizeReservationButton").onclick = function() {
-        addReservation(GarageRef, sTypeSelected, price, vehicleRef, paymentRef, startTime, endTime);
+        addReservation(GarageRef, sTypeSelected, totalPriceInt, vehicleRef, paymentRef, startTime, endTime);
     };
 }
 
