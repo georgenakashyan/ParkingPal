@@ -189,6 +189,10 @@ function saveChanges() {
         .update({
             FirstName: first.value,
             LastName: last.value
+        })
+        .then(() => {
+            errorField.style.setProperty("color", "green");
+            errorField.innerHTML = "Changes saved!";
         });
     }
 }
@@ -450,14 +454,14 @@ async function setDefaultPayments(customerRef) {
     });
 }
 
-function displayOnePayment(paymentRef) {
+async function displayOnePayment(paymentRef) {
     let paymentList = document.getElementById('paymentList');
     var newPayment = document.createElement('li');
     newPayment.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400';
     var pNumber = document.createElement('p');
     var pExpiration = document.createElement('p');
     const db = firebase.firestore();
-    db.collection('Payment').doc(paymentRef.slice(8)).get()
+    await db.collection('Payment').doc(paymentRef.slice(8)).get()
     .then((doc) => {
         const data = doc.data();
         const gNum = String(data.CardNum).slice(12);
