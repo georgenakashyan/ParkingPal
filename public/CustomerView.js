@@ -212,17 +212,22 @@ function deleteMarkers() {
 }
 
 function displayOneGarage(data, garageID, marker, spotType) {
+    const gName = data.Name;
+    const gAddress = data.Address + ", " + data.AreaCode;
     let garageList = document.getElementById('GarageList');
     var newGarage = document.createElement('li');
     newGarage.className = 'bg-slate-300 p-3 mb-3 rounded-xl hover:bg-slate-400';
     var pName = document.createElement('p');
     var pAddress = document.createElement('p');
     var pPrice = document.createElement('p');
+    pPrice.id = "" + garageID + "-price"
     var bookButton = document.createElement('button');
     bookButton.className = "object-right text-white text- p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange";
     bookButton.innerHTML = "Book"
     bookButton.onclick = function() {
-        handleBookButton(garageID);
+        document.getElementById("bookReservationTitle").innerHTML = "Confirm reservation for " + gName;
+        handleBookButton();
+        openPopup("bookReservation");
     };
     var bottomRow = document.createElement('div');
     var growBox = document.createElement('div');
@@ -231,8 +236,6 @@ function displayOneGarage(data, garageID, marker, spotType) {
     bottomRow.appendChild(pPrice);
     bottomRow.appendChild(growBox);
     bottomRow.appendChild(bookButton);
-    const gName = data.Name;
-    const gAddress = data.Address + ", " + data.AreaCode;
     var gPrice
     switch (spotType) {
         case "Normal":
