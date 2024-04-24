@@ -25,15 +25,16 @@
 <body class="globalFont">
     <div class="bg-PP-dark-blue grid grid-cols-1 grid-rows-10 h-screen w-screen">
         <div class="row-span-1 p-3 flex items-center text-white font-semibold">
-            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
+            <img src="./images/ParkingPal.png" alt="Parking Pal Logo" class="aspect-square h-full min-h-12 max-h-12 block ml-auto mr-auto">
+            <div class="-ml-5 p-3 mr-4 text-3xl text-PP-orange select-none">arkingPal</div>
             <div class="grow mr-0 md:mr-4"></div>
             <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="">Settings</button></div>
             <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="logOut()">Log Out</button></div>
         </div>
         <div class="p-0 row-span-9 text-white font-semibold w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
             <div class="bg-PP-blue min-h-full col-span-full row-span-1 grid p-7 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">
-                <img src="https://cdn.pixabay.com/photo/2014/04/02/10/45/parking-304464_1280.png" alt="Profile Picture" class="w-1/2 block ml-auto mr-auto ">
-                <div class="align-top w-fit">
+                <img src="https://cdn.pixabay.com/photo/2014/04/02/10/45/parking-304464_1280.png" alt="Profile Picture" class="w-1/2 max-w-24 block ml-auto mr-auto md:max-w-40">
+                <div class="align-top w-fit text-2xl">
                     <div id="WelcomeName">Welcome</div>
                     <div id="ReservationInfo">0 active reservations</div>
                 </div>
@@ -87,7 +88,7 @@
                     <div class="mr-1 font-bold">
                         <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('garageInfo')">Garage Info</button>
                         <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('spotInfo')">Parking Spots</button>
-                        <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('reservationList')">Resevations</button>
+                        <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('reservationList')">Reservations</button>
                     </div>
                     <div class="grow w-fit"></div>
                     <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('editGarage')">&times;</button>
@@ -121,11 +122,13 @@
                 <div id="spotInfo" class="editGarageTab" style="display:none">
                     <ul class="pt-3">
                         <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
-                            <div class="flex mb-3">
-                                <label class="pb-3 text-left font-semibold">Normal</label>
+                            <div class="flex">
+                                <label class="text-left font-semibold">Normal</label>
                                 <div class="grow mr-10"></div>
-                                <input type="number" id="normalSpotPrice" placeholder="Hourly price" class="pl-12 text-center items-center">
+                                <label class="text-left font-semibold">Price per spot&nbsp;</label>
+                                <input type="number" id="normalSpotPrice" placeholder="Hourly price" class="w-1/6 border-2 border-gray-400 text-center items-center">
                             </div>
+                            <label class="text-left font-semibold">Total number of spots</label>
                             <div class="flex">
                                 <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(-1, 'normal')"> - </button>
                                 <input id="normalSpotCount" class="text-black border-2 grow border-gray-400 text-center items-center" placeholder="Number of spots">
@@ -133,11 +136,13 @@
                             </div>
                         </li>
                         <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
-                            <div class="flex mb-3">
-                                <label class="pb-3 text-left font-semibold">Electric Vehicle</label>
+                            <div class="flex">
+                                <label class="text-left font-semibold">Electric Vehicle</label>
                                 <div class="grow mr-10"></div>
-                                <input type="number" id="evSpotPrice" placeholder="Hourly price" class="pl-12 text-center items-center">
+                                <label class="text-left font-semibold">Price per spot&nbsp;</label>
+                                <input type="number" id="evSpotPrice" placeholder="Hourly price" class="w-1/6 border-2 border-gray-400 text-center items-center">
                             </div>
+                            <label class="text-left font-semibold">Total number of spots</label>
                             <div class="flex">
                                 <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(-1, 'ev')"> - </button>
                                 <input id="evSpotCount" class="text-black border-2 grow border-gray-400 text-center items-center" placeholder="Number of spots">
@@ -145,11 +150,13 @@
                             </div>
                         </li>
                         <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
-                            <div class="flex mb-3">
-                                <label class="pb-3 text-left font-semibold">Handicap</label>
+                            <div class="flex">
+                                <label class="text-left font-semibold">Handicap</label>
                                 <div class="grow mr-10"></div>
-                                <input type="number" id="handicapSpotPrice" placeholder="Hourly price" class="pl-12 text-center items-center">
+                                <label class="text-left font-semibold">Price per spot&nbsp;</label>
+                                <input type="number" id="handicapSpotPrice" placeholder="Hourly price" class="w-1/6 border-2 border-gray-400 text-center items-center">
                             </div>
+                            <label class="text-left font-semibold">Total number of spots</label>
                             <div class="flex">
                                 <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(-1, 'handicap')"> - </button>
                                 <input id="handicapSpotCount" class="text-black border-2 grow border-gray-400 text-center items-center" placeholder="Number of spots">
@@ -157,11 +164,13 @@
                             </div>
                         </li>
                         <li class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl">
-                            <div class="flex mb-3">
-                                <label class="pb-3 text-left font-semibold">Motorcycle</label>
+                            <div class="flex">
+                                <label class="text-left font-semibold">Motorcycle</label>
                                 <div class="grow mr-10"></div>
-                                <input type="number" id="motoSpotPrice" placeholder="Hourly price" class="pl-12 text-center items-center">
+                                <label class="text-left font-semibold">Price per spot&nbsp;</label>
+                                <input type="number" id="motoSpotPrice" placeholder="Hourly price" class="w-1/6 border-2 border-gray-400 text-center items-center">
                             </div>
+                            <label class="text-left font-semibold">Total number of spots</label>
                             <div class="flex">
                                 <button class="long-main-button aspect-square" style="width: 15% !important;" onclick="changeSpotCount(-1, 'moto')"> - </button>
                                 <input id="motoSpotCount" class="text-black border-2 grow border-gray-400 text-center items-center" placeholder="Number of spots">
@@ -169,7 +178,7 @@
                             </div>
                         </li>
                         <label class="notification-text" id="spot-notification-text"></label>
-                        <button id="spotSaveButton" class="long-main-button mt-1 mb-6">Save Changes</button>
+                        <button id="spotSaveButton" class="long-main-button mt-2 mb-6" style="width: 95% !important;">Save Changes</button>
                     </ul>
                 </div>
                 <div id="reservationList" class="editGarageTab" style="display:none">
