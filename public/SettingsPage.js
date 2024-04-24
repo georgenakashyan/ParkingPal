@@ -452,7 +452,6 @@ async function setDefaultPayments(customerRef) {
 async function displayOnePayment(paymentRef) {
     let paymentList = document.getElementById('paymentList');
     var newPayment = document.createElement('li');
-    newPayment.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400';
     var pNumber = document.createElement('p');
     var pExpiration = document.createElement('p');
     const db = firebase.firestore();
@@ -470,7 +469,7 @@ async function displayOnePayment(paymentRef) {
         delPaymentButton.className = "text-gray-500 font-bold text-4xl self-center items-center float-right hover:text-red-700 hover:no-underline hover:cursor-pointer";
         delPaymentButton.innerHTML = "&times"
         delPaymentButton.onclick = function() {removePayment(paymentRef)};
-        var mainDiv = documnet.createElement('div');
+        var mainDiv = document.createElement('div');
         mainDiv.className = "bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl grid grid-cols-2";
 
         var leftDiv = document.createElement('div');
@@ -481,11 +480,11 @@ async function displayOnePayment(paymentRef) {
 
         mainDiv.appendChild(leftDiv);
         mainDiv.appendChild(rightDiv);
-        newPayment.appendChild(maindDiv);
+        newPayment.appendChild(mainDiv);
         paymentList.appendChild(newPayment);
     })
     .catch((error) => {
-        console.log("Failed to find garage info doc");
+        console.log("Failed to find payment info doc" + error);
     });
 }
 
