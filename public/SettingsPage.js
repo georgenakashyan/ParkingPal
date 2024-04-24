@@ -276,10 +276,6 @@ async function removePayment(PaymentRef){
     .catch((error)=>{
         console.log("Failed to find Customer doc: "+error);
     });
-    //error check
-    if(inputNullOrEmpty(PaymentRef)){
-        errorField.innerHTML="Ngl I don't even know how the fuck you go here";
-    }
     //deletes from customer array
     await db.collection("Customer").doc(customerID)
     .update({
@@ -289,7 +285,6 @@ async function removePayment(PaymentRef){
     await paymentDB.doc(PaymentRef).delete();
     //updates HTML code
     document.getElementById(PaymentRef).remove();
-    closePopup("");
 }
 
 /**
