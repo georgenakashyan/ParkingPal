@@ -129,6 +129,28 @@ function mainPage() {
     });
 }
 
+function settingsPage(){
+    return new Promise((resolve, reject) => {
+        getAccountType()
+        .then((accType) => {
+            switch (accType) {
+                case "Customer":
+                    location.href = "CustomerSettings.html";
+                    break;
+                case "Manager":
+                    location.href = "ManagerSettings.html";
+                    break;
+            }
+            resolve();
+        })
+        .catch((error) => {
+            console.error("Error in mainPage:", error);
+            reject(error);
+        });
+    });
+
+}
+
 async function createAccountDocument(user, email, firstName, lastName) {
     var newAccount = {
         Email: email,
@@ -136,7 +158,7 @@ async function createAccountDocument(user, email, firstName, lastName) {
         LastName: lastName,
         Profile: "",
         Type_ID: "Unfinished"
-    };
+    }
     await firebase.firestore().collection("Account").doc(user.uid).set(newAccount)
     .then(() => {
         console.log("document created");

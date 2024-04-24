@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script defer src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-database-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-functions-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-messaging-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-storage-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-analytics-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-remote-config-compat.js"></script>
+        <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
+        <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+        <script src="app.js"></script>
+        <script src="ManagerView.js"></script>
+        <script src="SettingsPage.js"></script>
+        <script src="Authentication.js"></script>
+
+        <title>Parking Pal - Manager Home</title>
+        <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
+        <script loading=async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEw4uAP37UWhAS8P9RHrx_PrA-08vutk"></script>
+        <link rel="stylesheet" href="output.css"/>
+    </head>
+
+
+    <body class="globalFont">
+        <div class="bg-PP-dark-blue  grid grid-cols-1 grid-rows-10 h-screen w-screen">
+            
+            <div class="row-span-1 p-3 flex items-center text-white font-semibold">
+                <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
+                <div class="grow mr-0 md:mr-4"></div>
+                <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="mainPage()">Return</button></div>
+                <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="logOut()">Log Out</button></div>
+            </div>
+
+            <div class="pt-8">
+                <div class="bg-gray-700 h-max w-11/12 p-3 rounded-lg flex mx-auto">
+                    <div class="w-1/2">
+                        <div class="bg-PP-blue h-full mb-6 p-4 w-full">
+                            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none  border-b-2 border-PP-orange mb-8">Personal Information:</div>
+                            <div class="flex flex-col mb-8"> 
+                                <label class="text-white">First Name:</label>
+                                <input type="text" value="Dave" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white" onclick="showSaveButton()">
+                            </div>
+                            <div class="flex flex-col mb-8">
+                                <label class="text-white">Last Name:</label>
+                                <input type="text" value="Jones" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white" onclick="showSaveButton()">
+                            </div>
+                            <div class="flex flex-col mb-8">
+                                <label class="text-white">Email Address:</label>
+                                <input type="text" readonly value="davejones@gmail.com" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
+                            </div>
+                            <div class="flex flex-col mb-8">
+                                <button type="button" class="long-main-button mt-2 mb-1 text" onclick="resetPassword()" style="width: 40%  !important; "> Reset Password </button>
+                            </div>
+                           
+                            <button id="saveButton" type="button" class="hidden long-main-button mt-1 " onclick="saveChanges()" style="width: 40% !important; "> Save </button>
+
+                        </div>
+                    </div>
+                
+    
+                    <div class="w-1/2 ml-3 ">
+                        <div class="bg-PP-blue h-full mb-6 p-4 w-full">
+                            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none border-b-2 border-PP-orange mb-8">Payment Information:</div>
+                                <ul>
+                                    <li id="addPayment" class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400" onclick="openPopup('addPayment')">
+                                        <p class="text-center">Add Payment</p>
+                                        <p class="text-center">+</p>
+                                    </li>
+                
+                                </ul>
+                        </div>
+                    </div>
+
+                    <div class="w-1/2 ml-3 ">
+                        <div class="bg-PP-blue h-full mb-6 p-4 w-full">
+                            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none border-b-2 border-PP-orange mb-8">Vehicles:</div>
+                                <ul>
+                                    <li id="addVehicle" class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400" onclick="openPopup('addVehicle')">
+                                        <p class="text-center">Add Vehicle</p>
+                                        <p class="text-center">+</p>
+                                    </li>
+                
+                                </ul>
+                        </div>
+                    </div>
+
+                   
+            </div>
+            <div class="bg-black bg-opacity-50 absolute hidden top-0 w-full h-full justify-center z-10" id="addPaymentPopup">
+                <div class="grow"></div>
+                <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
+                    <div class="flex overflow-hidden text-white pl-2 pr-2">
+                        <div class="grow w-80"></div>
+                        <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('addPayment')">&times;</button>
+                    </div>
+                    <div >
+                        <form id="addPaymentForm">
+                            <input type="text" id="cardHolderName" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Card Holder's Name"><br>
+                            <input type="number" id="addCardNum" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Card Number"><br>
+                            <input type="number" id="addExpDate" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Expiration date - (MM/YY)"><br>
+                            <input type="number" id="addSVC" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Security Code"><br>
+                        </form>
+                        <label class="notification-text" id="add-notification-text"></label>
+                    <button class="long-main-button mt-1 mb-6" onclick="addPayment()" style="width: 80% !important;">Add Card</button>
+                    </div>
+                </div>
+                <div class="grow"></div>
+            </div>
+
+            <div class="bg-black bg-opacity-50 absolute hidden top-0 w-full h-full justify-center z-10" id="addVehiclePopup">
+                <div class="grow"></div>
+                <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
+                    <div class="flex overflow-hidden text-white pl-2 pr-2">
+                        <div class="grow w-80"></div>
+                        <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('addVehicle')">&times;</button>
+                    </div>
+                    <div >
+                        <form id="addVehicleForm">
+                            <input type="text" id="carMake" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Make"><br>
+                            <input type="text" id="addCarModel" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Model"><br>
+                            <input type="number" id="addCarYear" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Year - (YYYY)"><br>
+                            <input type="text" id="addLicensePlate" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="License Plate"><br>
+                        </form>
+                        <div class="mb-6 mt-6">
+                            <label for="FuelType" class="">Select fuel type:</label>
+                            <select id="FuelType" class=" p-2 border rounded-md border-gray-300 pl-1">
+                                <option value="" disabled selected>Select fuel type</option>
+                                <option value="gas">Gas</option>
+                                <option value="electric">Electric</option>
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                            <label for="vehicleSize" class="">Select vehicle size:</label>
+                            <select id="vehicleSize" value = "none" class=" p-2 border rounded-md border-gray-300 pl-1">
+                                <option value="" disabled selected>Select vehicle size</option>
+                                <option value="gas">Small</option>
+                                <option value="electric">Normal</option>
+                                <option value="electric">Large</option>
+                            </select>
+                        </div>
+                        <label class="notification-text" id="add-notification-text"></label>
+                    <button class="long-main-button mt-1 mb-6" onclick="addVehicle()" style="width: 80% !important;">Add Vehicle</button>
+                    </div>
+                </div>
+                <div class="grow"></div>
+            </div>
+            
+        
+        </div>
+    </body>
+</html>
+
