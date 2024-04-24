@@ -335,8 +335,8 @@ function handleBookButton(GarageRef) {
     const bBookTotalPrice = document.getElementById("bookReservationSpotTotalPrice");
     const bBookPaymentMethod = document.getElementById("bookReservationPayment");
 
-    bGarageName.innerHTML = document.getElementById(GarageRef + "-name").value;
-    bGarageAddress.innerHTML = document.getElementById(GarageRef + "-address").value;
+    bGarageName.innerHTML = document.getElementById(GarageRef + "-name").innerHTML;
+    bGarageAddress.innerHTML = document.getElementById(GarageRef + "-address").innerHTML;
     bBookVehicle.innerHTML = vehicleName;
     bBookSpotType.innerHTML = sTypeSelected;
     bBookStartTime.innerHTML = startStr;
