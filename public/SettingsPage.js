@@ -450,6 +450,31 @@ async function setDefaultPayments(customerRef) {
     });
 }
 
+function displayOnePayment(paymentRef) {
+    let paymentList = document.getElementById('paymentList');
+    var newPayment = document.createElement('li');
+    newPayment.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400';
+    var pNumber = document.createElement('p');
+    var pExpiration = document.createElement('p');
+    const db = firebase.firestore();
+    db.collection('Payment').doc(paymentRef.slice(8)).get()
+    .then((doc) => {
+        const data = doc.data();
+        const gNum = String(data.CardNum).slice(12);
+        var expDate = data.Expiration.toDate();
+        const gExpiration = "" + (parseInt(expDate.getMonth()) + 1) + "/" + String(expDate.getFullYear()).slice(2);
+        pNumber.innerHTML = "Card ending with: " + gNum;
+        pExpiration.innerHTML = "Expires: " + gExpiration;
+        newPayment.id = doc.id;
+        newPayment.appendChild(pNumber);
+        newPayment.appendChild(pExpiration);
+        //TODO: add an x on the right of this that has an onclick for deletepayment
+
+        paymentList.appendChild(newPayment);
+    })
+    .catch((error) => {
+        console.log("Failed to find garage info doc");
+    });
 }
 
 async function setDefaultVehicles(customerRef) {
