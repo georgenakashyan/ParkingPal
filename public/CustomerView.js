@@ -341,7 +341,7 @@ function handleBookButton(GarageRef) {
     bBookSpotType.innerHTML = sTypeSelected;
     bBookStartTime.innerHTML = startStr;
     bBookEndTime.innerHTML = endStr;
-    bBookHourlyPrice.innerHTML = document.getElementById(GarageRef + "-price").value;
+    bBookHourlyPrice.innerHTML = document.getElementById(GarageRef + "-price").innerHTML;
     var totalPriceInt = parseInt(bBookHourlyPrice.innerHTML) * (parseInt(sTime.substr(0,2)) - parseInt(eTime.substr(0,2)));
     if (totalPriceInt < 1) {totalPriceInt = 1;}
     bBookTotalPrice.innerHTML = totalPriceInt;
