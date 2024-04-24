@@ -416,16 +416,36 @@ async function checkBilling(){
 }
 
 async function setDefaultValues(user){
+    const db = firebase.firestore();
     const accFirst = document.getElementById("accountFirstName");
     const accLast = document.getElementById("accountLastName");
     const accEmail = document.getElementById("accountEmail");
 
-    await firebase.firestore().collection("Account").doc(user.uid)
+    var profileType = "";
+    var profileRef = "";
+    await db.collection("Account").doc(user.uid)
     .get()
     .then((doc) => {
         var data = doc.data();
         accFirst.value = data.FirstName;
         accLast.value = data.LastName;
         accEmail.value = data.Email;
+        if (data.Profile.includes("Manager")) {
+            profileType = "Manager";
+            profileRef = data.Profile.slice(8);
+        } else {
+            profileType = "Customer";
+            profileRef = data.Profile.slice(9);
+        }
     });
+
+    await db.collection(profileType).doc(profileRef)
+}
+
+async function setDefaultPayments() {
+
+}
+
+async function setDefaultVehicles() {
+    
 }
