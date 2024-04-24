@@ -421,8 +421,6 @@ async function setDefaultValues(user){
     const accLast = document.getElementById("accountLastName");
     const accEmail = document.getElementById("accountEmail");
 
-    var profileType = "";
-    var profileRef = "";
     await db.collection("Account").doc(user.uid)
     .get()
     .then((doc) => {
@@ -431,21 +429,22 @@ async function setDefaultValues(user){
         accLast.value = data.LastName;
         accEmail.value = data.Email;
         if (data.Profile.includes("Manager")) {
-            profileType = "Manager";
-            profileRef = data.Profile.slice(8);
+            setDefaultBilling(data.Profile.slice(8));
         } else {
-            profileType = "Customer";
-            profileRef = data.Profile.slice(9);
+            setDefaultPayments(data.Profile.slice(9));
+            setDefaultVehicles(data.Profile.slice(9));
         }
     });
-
-    await db.collection(profileType).doc(profileRef)
 }
 
-async function setDefaultPayments() {
+async function setDefaultPayments(customerRef) {
 
 }
 
-async function setDefaultVehicles() {
+async function setDefaultVehicles(customerRef) {
+    
+}
+
+async function setDefaultBilling(managerRef) {
     
 }
