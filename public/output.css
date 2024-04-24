@@ -1023,6 +1023,14 @@ video {
   padding-top: 0.75rem;
 }
 
+.pb-3 {
+  padding-bottom: 0.75rem;
+}
+
+.pl-12 {
+  padding-left: 3rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -1107,6 +1115,11 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-PP-light-orange {
+  --tw-text-opacity: 1;
+  color: rgb(235 171 89 / var(--tw-text-opacity));
 }
 
 .opacity-100 {
