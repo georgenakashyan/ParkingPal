@@ -33,22 +33,24 @@ async function displayReservation(reservationRef) {
     const pStart = document.createElement("td");
     const pEnd = document.createElement("td");
     const pSpotInfo = document.createElement("td");
+    const zeroPad = (num, places) => String(num).padStart(places, '0');
     await db.collection("Reservation").doc(reservationRef.slice(12)).get()
         .then(async (doc) => {
             const data = doc.data();
-            /* var start = data.Start
-            if (data) {
-                    
-            } */
-            //TODO: Make so that it only shows reservations from today and later
-            pName.textContent = await getStringFromReservation("Name", data.Customer_ID);
-            pVehID.textContent = await getStringFromReservation("VehicleID", data.Vehicle_ID);
-            pVehPlate.textContent = await getStringFromReservation("VehiclePlate", data.Vehicle_ID);
-            var strStart = await getStringFromReservation("Start", data.Start);
-            pStart.textContent = timeConvert(strStart);
-            var strEnd = await getStringFromReservation("End", data.End);
-            pEnd.textContent = timeConvert(strEnd);
-            pSpotInfo.textContent = await getStringFromReservation("SpotInfo", data.SpotInfo);
+            var start = data.Start.toDate();
+            var startStr = "" + start.getFullYear() + "-" + zeroPad(parseInt(start.getMonth()) + 1, 2) + "-" + zeroPad(start.getDate(), 2);
+            var today = new Date();
+            var todayStr = "" + today.getFullYear() + "-" + zeroPad(parseInt(today.getMonth()) + 1, 2) + "-" + zeroPad(today.getDate(), 2);
+            if (startStr >= todayStr) {
+                pName.textContent = await getStringFromReservation("Name", data.Customer_ID);
+                pVehID.textContent = await getStringFromReservation("VehicleID", data.Vehicle_ID);
+                pVehPlate.textContent = await getStringFromReservation("VehiclePlate", data.Vehicle_ID);
+                var strStart = await getStringFromReservation("Start", data.Start);
+                pStart.textContent = timeConvert(strStart);
+                var strEnd = await getStringFromReservation("End", data.End);
+                pEnd.textContent = timeConvert(strEnd);
+                pSpotInfo.textContent = await getStringFromReservation("SpotInfo", data.SpotInfo);
+            }
         })
         .catch((error) => {
             console.log("Failed to find reservation info doc: " + error);
