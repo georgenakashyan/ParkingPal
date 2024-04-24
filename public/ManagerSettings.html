@@ -39,23 +39,30 @@
                 <div class="bg-gray-700 h-max w-11/12 p-3 rounded-lg flex mx-auto">
                     <div class="w-1/2">
                         <div class="bg-PP-blue h-full mb-6 p-4 w-full">
-                            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none border-b-2 border-PP-orange mb-8">Personal Information:</div>
+                            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none  border-b-2 border-PP-orange mb-8">Account</div>
                             <div class="flex flex-col mb-8"> 
-                                <label class="text-white">First Name:</label>
-                                <input type="text" value="Dave" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
+                                <label class="text-white">First Name</label>
+                                <input id="accountFirstName" type="text" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
                             </div>
                             <div class="flex flex-col mb-8">
-                                <label class="text-white">Last Name:</label>
-                                <input type="text" value="Jones" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
+                                <label class="text-white">Last Name</label>
+                                <input id="accountLastName" type="text" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
                             </div>
                             <div class="flex flex-col mb-8">
-                                <label class="text-white">Email Address:</label>
-                                <input type="text" value="davejones@gmail.com" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
+                                <label class="text-white">Email Address</label>
+                                <input id="accountEmail" type="text" readonly class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
+                            </div>
+                            <div class="grid">
+                                <label id="notification-text" class="notification-text"></label>
                             </div>
                             <div class="flex flex-col mb-8">
-                                <label class="text-white">Password:</label>
-                                <input type="text" value="pass123" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
+                                <button type="button" class="long-main-button mt-2 mb-1 text" onclick="resetPassword(document.getElementById('accountEmail').value)">Reset Password</button>
                             </div>
+                            <div class="grid">
+                                <label id="account-notification-text" class="notification-text"></label>
+                            </div>
+                            <button id="saveButton" type="button" class="hidden long-main-button mt-1 " onclick="saveChanges()">Save</button>
+
                         </div>
                     </div>
                 
