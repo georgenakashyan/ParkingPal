@@ -301,24 +301,24 @@ async function selectGarageMarker(marker) {
 }
 
 function handleBookButton(GarageRef) {
-    console.log("Enter Reservation code here");
-    //TODO: make this reservation code work
-    var SpotType = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
-    var SpotPrice = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
-    var VehicleRef = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
-    var PaymentRef = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
-
-    var startTimeInput = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
-    var startTimeHours = startTimeInput.substr(0,2);
-    var startTimeMinutes = startTimeInput.substr(3,2);
-    var startTime = firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,startTimeHours,startTimeMinutes));
-
-    var endTimeInput = document.getElementById('AAAAAAAAAAAAAAAAAAAAAAA').value; //TODO FIX THIS
-    var endTimeHours = endTimeInput.substr(0,2);
-    var endTimeMinutes = endTimeInput.substr(3,2);
-    var endTime = firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,endTimeHours,endTimeMinutes));
-
-    addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, PaymentRef, startTime, endTime);
+    const sDate = document.getElementById("sDate").value;
+    const sTime = document.getElementById("startTime").value;
+    const eTime = document.getElementById("endTime").value;
+    const vehicle = document.getElementById("vehicleList").value;
+    const sTypeSelected = document.getElementById("spotRequest").value;
+    const price = document.getElementById(GarageRef + "-price");
+    var paymentRef = null
+    paymentRef = document.getElementById("bookReservationPayment").value;
+    var startTime = firebase.firestore.Timestamp.fromDate(new Date(
+        sDate.getFullYear(),sDate.getMonth(),sDate.getDate(),sTime.substr(0,2),sTime.substr(3,2)
+    ));
+    var endTime = firebase.firestore.Timestamp.fromDate(new Date(
+        sDate.getFullYear(),sDate.getMonth(),sDate.getDate(),eTime.substr(0,2),eTime.substr(3,2)
+    ));
+    
+    document.getElementById("finalizeReservationButton").onclick = function() {
+        addReservation(GarageRef, sTypeSelected, price, vehicle, paymentRef, startTime, endTime);
+    };
 }
 
 function setDefaultValues(){
