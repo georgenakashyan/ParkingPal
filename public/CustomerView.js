@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", event => {
         await fillVehicleList();
         await new Promise(r => setTimeout(r, 1000));
         fillGarageList();
+        fillPaymentList(user);
     });
     setDefaultValues();
     mapCenter = new google.maps.LatLng(startLocation[0], startLocation[1]);
@@ -218,7 +219,9 @@ function displayOneGarage(data, garageID, marker, spotType) {
     var newGarage = document.createElement('li');
     newGarage.className = 'bg-slate-300 p-3 mb-3 rounded-xl hover:bg-slate-400';
     var pName = document.createElement('p');
+    pName.id = "" + garageID + "-name"
     var pAddress = document.createElement('p');
+    pAddress.id = "" + garageID + "-address"
     var pPrice = document.createElement('p');
     pPrice.id = "" + garageID + "-price"
     var bookButton = document.createElement('button');
@@ -226,7 +229,7 @@ function displayOneGarage(data, garageID, marker, spotType) {
     bookButton.innerHTML = "Book"
     bookButton.onclick = function() {
         document.getElementById("bookReservationTitle").innerHTML = "Confirm reservation for " + gName;
-        handleBookButton();
+        handleBookButton(garageID);
         openPopup("bookReservation");
     };
     var bottomRow = document.createElement('div');
@@ -304,23 +307,49 @@ async function selectGarageMarker(marker) {
 }
 
 function handleBookButton(GarageRef) {
-    const sDate = document.getElementById("sDate").value;
+    const sDate = new Date(document.getElementById("sDate").value);
     const sTime = document.getElementById("startTime").value;
     const eTime = document.getElementById("endTime").value;
-    const vehicle = document.getElementById("vehicleList").value;
+    const vehicleName = document.getElementById("vehicleList").options[document.getElementById("vehicleList").selectedIndex].text;
+    const vehicleRef = document.getElementById("vehicleList").value;
     const sTypeSelected = document.getElementById("spotRequest").value;
     const price = document.getElementById(GarageRef + "-price");
-    var paymentRef = null
+    var paymentRef = null;
     paymentRef = document.getElementById("bookReservationPayment").value;
+    startStr = "" + sDate.getMonth() + " " + sDate.getDate() + ", " + sDate.getFullYear() + ". " + timeConvert("" + sTime.substr(0,2) + ":" + sTime.substr(3,2))
     var startTime = firebase.firestore.Timestamp.fromDate(new Date(
         sDate.getFullYear(),sDate.getMonth(),sDate.getDate(),sTime.substr(0,2),sTime.substr(3,2)
     ));
+    endStr = "" + sDate.getMonth() + " " + sDate.getDate() + ", " + sDate.getFullYear() + ". " + timeConvert("" + eTime.substr(0,2) + ":" + eTime.substr(3,2))
     var endTime = firebase.firestore.Timestamp.fromDate(new Date(
         sDate.getFullYear(),sDate.getMonth(),sDate.getDate(),eTime.substr(0,2),eTime.substr(3,2)
     ));
-    
+    // Fill info
+    const bGarageName = document.getElementById("bookReservationGarageName");
+    const bGarageAddress = document.getElementById("bookReservationGarageAddress");
+    const bBookVehicle = document.getElementById("bookReservationVehicle");
+    const bBookSpotType = document.getElementById("bookReservationSpotType");
+    const bBookStartTime = document.getElementById("bookReservationStartTime");
+    const bBookEndTime = document.getElementById("bookReservationEndTime");
+    const bBookHourlyPrice = document.getElementById("bookReservationSpotHourlyPrice");
+    const bBookTotalPrice = document.getElementById("bookReservationSpotTotalPrice");
+    const bBookPaymentMethod = document.getElementById("bookReservationPayment");
+
+    bGarageName.innerHTML = document.getElementById(GarageRef + "-name").value;
+    bGarageAddress.innerHTML = document.getElementById(GarageRef + "-address").value;
+    bBookVehicle.innerHTML = vehicleName;
+    bBookSpotType.innerHTML = sTypeSelected;
+    bBookStartTime.innerHTML = startStr;
+    bBookEndTime.innerHTML = endStr;
+    bBookHourlyPrice.innerHTML = document.getElementById(GarageRef + "-price").value;
+    var totalPriceInt = parseInt(bBookHourlyPrice.innerHTML) * (parseInt(sTime.substr(0,2)) - parseInt(eTime.substr(0,2)));
+    if (totalPriceInt < 1) {totalPriceInt = 1;}
+    bBookTotalPrice.innerHTML = totalPriceInt;
+    bBookPaymentMethod.innerHTML = document.getElementById(GarageRef + "-address").value;
+
+
     document.getElementById("finalizeReservationButton").onclick = function() {
-        addReservation(GarageRef, sTypeSelected, price, vehicle, paymentRef, startTime, endTime);
+        addReservation(GarageRef, sTypeSelected, price, vehicleRef, paymentRef, startTime, endTime);
     };
 }
 
@@ -386,5 +415,35 @@ async function fillVehicleList() {
     .catch((error) => {
         console.log("Failed to get Account");
         return;
+    });
+}
+
+async function fillPaymentList(user) {
+    const paymentList = document.getElementById("bookReservationPayment");
+    const db = firebase.firestore();
+    var customerID = "";
+    await db.collection("Account").doc(user.uid).get()
+    .then((doc) => {
+        customerID = doc.data().Profile.slice(9);
+    });
+    await db.collection("Customer").doc(customerID).get()
+    .then((doc) => {
+        var data = doc.data();
+        data.Payments.forEach(async (payment) => {
+            const newPayment = document.createElement("option");
+            newPayment.value = payment.slice(8);
+            await db.collection("Payment").doc(payment.slice(8)).get()
+            .then((doc) => {
+                var data = doc.data();
+                var expDate = data.Expiration.toDate();
+                const paymentName = "XXXX-" + String(data.CardNum).slice(12) + " Exp:" + (parseInt(expDate.getMonth()) + 1) + "/" + parseInt(expDate.getFullYear());
+                newPayment.innerHTML = paymentName;
+                paymentList.appendChild(newPayment);
+            })
+            .catch((error) => {
+                console.log("Failed to get payment data: " + error);
+                return;
+            });
+        });
     });
 }
