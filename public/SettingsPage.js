@@ -1,3 +1,10 @@
+document.addEventListener("DOMContentLoaded", event => {
+    const auth = firebase.auth();
+    auth.onAuthStateChanged(async (user) => {
+        setDefaultValues(user);
+    });
+});
+
 
 /**
  * this adds a vehicle doc to the Vehicle collection
@@ -163,9 +170,28 @@ async function deleteVehicle(VehicleRef){
 }
 
 
-function SaveChanges() {
-    document.getElementById('saveButton').classList.add('hidden');
-  }
+function saveChanges() {
+    var errorField = document.getElementById("account-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
+    var user = firebase.auth().currentUser;
+    var first = document.getElementById("accountFirstName");
+    var last = document.getElementById("accountLastName");
+
+    if (inputNullOrEmpty(first.value)) {
+        errorField.innerHTML = "Enter your first name"
+        return;
+    } else if (inputNullOrEmpty(last.value)) {
+        errorField.innerHTML = "Enter your last name"
+        return;
+    } else {
+        firebase.firestore().collection("Account").doc(user.uid)
+        .update({
+            FirstName: first.value,
+            LastName: last.value
+        });
+    }
+}
 
 /**
  * This will add a payment method and link it to the customer
@@ -387,4 +413,19 @@ async function checkBilling(){
         await saveBillingChanges(billingID);
         return;
     }
+}
+
+async function setDefaultValues(user){
+    const accFirst = document.getElementById("accountFirstName");
+    const accLast = document.getElementById("accountLastName");
+    const accEmail = document.getElementById("accountEmail");
+
+    await firebase.firestore().collection("Account").doc(user.uid)
+    .get()
+    .then((doc) => {
+        var data = doc.data();
+        accFirst.value = data.FirstName;
+        accLast.value = data.LastName;
+        accEmail.value = data.Email;
+    });
 }
