@@ -466,10 +466,23 @@ function displayOnePayment(paymentRef) {
         pNumber.innerHTML = "Card ending with: " + gNum;
         pExpiration.innerHTML = "Expires: " + gExpiration;
         newPayment.id = doc.id;
-        newPayment.appendChild(pNumber);
-        newPayment.appendChild(pExpiration);
-        //TODO: add an x on the right of this that has an onclick for deletepayment
 
+        var delPaymentButton = document.createElement('button');
+        delPaymentButton.className = "text-gray-500 font-bold text-4xl self-center items-center float-right hover:text-red-700 hover:no-underline hover:cursor-pointer";
+        delPaymentButton.innerHTML = "&times"
+        delPaymentButton.onclick = function() {removePayment(paymentRef)};
+        var mainDiv = documnet.createElement('div');
+        mainDiv.className = "bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl grid grid-cols-2";
+
+        var leftDiv = document.createElement('div');
+        leftDiv.appendChild(pNumber);
+        leftDiv.appendChild(pExpiration);
+        var rightDiv = document.createElement('div');
+        rightDiv.appendChild(delPaymentButton);
+
+        mainDiv.appendChild(leftDiv);
+        mainDiv.appendChild(rightDiv);
+        newPayment.appendChild(maindDiv);
         paymentList.appendChild(newPayment);
     })
     .catch((error) => {
