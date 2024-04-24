@@ -7,6 +7,7 @@ var selectedMarker = null;
 
 document.addEventListener("DOMContentLoaded", event => {
     const auth = firebase.auth();
+    const zeroPad = (num, places) => String(num).padStart(places, '0');
     document.getElementById("vehicleList").onchange = replaceGarages;
     document.getElementById("spotRequest").onchange = replaceGarages;
     document.getElementById("sDate").onchange = replaceGarages;
@@ -14,6 +15,9 @@ document.addEventListener("DOMContentLoaded", event => {
     document.getElementById("endTime").onchange = replaceGarages;
     document.getElementById("price").onchange = replaceGarages;
     auth.onAuthStateChanged(async (user) => {
+        var today = new Date();
+        var minDate = "" + today.getFullYear() + "-" + zeroPad(parseInt(today.getMonth()) + 1, 2) + "-" + zeroPad(today.getDate(), 2);
+        document.getElementById("sDate").min = minDate;
         await fillVehicleList();
         await new Promise(r => setTimeout(r, 1000));
         fillGarageList();
