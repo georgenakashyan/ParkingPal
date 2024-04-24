@@ -436,7 +436,7 @@ async function fillPaymentList(user) {
             .then((doc) => {
                 var data = doc.data();
                 var expDate = data.Expiration.toDate();
-                const paymentName = "XXXX-" + String(data.CardNum).slice(12) + " Exp:" + (parseInt(expDate.getMonth()) + 1) + "/" + parseInt(expDate.getFullYear());
+                const paymentName = "Card:" + String(data.CardNum).slice(12) + ", exp:" + (parseInt(expDate.getMonth()) + 1) + "/" + String(expDate.getFullYear()).slice(2);
                 newPayment.innerHTML = paymentName;
                 paymentList.appendChild(newPayment);
             })
