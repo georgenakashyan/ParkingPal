@@ -438,6 +438,17 @@ async function setDefaultValues(user){
 }
 
 async function setDefaultPayments(customerRef) {
+    const db = firebase.firestore();
+    const profileInfo = await db.collection('Customer').doc(customerRef);
+    profileInfo.get()
+    .then((doc) => {
+        var paymentList = doc.data().Payments;
+        paymentList.forEach(displayOnePayment);
+    })
+    .catch((error) => {
+        console.log("Failed to find customer doc: " + error);
+    });
+}
 
 }
 
