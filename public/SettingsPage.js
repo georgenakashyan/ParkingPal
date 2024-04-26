@@ -327,7 +327,7 @@ async function addBilling(ManagerRef){
     await billingDB.add(billingDoc)
     .then((updateDoc)=>{
         managerDB.update({
-            Billing: "Billing/"+updateDoc.id
+            Billing: firebase.firestore.FieldValue.arrayUnion("Billing/"+updateDoc.id)
         })
         .catch((error)=>{
             console.log("Couldn't find Manager doc: "+error);
