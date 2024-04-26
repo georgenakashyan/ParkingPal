@@ -414,6 +414,49 @@ async function checkBilling(){
     }
 }
 
+/**
+ * This deletes the billing doc
+ * this deletes the reference from the manager doc
+ * this deletes the reference from the garage doc
+ * @param {*} BillingRef 
+ */
+async function removeBilling(BillingRef){
+    //variables
+    var billingLink="Billing/"+BillingRef;
+    //links database
+    const user=firebase.auth().currentUser,db=firebase.firestore();
+    const billingDB=db.collection("Billing"),managerDB=db.collection("Manager"),garageDB=db.collection("Garage");
+    //gets info from db
+    await managerDB.where('Billing','==',billingLink).get()
+    .then((tempDoc)=>{
+        tempDoc.forEach((doc)=>{
+            managerDB.doc(doc)
+            .update({
+                Billing: firebase.firestore.FieldValue.arrayRemove(billingLink)
+            })
+        })
+    })
+    .catch((error)=>{
+        console.log("Error deleting billing from manager: "+error);
+    })
+    await garageDB.where('Billing','==',billingLink).get()
+    .then((tempDoc)=>{
+        tempDoc.forEach((doc)=>{
+            garageDB.doc(doc)
+            .update({
+                Billing: ""
+            })
+        })
+    })
+    .catch((error)=>{
+        console.log("Error deleting billing from garage: "+error);
+    })
+    await billingDB.doc(BillingRef).delete()
+    .catch((error)=>{
+        console.log("Error deleting billing from billing: "+error);
+    });
+}
+
 async function setDefaultValues(user){
     const db = firebase.firestore();
     const accFirst = document.getElementById("accountFirstName");
