@@ -426,7 +426,7 @@ async function removeBilling(BillingRef){
     //links database
     const user=firebase.auth().currentUser,db=firebase.firestore();
     const billingDB=db.collection("Billing"),managerDB=db.collection("Manager"),garageDB=db.collection("Garage");
-    //gets info from db
+    //removes links from relevant docs
     await managerDB.where('Billing','==',billingLink).get()
     .then((tempDoc)=>{
         tempDoc.forEach((doc)=>{
@@ -451,6 +451,7 @@ async function removeBilling(BillingRef){
     .catch((error)=>{
         console.log("Error deleting billing from garage: "+error);
     })
+    //deletes billing doc
     await billingDB.doc(BillingRef).delete()
     .catch((error)=>{
         console.log("Error deleting billing from billing: "+error);
