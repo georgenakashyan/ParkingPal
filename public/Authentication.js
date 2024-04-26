@@ -13,7 +13,7 @@ function updateUserType(type) {
     if(managerBoolean){
         typeDoc.add({
             Account: "Account/" + user.uid,
-            Billing: "",
+            Billing: [],
             Garages: []
         }).then((doc) => {
             accountDoc.set({
