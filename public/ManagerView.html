@@ -15,8 +15,8 @@
     <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
     <script src="app.js"></script>
-    <script src="ManagerView.js"></script>
-    <script src="Reservation.js"></script>
+    <script src="ManagerView.js" type = 'module'></script>
+    <script src="Reservation.js" type = 'module'></script>
     <title>Parking Pal - Manager Home</title>
     <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
     <script loading=async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEw4uAP37UWhAS8P9RHrx_PrA-08vutk"></script>
@@ -76,7 +76,7 @@
                         </div>
                     </form>
                     <label class="notification-text" id="add-notification-text"></label>
-                <button class="long-main-button mt-1 mb-6" onclick="addGarage()" style="width: 80% !important;">Add Garage</button>
+                <button id = "ag" class="long-main-button mt-1 mb-6" style="width: 80% !important;">Add Garage</button>
                 </div>
             </div>
             <div class="grow"></div>
@@ -86,9 +86,9 @@
             <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
                 <div class="flex overflow-hidden bg-PP-blue rounded-md text-white mb-5 pl-2 pr-2">
                     <div class="mr-1 font-bold">
-                        <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('garageInfo')">Garage Info</button>
-                        <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('spotInfo')">Parking Spots</button>
-                        <button class="p-2 float-left w-auto border-none block outline-none" onclick="openTab('reservationList')">Reservations</button>
+                        <button id = "gi" class="p-2 float-left w-auto border-none block outline-none">Garage Info</button>
+                        <button id = "ps" class="p-2 float-left w-auto border-none block outline-none">Parking Spots</button>
+                        <button id = "r" class="p-2 float-left w-auto border-none block outline-none">Reservations</button>
                     </div>
                     <div class="grow w-fit"></div>
                     <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('editGarage')">&times;</button>

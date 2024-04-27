@@ -1,25 +1,35 @@
+import{
+    getAccountDoc,
+    getGarageDoc,
+    deleteGarage,
+    setNewGarageDoc,
+    setOldGarageDoc
+} from './Firebase.js';
+import { displayAllReservations } from "./Reservation.js";
+
 var resCount = 0;
 var geocoder;
-
+/**
+ * Initializes the page
+ */
 document.addEventListener("DOMContentLoaded", event => {
     geocoder = new google.maps.Geocoder();
     const auth = firebase.auth();
-    auth.onAuthStateChanged((user) => {
-        const db = firebase.firestore();
-        const profileInfo = db.collection('Account').doc(user.uid);
-        profileInfo.get()
-        .then((doc) => {
-            document.getElementById("WelcomeName").innerHTML = "Welcome, " + doc.data().FirstName;
-            displayAllGarages(doc.data());
-        })
-        .catch((error) => {
-            console.log("Could not find user doc to display name and email");
-        })
+    auth.onAuthStateChanged(async (user) => {
+        try {
+            var profileInfo = await getAccountDoc(user.uid);
+            document.getElementById("WelcomeName").innerHTML = "Welcome, " + profileInfo.data().FirstName;
+            displayAllGarages(profileInfo.data());
+            setOnClicks();
+        } catch (error) {
+            console.log("An error occured: "+error);
+        }
     });
 });
 
 /**
- * pulls info from 'Garage' and displays it
+ * Pulls info from 'Garage' and displays it
+ * @param {string} accountDoc - The reference of the account.
  */
 async function displayAllGarages(accountDoc){
     const managerRef = accountDoc.Profile.slice(8);
@@ -34,38 +44,37 @@ async function displayAllGarages(accountDoc){
     .catch((error) => {
         console.log("Failed to find manager doc: " + error);
     });
-}
 
-function displayOneGarage(garageRef) {
+}
+/**
+ * Displays one gargage
+ * @param {string} garageRef - The reference of the garage.
+ */
+async function displayOneGarage(garageRef) {
     let garageList = document.getElementById('GarageList');
     var newGarage = document.createElement('li');
     newGarage.className = 'bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400';
     var pName = document.createElement('p');
     var pAddress = document.createElement('p');
-    const db = firebase.firestore();
-    db.collection('Garage').doc(garageRef.slice(7)).get()
-    .then((doc) => {
-        const data = doc.data();
-        const gName = data.Name;
-        const gAddress = data.Address + ", " + data.AreaCode;
-        pName.innerHTML = "Name: " + gName;
-        pAddress.innerHTML = "Address: " + gAddress;
-        newGarage.id = doc.id;
+    try {
+        var currGarage = await getGarageDoc(garageRef.slice(7));
+        pName.innerHTML = "Name: " + currGarage.data().Name;
+        pAddress.innerHTML = "Address: " + currGarage.data().Address + ", " + currGarage.data().AreaCode;
+        newGarage.id = currGarage.id;
         newGarage.appendChild(pName);
         newGarage.appendChild(pAddress);
         newGarage.onclick = function() {showGarageInfoPanel(newGarage.id)};
         garageList.appendChild(newGarage);
-        var resList = data.Reservations;
+        var resList = currGarage.data().Reservations;
         resCount += resList.length;
         updateResLabel();
-    })
-    .catch((error) => {
-        console.log("Failed to find garage info doc");
-    });
+    } catch (error) {
+        console.log("An error occured: "+ error);
+    }
 }
 
 /**
- * this will add garages to the firebase database
+ * This will add garages to the firebase database
  */
 async function addGarage(){
     var errorField = document.getElementById("add-notification-text");
@@ -97,15 +106,7 @@ async function addGarage(){
     var closeTime=firebase.firestore.Timestamp.fromDate(closeDate);
     var managerProfile;
     //gets info from database
-    await db.collection("Account").doc(user.uid)
-    .get()
-    .then((doc) => {
-        managerProfile = doc.data().Profile.slice(8);
-    })
-    .catch((error) => {
-        console.log("Failed to find manager doc: " + error);
-    });
-    var managerInfo = await db.collection("Manager").doc(managerProfile);
+    var managerInfo = await getAccountDoc(user.uid);
     const dbReference = await db.collection("Garage").where('Address','==',address).where('AreaCode','==',areaCode).get();
     //document to add to database
     if (inputNullOrEmpty(name)) {
@@ -126,33 +127,7 @@ async function addGarage(){
         errorField.innerHTML = "Invalid address";
     } else {
         errorField.innerHTML = "";
-        var garageData={
-            Name: name,
-            Address: address,
-            AreaCode: areaCode,
-            OpenTime: openTime,
-            CloseTime: closeTime,
-            Manager: "Manager/" + managerProfile,
-            Reservations: [],
-            Lat: lat,
-            Lng: lng,
-            Spots_Normal: {
-                Price: 0,
-                Total: 0
-            },
-            Spots_EV: {
-                Price: 0,
-                Total: 0
-            },
-            Spots_Handicap: {
-                Price: 0,
-                Total: 0
-            },
-            Spots_Moto: {
-                Price: 0,
-                Total: 0
-            }
-        };
+        var garageData = await setNewGarageDoc(name,address,areaCode,openTime,closeTime,managerProfile,lat,lng);
         //puts document into database
         await db.collection("Garage").add(garageData)
         .then((document)=>{
@@ -172,65 +147,24 @@ async function addGarage(){
         closePopup('addGarage');
     }
 }
-
 /**
- * this will delete the garage doc and reference under manager
- * @param {*} garageRef 
+ * This opens the information panel of the garage
+ * @param {string} garageID - The ID of the garage.
  */
-async function deleteGarage(garageID){
-    const db = firebase.firestore();
-    await db.collection("Garage").doc(garageID).get()
-    .then((garageDoc)=>{
-        var garageData = garageDoc.data();
-        var managerID = garageData.Manager.slice(8);
-        var garageLink = "Garage/" + garageID;
-        db.collection("Reservation").where("Garage_ID", "==", garageLink).get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                db.collection("Reservation").doc(doc.id).delete();
-            });
-        });
-        db.collection("Favorite").where("Garage_ID", "==", garageLink).get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                db.collection("Favorite").doc(doc.id).delete();
-                var customerRef = doc.data().Customer_ID.slice(9);
-                db.collection("Customer").doc(customerRef)
-                .update({
-                    Favorites: firebase.firestore.FieldValue.arrayRemove("Favorite/" + doc.id)
-                });
-            });
-        });
-        db.collection("Review").where("Garage_ID", "==", garageLink).get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                db.collection("Review").doc(doc.id).delete();
-                var customerRef = doc.data().Customer_ID.slice(9);
-                db.collection("Customer").doc(customerRef)
-                .update({
-                    Reviews: firebase.firestore.FieldValue.arrayRemove("Review/" + doc.id)
-                });
-            });
-        });
-        db.collection("Manager").doc(managerID)
-        .update({
-            Garages: firebase.firestore.FieldValue.arrayRemove(garageLink)
-        });
-        db.collection("Garage").doc(garageID).delete();
-        document.getElementById(garageID).remove();
-        closePopup("editGarage");
-    });
-}
-
 function showGarageInfoPanel(garageID) {
     openPopup("editGarage");
     displayEditGarage(garageID);
 }
-
+/**
+ * This hides the information panel of the garage
+ * @param {string} garageID - The ID of the garage.
+ */
 function hideGarageInfoPanel(garageID) {
     closePopup("editGarage");
 }
-
+/**
+ * This hides the information panel of the garage
+ */
 function updateResLabel() {
     const resLabel = document.getElementById("ReservationInfo");
     resLabel.innerHTML = "" + resCount + " active reservation";
@@ -238,7 +172,10 @@ function updateResLabel() {
         resLabel.innerHTML = resLabel.innerHTML + "s"
     }
 }
-
+/**
+ * This will open the selected tab
+ * @param {*} tabName - The name of the tab
+ */
 function openTab(tabName) {
     var i;
     var x = document.getElementsByClassName("editGarageTab");
@@ -251,7 +188,7 @@ function openTab(tabName) {
 /**
  * this will edit the garage besides making the display
  * for making the display refer to displayEditGarage()
- * @param {*} garageID
+ * @param {*} garageID - The ID of the garage
  */
 async function saveGarageChanges(garageID){
     var errorField = document.getElementById("edit-notification-text");
@@ -289,50 +226,35 @@ async function saveGarageChanges(garageID){
     } else {
         errorField.style.setProperty("color", "green");
         errorField.innerHTML = "Garage information saved";
-        var garageData = {
-            Name: name,
-            Address: address,
-            AreaCode: areaCode,
-            OpenTime: openTime,
-            CloseTime: closeTime,
-            Lat: lat,
-            Lng: lng
-        };
+        var garageData = await setOldGarageDoc(name,address,areaCode,openTime,closeTime,lat,lat);
         await garageRef.set(garageData,{merge:true});
     }
 }
 
 /**
- * this is to show all the existing information about the garage that you wish to edit 
- * @param {*} garageID
+ * This is to show all the existing information about the garage that you wish to edit 
+ * @param {*} garageID - The ID of the garage
  */
 async function displayEditGarage(garageID){
-    var name,address,areaCode,openTime,closeTime;
-    const db = firebase.firestore();
-    await db.collection("Garage").doc(garageID).get()
-    .then((doc)=>{
-        const data = doc.data();
-        name = data.Name;
-        address = data.Address;
-        areaCode = data.AreaCode;
-        openTime = data.OpenTime;
-        closeTime = data.CloseTime;
-    });
-
     var pName = document.getElementById('editGarageName');
     var pAddress = document.getElementById('editGarageAddress');
     var pAreaCode = document.getElementById('editGarageAreaCode');
     var pOpenTime = document.getElementById('editGarageOpenTime');
     var pCloseTime = document.getElementById('editGarageCloseTime');
-
-    pName.value = name;
-    pAddress.value = address;
-    pAreaCode.value = areaCode;
-    var openTimeDate = openTime.toDate();
+    try {
+        var currGarage = await getGarageDoc(garageID);
+        pName.value = currGarage.data().Name;
+        pAddress.value = currGarage.data().Address;
+        pAreaCode.value = currGarage.data().AreaCode;
+        var openTimeDate = currGarage.data().OpenTime.toDate();
+        var closeTimeDate = currGarage.data().CloseTime.toDate();
+    } catch (error) {
+        console.log("An error occured: "+ error);
+    }
+    
     var openHours = openTimeDate.getHours().toString().padStart(2, '0');
     var openMinutes = openTimeDate.getMinutes().toString().padStart(2, '0');
     pOpenTime.value = openHours + ":" + openMinutes;
-    var closeTimeDate = closeTime.toDate();
     var closeHours = closeTimeDate.getHours().toString().padStart(2, '0');
     var closeMinutes = closeTimeDate.getMinutes().toString().padStart(2, '0');
     pCloseTime.value = closeHours + ":" + closeMinutes;
@@ -348,7 +270,12 @@ async function displayEditGarage(garageID){
     displayParkingSpots(garageID);
     displayAllReservations(garageID);
 }
-
+/**
+ * This allows us to geocode the address of the garage
+ * @param {*} addr - The address of the garage
+ * @param {*} areacode - The area code of the garage
+ * @param {*} errorField - The error field
+ */
 async function geocodeAddress(addr, areacode, errorField) {
     var address = "" + addr + ", " + areacode 
     var lat, lng = null;
@@ -367,12 +294,10 @@ async function geocodeAddress(addr, areacode, errorField) {
     return [lat, lng];
 }
 
-function changeSpotCount(change, spotType) {
-    var count = document.getElementById(spotType + "SpotCount");
-    var newVal = parseInt(count.value) + parseInt(change);
-    count.value = (newVal >= 0 ? newVal : 0)
-}
-
+/**
+ * This updates the spot information
+ * @param {*} garageID - The ID of the garage
+ */
 async function updateSpotInfo(garageID) {
     var errorField = document.getElementById("spot-notification-text");
     errorField.innerHTML = "";
@@ -388,10 +313,8 @@ async function updateSpotInfo(garageID) {
     let handicapSpotCount = document.getElementById("handicapSpotCount");
     let motoSpotCount = document.getElementById("motoSpotCount");
 
-    if(normalSpotPrice.value == 0 ||
-        evSpotPrice.value == 0 ||
-        handicapSpotPrice.value == 0 ||
-        motoSpotPrice.value == 0) {
+    if(normalSpotPrice.value == 0 || evSpotPrice.value == 0 ||
+        handicapSpotPrice.value == 0 || motoSpotPrice.value == 0) {
             errorField.innerHTML = "Enter a price for your spots";
             return;
     }
@@ -414,7 +337,6 @@ async function updateSpotInfo(garageID) {
             Total: parseInt(motoSpotCount.value)
         }
     }
-
     const db = firebase.firestore();
     await db.collection("Garage").doc(garageID).set(spotData, {merge:true})
     .then(() => {
@@ -422,13 +344,15 @@ async function updateSpotInfo(garageID) {
         errorField.style.setProperty("color", "green");
     });
 }
-
+/**
+ * This displays parking spots
+ * @param {*} garageID - The ID of the garage
+ */
 async function displayParkingSpots(garageID) {
     var errorField = document.getElementById("spot-notification-text");
     errorField.innerHTML = "";
     errorField.style.setProperty("color", "red");
 
-    const db = firebase.firestore();
     let normalSpotPrice = document.getElementById("normalSpotPrice");
     let evSpotPrice = document.getElementById("evSpotPrice");
     let handicapSpotPrice = document.getElementById("handicapSpotPrice");
@@ -439,20 +363,31 @@ async function displayParkingSpots(garageID) {
     let handicapSpotCount = document.getElementById("handicapSpotCount");
     let motoSpotCount = document.getElementById("motoSpotCount");
 
-    await db.collection("Garage").doc(garageID).get()
-    .then(async (doc) => {
-        const data = doc.data();
-        normalSpotPrice.value = data.Spots_Normal.Price;
-        evSpotPrice.value = data.Spots_EV.Price;
-        handicapSpotPrice.value = data.Spots_Handicap.Price;
-        motoSpotPrice.value = data.Spots_Moto.Price;
+    try {
+        var currGarage = await getGarageDoc(garageID);
+        normalSpotPrice.value = currGarage.data().Spots_Normal.Price;
+        evSpotPrice.value = currGarage.data().Spots_EV.Price;
+        handicapSpotPrice.value = currGarage.data().Spots_Handicap.Price;
+        motoSpotPrice.value = currGarage.data().Spots_Moto.Price;
 
-        normalSpotCount.value = data.Spots_Normal.Total;
-        evSpotCount.value = data.Spots_EV.Total;
-        handicapSpotCount.value = data.Spots_Handicap.Total;
-        motoSpotCount.value = data.Spots_Moto.Total;
-    })
-    .catch((error) => {
-      console.log("Failed to find parking spot info doc: " + error);
-    });
+        normalSpotCount.value = currGarage.data().Spots_Normal.Total;
+        evSpotCount.value = currGarage.data().Spots_EV.Total;
+        handicapSpotCount.value = currGarage.data().Spots_Handicap.Total;
+        motoSpotCount.value = currGarage.data().Spots_Moto.Total;
+    } catch (error) {
+        console.log("An error occured: "+error);
+    }
+}
+/**
+ * Sets the on click fucntions for the elements
+ */
+function setOnClicks() {
+    var garageInfoTab = document.getElementById("gi");
+    var parkingSpotTab = document.getElementById("ps");
+    var reservationTab = document.getElementById("r");
+    var addGarageButt = document.getElementById("ag");
+    garageInfoTab.onclick = function() {openTab('garageInfo')};
+    parkingSpotTab.onclick = function() {openTab('spotInfo')};
+    reservationTab.onclick = function() {openTab('reservationList')};
+    addGarageButt.onclick = function() {(addGarage())};
 }

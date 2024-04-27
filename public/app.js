@@ -213,7 +213,16 @@ function timeConvert (time) {
     }
     return time.join (''); // return adjusted time or original string
 }
-
+/**
+ * This 
+ * @param {*} change - 
+ * @param {*} spotType - 
+ */
+function changeSpotCount(change, spotType) {
+    var count = document.getElementById(spotType + "SpotCount");
+    var newVal = parseInt(count.value) + parseInt(change);
+    count.value = (newVal >= 0 ? newVal : 0)
+}
 function openPopup(popupID){
     document.querySelector("#" + popupID + "Popup").classList.remove("hidden");
     document.querySelector("#" + popupID + "Popup").classList.add("flex");

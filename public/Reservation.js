@@ -1,8 +1,10 @@
+import { getReservationDoc } from "./Firebase.js";
+
 /**
  * Displays all reservations for a given garage.
  * @param {string} garageID - The ID of the garage.
  */
-async function displayAllReservations(garageID) {
+export async function displayAllReservations(garageID) {
     var resTable = document.getElementById("reservationTable");
     while(resTable.rows.length > 1) resTable.rows[1].remove();
     const db = firebase.firestore();
@@ -21,38 +23,29 @@ async function displayAllReservations(garageID) {
  * @param {string} reservationRef - The reference to the reservation.
  */
 async function displayReservation(reservationRef) {
-    const db = firebase.firestore();
     let reservationTable = document.getElementById("reservationTable");
     let reservationBody = document.getElementById("reservationBody");
     var newReservation = document.createElement("tr");
-    newReservation.className =
-        "bg-gray-300 text-left text-gray-700 [&>td]:p-3 hover:bg-gray-400";
+    newReservation.className ="bg-gray-300 text-left text-gray-700 [&>td]:p-3 hover:bg-gray-400";
     const pName = document.createElement("td");
     const pVehID = document.createElement("td");
     const pVehPlate = document.createElement("td");
     const pStart = document.createElement("td");
     const pEnd = document.createElement("td");
     const pSpotInfo = document.createElement("td");
-    await db.collection("Reservation").doc(reservationRef.slice(12)).get()
-        .then(async (doc) => {
-            const data = doc.data();
-            /* var start = data.Start
-            if (data) {
-                    
-            } */
-            //TODO: Make so that it only shows reservations from today and later
-            pName.textContent = await getStringFromReservation("Name", data.Customer_ID);
-            pVehID.textContent = await getStringFromReservation("VehicleID", data.Vehicle_ID);
-            pVehPlate.textContent = await getStringFromReservation("VehiclePlate", data.Vehicle_ID);
-            var strStart = await getStringFromReservation("Start", data.Start);
-            pStart.textContent = timeConvert(strStart);
-            var strEnd = await getStringFromReservation("End", data.End);
-            pEnd.textContent = timeConvert(strEnd);
-            pSpotInfo.textContent = await getStringFromReservation("SpotInfo", data.SpotInfo);
-        })
-        .catch((error) => {
-            console.log("Failed to find reservation info doc: " + error);
-        });
+    try {
+        var currReservation = await getReservationDoc(reservationRef.slice(12));
+        pName.textContent = await getStringFromReservation("Name", currReservation.data().Customer_ID);
+        pVehID.textContent = await getStringFromReservation("VehicleID", currReservation.data().Vehicle_ID);
+        pVehPlate.textContent = await getStringFromReservation("VehiclePlate", currReservation.data().Vehicle_ID);
+        var strStart = await getStringFromReservation("Start", currReservation.data().Start);
+        pStart.textContent = timeConvert(strStart);
+        var strEnd = await getStringFromReservation("End", currReservation.data().End);
+        pEnd.textContent = timeConvert(strEnd);
+        pSpotInfo.textContent = await getStringFromReservation("SpotInfo", currReservation.data().SpotInfo);
+    } catch (error) {
+        console.log("An error occured: "+error);
+    }
     newReservation.appendChild(pName);
     newReservation.appendChild(pVehID);
     newReservation.appendChild(pVehPlate);
