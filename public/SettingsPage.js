@@ -250,11 +250,13 @@ async function addPayment(){
         };
         await paymentDB.add(paymentDoc)
         .then((updateDoc)=>{
+            var paymentRef = "Payment/"+updateDoc.id;
             db.collection("Customer").doc(customerID).update({
-                Payments: firebase.firestore.FieldValue.arrayUnion("Payment/"+updateDoc.id)
+                Payments: firebase.firestore.FieldValue.arrayUnion(paymentRef)
             });
-            errorField.style.setProperty("color", "green");
-            errorField.innerHTML = "Payment successfully added";
+            errorField.innerHTML = "";
+            displayOnePayment(paymentRef);
+            closePopup("addPayment");
         })
         .catch((error)=>{
             console.log("Issue with adding payment to customer doc: "+error);
@@ -269,7 +271,6 @@ async function addPayment(){
 async function removePayment(PaymentRef){
     //variables
     var customerID;
-    var paymentLink="Payment/"+PaymentRef;
     //links to database
     const user=firebase.auth().currentUser,db=firebase.firestore();
     const paymentDB=db.collection("Payment");
@@ -284,7 +285,7 @@ async function removePayment(PaymentRef){
     //deletes from customer array
     await db.collection("Customer").doc(customerID)
     .update({
-        Payment: firebase.firestore.FieldValue.arrayRemove(paymentLink)
+        Payments: firebase.firestore.FieldValue.arrayRemove("Payment/" + PaymentRef)
     });
     //deletes doc from database
     await paymentDB.doc(PaymentRef).delete();
@@ -463,7 +464,7 @@ async function displayOnePayment(paymentRef) {
     await db.collection('Payment').doc(paymentRef.slice(8)).get()
     .then((doc) => {
         const data = doc.data();
-        const gNum = String(data.CardNum).slice(12);
+        const gNum = String(data.CardNum).slice(-4);
         var expDate = data.Expiration.toDate();
         const gExpiration = "" + (parseInt(expDate.getMonth()) + 1) + "/" + String(expDate.getFullYear()).slice(2);
         pNumber.innerHTML = "Card ending with: " + gNum;
@@ -473,7 +474,7 @@ async function displayOnePayment(paymentRef) {
         var delPaymentButton = document.createElement('button');
         delPaymentButton.className = "text-gray-500 font-bold text-4xl self-center items-center float-right hover:text-red-700 hover:no-underline hover:cursor-pointer";
         delPaymentButton.innerHTML = "&times"
-        delPaymentButton.onclick = function() {removePayment(paymentRef)};
+        delPaymentButton.onclick = function() {removePayment(paymentRef.slice(8))};
         var mainDiv = document.createElement('div');
         mainDiv.className = "bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl grid grid-cols-2";
 
