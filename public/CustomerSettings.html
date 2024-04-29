@@ -98,12 +98,11 @@
                     </div>
                     <div >
                         <form id="addPaymentForm">
-                            <input type="text" id="cardHolderName" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Card Holder's Name"><br>
                             <input type="number" id="addCardNum" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Card Number"><br>
-                            <input type="number" id="addExpDate" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Expiration date - (MM/YY)"><br>
+                            <input type="text" pattern="\d{4}-{1}\d{2}" id="addExpDate" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Expiration date - (YYYY-MM)"><br>
                             <input type="number" id="addSVC" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Security Code"><br>
                         </form>
-                        <label class="notification-text" id="add-notification-text"></label>
+                        <label class="notification-text" id="add-payment-notification-text"></label>
                     <button class="long-main-button mt-1 mb-6" onclick="addPayment()" style="width: 80% !important;">Add Card</button>
                     </div>
                 </div>

@@ -201,8 +201,11 @@ function saveChanges() {
  * This will add a payment method and link it to the customer
  */
 async function addPayment(){
+    var errorField = document.getElementById("add-payment-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
     //variables
-    var cvvNum,cardNum,expire=new Date(),customerID,copyCheck=false;
+    var cvvNum,cardNum,expire,customerID,copyCheck=false;
     //links to database
     const user=firebase.auth().currentUser,db=firebase.firestore();
     await db.collection("Account").doc(user.uid).get()
@@ -211,50 +214,52 @@ async function addPayment(){
     })
     .catch((error)=>{
         console.log("Failed to find Customer doc: "+error);
+        return;
     });
     const paymentDB=db.collection("Payment");
     //gets info from the HTML
-    cvvNum=document.getElementById("").value;
-    cardNum=document.getElementById("").value;
-    expire=document.getElementById("").value;
+    cvvNum=document.getElementById("addSVC").value;
+    cardNum=document.getElementById("addCardNum").value;
+    expire=new Date(document.getElementById("addExpDate").value);
     //error check
     await paymentDB.where('CardNum','==',cardNum).get()
-    .then((noCopyDoc)=>{
-        copyCheck=true;
+    .then((querySnapshot)=>{
+        querySnapshot.forEach((doc) => {copyCheck=true;})
     })
     .catch((error)=>{
         console.log("There was issue: "+error);
+        return;
     })
     if(inputNullOrEmpty(cvvNum)&&cvvNum>99&&cvvNum<1000){
-        ErrorField.innerHTML("Please enter a valid CVV");
+        errorField.innerHTML = "Please enter a valid CVV";
     }
     else if(inputNullOrEmpty(cardNum)){
-        ErrorField.innerHTML("Please enter a card number");
+        errorField.innerHTML = "Please enter a card number";
     }
-    else if(inputNullOrEmpty(expire)){
-        ErrorField.innerHTML("Please enter an experation date for your card");
+    else if(inputNullOrEmpty(expire) || isNaN(expire.getTime())){
+        errorField.innerHTML = "Please enter an expiration date for your card";
     }
     else if(copyCheck){
-        ErrorField.innerHTML("This card is already in your system, please delete the card before continuing");
-    }
-    //makes doc
-    var paymentDoc={
-        CVV: cvvNum,
-        CardNum: cardNum,
-        Expiration: expire
-    };
-    await paymentDB.add(paymentDoc)
-    .then((updateDoc)=>{
-        db.collection("Customer").doc(customerID).update({
-            Payments: firebase.firestore.FieldValue.arrayUnion("Payment/"+updateDoc.id)
+        errorField.innerHTML = "This card is already in the system, please delete the card before continuing";
+    } else {
+        //makes doc
+        var paymentDoc={
+            CVV: parseInt(cvvNum),
+            CardNum: parseInt(cardNum),
+            Expiration: firebase.firestore.Timestamp.fromDate(expire)
+        };
+        await paymentDB.add(paymentDoc)
+        .then((updateDoc)=>{
+            db.collection("Customer").doc(customerID).update({
+                Payments: firebase.firestore.FieldValue.arrayUnion("Payment/"+updateDoc.id)
+            });
+            errorField.style.setProperty("color", "green");
+            errorField.innerHTML = "Payment successfully added";
         })
-        .then((error)=>{
-            console.log("There has been an issue: "+error);
+        .catch((error)=>{
+            console.log("Issue with adding payment to customer doc: "+error);
         });
-    })
-    .catch((error)=>{
-        console.log("There has been an issue: "+error);
-    });
+    }
 }
 
 /**
@@ -305,16 +310,16 @@ async function addBilling(ManagerRef){
     routingNum=document.getElementById("").value;
     //error checking
     if(inputNullOrEmpty(accountNum)){
-        ErrorField.innerHTML("Please enter a valid account number");
+        errorField.innerHTML = "Please enter a valid account number";
     }
     else if(inputNullOrEmpty(address)){
-        ErrorField.innerHTML("Please enter a valid address");
+        errorField.innerHTML = "Please enter a valid address";
     }
     else if(inputNullOrEmpty(org)){
-        ErrorField.innerHTML("Please enter a valid organization");
+        errorField.innerHTML = "Please enter a valid organization";
     }
     else if(inputNullOrEmpty(routingNum)){
-        ErrorField.innerHTML("Please enter a valid routingNum");
+        errorField.innerHTML = "Please enter a valid routingNum";
     }
     //making doc
     var billingDoc={
@@ -355,16 +360,16 @@ async function saveBillingChanges(BillingRef){
     routingNum=document.getElementById("").value;
     //error checking
     if(inputNullOrEmpty(accountNum)){
-        ErrorField.innerHTML("Please enter a valid account number");
+        errorField.innerHTML = "Please enter a valid account number";
     }
     else if(inputNullOrEmpty(address)){
-        ErrorField.innerHTML("Please enter a valid address");
+        errorField.innerHTML = "Please enter a valid address";
     }
     else if(inputNullOrEmpty(org)){
-        ErrorField.innerHTML("Please enter a valid organization");
+        errorField.innerHTML = "Please enter a valid organization";
     }
     else if(inputNullOrEmpty(routingNum)){
-        ErrorField.innerHTML("Please enter a valid routingNum");
+        errorField.innerHTML = "Please enter a valid routingNum";
     }
     //making doc
     var billingDoc={
