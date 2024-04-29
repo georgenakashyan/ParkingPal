@@ -378,43 +378,6 @@ async function saveBillingChanges(BillingRef){
 }
 
 /**
- * checks to see if there is a billing doc
- * if there is a billing doc it will send it to saveBillingChanges(BillingRef)
- * if there is no billing doc it will send it to addBilling()
- */ 
-async function checkBilling(){
-    //variables
-    var managerID,billingID;
-    //links to database
-    const user=firebase.auth().currentUser,db=firebase.firestore();
-    //gets manager doc link
-    await db.collection("Account").doc(user.uid).get()
-    .then((userDoc)=>{
-        managerID=userDoc.data().Profile.slice(8);
-    })
-    .catch((error)=>{
-        console.log("Failed to find Manager doc: "+error);
-    });
-    //gets billing from manager doc
-    await db.collection("Billing").doc(managerID).get()
-    .then((managerDoc)=>{
-        billingID=managerDoc.data().Billing.slice(8);
-    })
-    .catch((error)=>{
-        console.log("Failed to find Manager Doc: "+error);
-    });
-    //sends to approate function
-    if(inputNullOrEmpty(billingID)){
-        await addBilling(managerID);
-        return;
-    }
-    else{
-        await saveBillingChanges(billingID);
-        return;
-    }
-}
-
-/**
  * This deletes the billing doc
  * this deletes the reference from the manager doc
  * this deletes the reference from the garage doc
