@@ -163,45 +163,79 @@ async function addReservation(GarageRef, SpotType, SpotPrice, VehicleRef, Paymen
         errorField.innerHTML = "Error: Reload the page";
         return;
     } else {
-        errorField.style.setProperty("color", "green");
-        errorField.innerHTML = "Reservation Booked!";
+        var vehicleReserved = false;
+        const zeroPad = (num, places) => String(num).padStart(places, '0');
+        await db.collection("Reservation")
+        .where("Vehicle_ID", "==", "Vehicle/" + VehicleRef).get()
+        .then(async (querySnapShot) => {
+            querySnapShot.forEach(async (doc) => {
+                const data = doc.data();
+                var resStart = data.Start.toDate();
+                var resStartDate = "" + resStart.getFullYear() + "-" + zeroPad(parseInt(resStart.getMonth()) + 1, 2) + "-" + zeroPad(resStart.getDate(), 2);
+                var resStartTime = parseInt(resStart.getHours())*100 + parseInt(resStart.getMinutes());
+                var resEnd = data.End.toDate();
+                var resEndTime = parseInt(resEnd.getHours())*100 + parseInt(resEnd.getMinutes());
 
-        //make document
-        var reservation = {
-            Customer_ID: "Customer/" + customerID,
-            End: EndTime,
-            Garage_ID: "Garage/" + GarageRef,
-            Payment_ID: "Payment/" + PaymentRef,
-            Start: StartTime,
-            Vehicle_ID: "Vehicle/" + VehicleRef,
-            SpotInfo: {
-                Price: parseInt(SpotPrice),
-                Type: SpotType
-            }
-        };
-        //adds doc to database
-        await db.collection("Reservation").add(reservation)
-        .then((document) => {
-            reservationID = document.id;
+                var startDate = StartTime.toDate();
+                var requestStartTime = parseInt(startDate.getHours())*100 + parseInt(startDate.getMinutes());
+                var requestEndTime = EndTime.toDate();
+                var sDate = "" + startDate.getFullYear() + "-" + zeroPad(parseInt(startDate.getMonth()) + 1, 2) + "-" + zeroPad(startDate.getDate(), 2);
+
+                if (sDate === resStartDate
+                && ((requestStartTime >= resStartTime && requestStartTime <= resEndTime) 
+                || (requestEndTime >= resStartTime && requestEndTime <= resEndTime))) {
+                    vehicleReserved = true;
+                }
+            });
         })
         .catch((error) => {
-            console.log("Failed to add to Reservation: " + error);
+            console.log("Failed to find vehicle reservations: " + error);
         });
-        //adds reference to other collections
-        await db.collection("Garage").doc(GarageRef)
-        .update({
-            Reservations: firebase.firestore.FieldValue.arrayUnion("Reservation/" + String(reservationID))
-        })
-        .catch((error) => {
-            console.log("Failed to sync reservation list on Garage: " + error);
-        });
-        await db.collection("Customer").doc(customerID)
-        .update({
-            Reservations: firebase.firestore.FieldValue.arrayUnion("Reservation/" + String(reservationID))
-        })
-        .catch((error) => {
-            console.log("Failed to sync reservation list on Customer: " + error);
-        });
+
+        if (vehicleReserved) {
+            errorField.style.setProperty("color", "Red");
+            errorField.innerHTML = "This vehicle already has a reservation at this date and time";
+            return;
+        } else {
+            errorField.style.setProperty("color", "green");
+            errorField.innerHTML = "Reservation Booked!";
+            //make document
+            var reservation = {
+                Customer_ID: "Customer/" + customerID,
+                End: EndTime,
+                Garage_ID: "Garage/" + GarageRef,
+                Payment_ID: "Payment/" + PaymentRef,
+                Start: StartTime,
+                Vehicle_ID: "Vehicle/" + VehicleRef,
+                SpotInfo: {
+                    Price: parseInt(SpotPrice),
+                    Type: SpotType
+                }
+            };
+            //adds doc to database
+            await db.collection("Reservation").add(reservation)
+            .then((document) => {
+                reservationID = document.id;
+            })
+            .catch((error) => {
+                console.log("Failed to add to Reservation: " + error);
+            });
+            //adds reference to other collections
+            await db.collection("Garage").doc(GarageRef)
+            .update({
+                Reservations: firebase.firestore.FieldValue.arrayUnion("Reservation/" + String(reservationID))
+            })
+            .catch((error) => {
+                console.log("Failed to sync reservation list on Garage: " + error);
+            });
+            await db.collection("Customer").doc(customerID)
+            .update({
+                Reservations: firebase.firestore.FieldValue.arrayUnion("Reservation/" + String(reservationID))
+            })
+            .catch((error) => {
+                console.log("Failed to sync reservation list on Customer: " + error);
+            });
+        }
     }
 }
 
