@@ -299,10 +299,10 @@ async function addBilling(ManagerRef){
     const user=firebase.auth().currentUser,db=firebase.firestore();
     const billingDB=db.collection("Billing"),managerDB=db.collection("Manager").doc(ManagerRef);
     //gets data from HTML
-    accountNum=document.getElementById("").value;
-    address=document.getElementById("").value;
-    org=document.getElementById("").value;
-    routingNum=document.getElementById("").value;
+    accountNum=document.getElementById("accountNum").value;
+    address=document.getElementById("orgAddress").value;
+    org=document.getElementById("organization").value;
+    routingNum=document.getElementById("routingNum").value;
     //error checking
     if(inputNullOrEmpty(accountNum)){
         ErrorField.innerHTML("Please enter a valid account number");
@@ -349,10 +349,10 @@ async function saveBillingChanges(BillingRef){
     const user=firebase.auth().currentUser,db=firebase.firestore();
     const billingDB=db.collection("Billing").doc(BillingRef);
     //gets data from HTML
-    accountNum=document.getElementById("").value;
-    address=document.getElementById("").value;
-    org=document.getElementById("").value;
-    routingNum=document.getElementById("").value;
+    accountNum=document.getElementById("accountNum").value;
+    address=document.getElementById("orgAddress").value;
+    org=document.getElementById("organization").value;
+    routingNum=document.getElementById("routingNum").value;
     //error checking
     if(inputNullOrEmpty(accountNum)){
         ErrorField.innerHTML("Please enter a valid account number");
