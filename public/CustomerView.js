@@ -321,7 +321,7 @@ function handleBookButton(GarageRef) {
     var paymentRef = document.getElementById("bookReservationPayment").value;
     startStr = "" + (parseInt(sDate.getMonth()) + 1) + "/" +  (parseInt(sDate.getDate()) + 1) + "/" + sDate.getFullYear() + " - " + timeConvert("" + sTime.substr(0,2) + ":" + sTime.substr(3,2))
     var startTime = firebase.firestore.Timestamp.fromDate(new Date(
-        sDate.getFullYear(),sDate.getMonth(),sDate.getDate(),sTime.substr(0,2),sTime.substr(3,2)
+        sDate.getFullYear(),sDate.getMonth(),(parseInt(sDate.getDate()) + 1),sTime.substr(0,2),sTime.substr(3,2)
     ));
     endStr = "" + (parseInt(sDate.getMonth()) + 1) + "/" + (parseInt(sDate.getDate()) + 1) + "/" + sDate.getFullYear() + " - " + timeConvert("" + eTime.substr(0,2) + ":" + eTime.substr(3,2))
     var endTime = firebase.firestore.Timestamp.fromDate(new Date(
