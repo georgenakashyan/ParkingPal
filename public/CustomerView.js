@@ -372,7 +372,7 @@ function setDefaultValues(){
     document.getElementById("sDate").value = currentDate;
     document.getElementById("startTime").value = currentTime;
     document.getElementById("endTime").value = laterTime;
-    document.getElementById("price").value = "10";
+    document.getElementById("price").value = "20";
 }
 
 async function replaceGarages() {
