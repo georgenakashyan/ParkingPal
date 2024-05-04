@@ -357,7 +357,7 @@ function handleBookButton(GarageRef) {
 function setDefaultValues(){
     const zeroPad = (num, places) => String(num).padStart(places, '0');
     var today = new Date();
-    var currentDate = "" + today.getFullYear() + "-" + zeroPad(parseInt(today.getMonth()) + 1, 2) + "-" + zeroPad(today.getDate());
+    var currentDate = "" + today.getFullYear() + "-" + zeroPad(parseInt(today.getMonth()) + 1, 2) + "-" + zeroPad(today.getDate(), 2);
     var currentHours = zeroPad(today.getHours(), 2);
     var currentMinutes = zeroPad(today.getMinutes(), 2);
     var currentTime = currentHours + ":" + currentMinutes;
