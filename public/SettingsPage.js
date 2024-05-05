@@ -293,6 +293,31 @@ async function removePayment(PaymentRef){
     document.getElementById(PaymentRef).remove();
 }
 
+async function removeVehicle(vehicleRef){
+    //variables
+    var customerID;
+    //links to database
+    const user=firebase.auth().currentUser,db=firebase.firestore();
+    const vehicleDB=db.collection("Vehicle");
+    //gets customer doc id
+    await db.collection("Account").doc(user.uid).get()
+    .then((userDoc)=>{
+        customerID=userDoc.data().Profile.slice(9);
+    })
+    .catch((error)=>{
+        console.log("Failed to find Customer doc: "+error);
+    });
+    //deletes from customer array
+    await db.collection("Customer").doc(customerID)
+    .update({
+        Vehicles: firebase.firestore.FieldValue.arrayRemove("Vehicle/" + vehicleRef)
+    });
+    //deletes doc from database
+    await vehicleDB.doc(vehicleRef).delete();
+    //updates HTML code
+    document.getElementById(vehicleRef).remove();
+}
+
 /**
  * adds billing information to database
  * links to manager doc
@@ -436,19 +461,21 @@ async function setDefaultValues(user){
         if (data.Profile.includes("Manager")) {
             setDefaultBilling(data.Profile.slice(8));
         } else {
-            setDefaultPayments(data.Profile.slice(9));
-            setDefaultVehicles(data.Profile.slice(9));
+            setDefaultPaymentAndVehicles(data.Profile.slice(9));
         }
     });
 }
 
-async function setDefaultPayments(customerRef) {
+async function setDefaultPaymentAndVehicles(customerRef) {
     const db = firebase.firestore();
     const profileInfo = await db.collection('Customer').doc(customerRef);
     profileInfo.get()
     .then((doc) => {
-        var paymentList = doc.data().Payments;
+        var data = doc.data();
+        var paymentList = data.Payments;
         paymentList.forEach(displayOnePayment);
+        var vehicleList = data.Vehicles;
+        vehicleList.forEach(displayOneVehicle);
     })
     .catch((error) => {
         console.log("Failed to find customer doc: " + error);
@@ -494,8 +521,48 @@ async function displayOnePayment(paymentRef) {
     });
 }
 
-async function setDefaultVehicles(customerRef) {
-    
+async function displayOneVehicle(vehicleRef) {
+    let vehicleList = document.getElementById('vehicleList');
+    var newVehicle = document.createElement('li');
+    var pName = document.createElement('p');
+    var pPlate = document.createElement('p');
+    var pHandicap = document.createElement('p');
+    var pMoto = document.createElement('p');
+
+    const db = firebase.firestore();
+    await db.collection('Vehicle').doc(vehicleRef.slice(8)).get()
+    .then((doc) => {
+        const data = doc.data();
+        pName.innerHTML = "" + data.Year + " " + data.Make + " " + data.Model;
+        pPlate.innerHTML = "" + "Plate Number: " + data.LicensePlate;
+        pHandicap.innerHTML = "Handicap: " + data.Handicap;
+        pMoto.innerHTML = "Motorcycle: " + data.Moto;
+        newVehicle.id = doc.id;
+
+        var delVehicleButton = document.createElement('button');
+        delVehicleButton.className = "text-gray-500 font-bold text-4xl self-center items-center float-right hover:text-red-700 hover:no-underline hover:cursor-pointer";
+        delVehicleButton.innerHTML = "&times"
+        delVehicleButton.onclick = function() {removeVehicle(vehicleRef.slice(8))};
+        var mainDiv = document.createElement('div');
+        mainDiv.className = "bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl grid grid-cols-2";
+
+        var leftDiv = document.createElement('div');
+        leftDiv.appendChild(pName);
+        leftDiv.appendChild(pPlate);
+        leftDiv.appendChild(pHandicap);
+        leftDiv.appendChild(pMoto);
+
+        var rightDiv = document.createElement('div');
+        rightDiv.appendChild(delVehicleButton);
+
+        mainDiv.appendChild(leftDiv);
+        mainDiv.appendChild(rightDiv);
+        newVehicle.appendChild(mainDiv);
+        vehicleList.appendChild(newVehicle);
+    })
+    .catch((error) => {
+        console.log("Failed to find vehicle info doc" + error);
+    });
 }
 
 async function setDefaultBilling(managerRef) {
