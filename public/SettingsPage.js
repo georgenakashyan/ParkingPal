@@ -10,7 +10,10 @@ document.addEventListener("DOMContentLoaded", event => {
  * this adds a vehicle doc to the Vehicle collection
  * adds the doc reference to customer vehicle map
  */
-async function addVehicles(){
+async function addVehicle(){
+    var errorField = document.getElementById("addvehicle-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
     //variables
     var fuelType,handicapBool,licensePlate,make,model,motoBool,year,customerID;
     //link db
@@ -27,110 +30,57 @@ async function addVehicles(){
     });
     const customerDB=db.collection("Customer").doc(customerID);
     //get info from HTML
-    fuelType=document.getElementById("").value;
-    handicapBool=document.getElementById("").value;
-    licensePlate=document.getElementById("").value;
-    make=document.getElementById("").value;
-    model=document.getElementById("").value;
-    motoBool=document.getElementById("").value;
-    year=document.getElementById("").value;
+    make=document.getElementById("carMake").value;
+    model=document.getElementById("addCarModel").value;
+    year=document.getElementById("addCarYear").value;
+    licensePlate=document.getElementById("addLicensePlate").value;
+    fuelType=document.getElementById("FuelType").value;
+    motoBool=document.getElementById("newVehicleMoto").checked;
+    handicapBool=document.getElementById("newVehicleHandicap").checked;
+    var today = new Date();
     //catches errors
-    if(inputNullOrEmpty(fuelType)){
-        errorField.innerHTML="Please enter the fuel type";
-    }
-    else if(inputNullOrEmpty(licensePlate)){
-        errorField.innerHTML="Please enter the license plate number";
-    }
-    else if(inputNullOrEmpty(make)){
+    if(inputNullOrEmpty(make)){
         errorField.innerHTML="Please enter the make of the car";
     }
     else if(inputNullOrEmpty(model)){
         errorField.innerHTML="Please enter the model of the car";
     }
-    else if(inputNullOrEmpty(size)){
-        errorField.innerHTML="Please enter the size of the car";
-    }
-    else if(inputNullOrEmpty(year)){
+    else if(inputNullOrEmpty(year) || isNaN(year) || year < 1900 || year > parseInt(today.getFullYear)){
         errorField.innerHTML="Please enter the make year of the car";
     }
-    //adds it to a doc
-    var vehicleDoc={
-        FuelType: fuelType,
-        HandiCap: handicapBool,
-        LicensePlate: licensePlate,
-        Make: make,
-        Model: model,
-        Moto: motoBool,
-        Year: year
-    };
-    //adds it do database
-    await vehicleDB.add(vehicleDoc)
-    .then((document)=>{
-        customerDB.update({
-            Vehicles: firebase.firestore.FieldValue.arrayUnion("Vehicle/"+document.id)
+    else if(inputNullOrEmpty(licensePlate)){
+        errorField.innerHTML="Please enter the license plate number";
+    }
+    else if(inputNullOrEmpty(fuelType)){
+        errorField.innerHTML="Please enter the fuel type";
+    } else {
+        //adds it to a doc
+        var vehicleDoc={
+            FuelType: fuelType,
+            Handicap: handicapBool,
+            LicensePlate: licensePlate,
+            Make: make,
+            Model: model,
+            Moto: motoBool,
+            Year: year
+        };
+        //adds it do database
+        await vehicleDB.add(vehicleDoc)
+        .then((document)=>{
+            var vehicleRef = "Vehicle/"+document.id;
+            customerDB.update({
+                Vehicles: firebase.firestore.FieldValue.arrayUnion(vehicleRef)
+            });
+            errorField.innerHTML = "";
+            closePopup("addVehicle");
+            displayOneVehicle(vehicleRef);
+        })
+        .catch((error)=>{
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode + " --- " + errorMessage);  
         });
-    })
-    .catch((error)=>{
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode + " --- " + errorMessage);  
-    });
-}
-//hour log: 5 hours
-
-/**
- * This will save any changes that have been made to a vehicles information
- * @param {*} VehicleRef 
- */
-async function saveVehicleChanges(VehicleRef){
-    //variables
-    var fuelType,handicapBool,licensePlate,make,model,motoBool,year;
-    //link db
-    const user=firebase.auth().currentUser,db=firebase.firestore();
-    //assign specific collection
-    const vehicleDB=db.collection("Vehicle").doc(VehicleRef);
-    //get info from HTML
-    fuelType=document.getElementById("").value;
-    handicapBool=document.getElementById("").value;
-    licensePlate=document.getElementById("").value;
-    make=document.getElementById("").value;
-    model=document.getElementById("").value;
-    motoBool=document.getElementById("").value;
-    year=document.getElementById("").value;
-    //catches errors
-    if(inputNullOrEmpty(fuelType)){
-        errorField.innerHTML="Please enter the fuel type";
     }
-    else if(inputNullOrEmpty(handicapBool)){
-        errorField.innerHTML="Please enter if you are handicaped or not";
-    }
-    else if(inputNullOrEmpty(licensePlate)){
-        errorField.innerHTML="Please enter the license plate number";
-    }
-    else if(inputNullOrEmpty(make)){
-        errorField.innerHTML="Please enter the make of the car";
-    }
-    else if(inputNullOrEmpty(model)){
-        errorField.innerHTML="Please enter the model of the car";
-    }
-    else if(inputNullOrEmpty(motoBool)){
-        errorField.innerHTML="Please enter the size of the car";
-    }
-    else if(inputNullOrEmpty(year)){
-        errorField.innerHTML="Please enter the make year of the car";
-    }
-    //adds it to a doc
-    var vehicleDoc={
-        FuelType: fuelType,
-        HandiCap: handicapBool,
-        LicensePlate: licensePlate,
-        Make: make,
-        Model: model,
-        Moto: motoBool,
-        Year: year
-    };
-    //updates database by merging the docs
-    await vehicleDB.set(vehicleDoc,{merge:true});
 }
 
 /**
@@ -153,10 +103,6 @@ async function deleteVehicle(VehicleRef){
     .catch((error)=>{
         console.log("Failed to find Customer doc: "+error);
     });
-    //error check
-    if(inputNullOrEmpty(VehicleRef)){
-        errorField.innerHTML="Ngl I don't even know how the fuck you go here";
-    }
     //deletes from customer array
     await db.collection("Customer").doc(customerID)
     .update({
@@ -166,9 +112,7 @@ async function deleteVehicle(VehicleRef){
     await db.collection("Vehicle").doc(VehicleRef).delete();
     //updates HTML code
     document.getElementById(VehicleRef).remove();
-    closePopup("");
 }
-
 
 function saveChanges() {
     var errorField = document.getElementById("account-notification-text");
