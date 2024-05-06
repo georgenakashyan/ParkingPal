@@ -265,35 +265,46 @@ async function removeVehicle(vehicleRef){
 /**
  * adds billing information to database
  * links to manager doc
- * @param {*} ManagerRef
  */
-async function addBilling(ManagerRef){
+async function addBilling(){
+    var errorField = document.getElementById("add-billing-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
     //variables
     var accountNum,address,org,routingNum;
     //links database
     const user=firebase.auth().currentUser,db=firebase.firestore();
-    const billingDB=db.collection("Billing"),managerDB=db.collection("Manager").doc(ManagerRef);
+    var managerRef = "";
+    await db.collection("Account").doc(user.uid).get()
+    .then((doc)=>{
+        managerRef = doc.data().Profile.slice(8);
+    })
+    .catch((error)=>{
+        console.log("Couldn't find account doc: "+error);
+    });
+
+    const billingDB=db.collection("Billing"),managerDB=db.collection("Manager").doc(managerRef);
     //gets data from HTML
     accountNum=document.getElementById("accountNum").value;
     address=document.getElementById("orgAddress").value;
     org=document.getElementById("organization").value;
     routingNum=document.getElementById("routingNum").value;
     //error checking
-    if(inputNullOrEmpty(accountNum)){
-        errorField.innerHTML = "Please enter a valid account number";
+    if(inputNullOrEmpty(org)){
+        errorField.innerHTML = "Please enter a valid organization";
     }
     else if(inputNullOrEmpty(address)){
         errorField.innerHTML = "Please enter a valid address";
     }
-    else if(inputNullOrEmpty(org)){
-        errorField.innerHTML = "Please enter a valid organization";
+    else if(inputNullOrEmpty(accountNum) || isNaN(accountNum)){
+        errorField.innerHTML = "Please enter a valid account number";
     }
-    else if(inputNullOrEmpty(routingNum)){
-        errorField.innerHTML = "Please enter a valid routingNum";
+    else if(inputNullOrEmpty(routingNum) || isNaN(routingNum)){
+        errorField.innerHTML = "Please enter a valid routing number";
     }
     //making doc
     var billingDoc={
-        accountNum: accountNum,
+        AccountNum: accountNum,
         Address: address,
         Organization: org,
         RoutingNum:routingNum
@@ -307,6 +318,8 @@ async function addBilling(ManagerRef){
         .catch((error)=>{
             console.log("Couldn't find Manager doc: "+error);
         });
+        displayOneBilling("Billing/"+updateDoc.id);
+        closePopup("addBilling");
     })
     .catch((error)=>{
         console.log("Couldn't add the doc to billing: "+error);
@@ -360,23 +373,27 @@ async function saveBillingChanges(BillingRef){
  */
 async function removeBilling(BillingRef){
     //variables
-    var billingLink="Billing/"+BillingRef;
-    //links database
     const user=firebase.auth().currentUser,db=firebase.firestore();
     const billingDB=db.collection("Billing"),managerDB=db.collection("Manager"),garageDB=db.collection("Garage");
-    //removes links from relevant docs
-    await managerDB.where('Billing','array-contains',billingLink).get()
-    .then((querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            managerDB.doc(doc)
-            .update({
-                Billing: firebase.firestore.FieldValue.arrayRemove(billingLink)
-            })
-        })
+    var billingLink="Billing/"+BillingRef;
+    var managerID;
+    //gets customer doc id
+    await db.collection("Account").doc(user.uid).get()
+    .then((userDoc)=>{
+        managerID=userDoc.data().Profile.slice(8);
+    })
+    .catch((error)=>{
+        console.log("Failed to find Manager doc: "+error);
+    });
+    //deletes from manager array
+    await managerDB.doc(managerID)
+    .update({
+        Billing: firebase.firestore.FieldValue.arrayRemove(billingLink)
     })
     .catch((error)=>{
         console.log("Error deleting billing from manager: "+error);
-    })
+    });
+    //deletes from garage
     await garageDB.where('Billing','==',billingLink).get()
     .then((querySnapshot)=>{
         querySnapshot.forEach((doc)=>{
@@ -384,16 +401,21 @@ async function removeBilling(BillingRef){
             .update({
                 Billing: ""
             })
+            .catch((error)=>{
+                console.log("Error deleting billing from singular garage: "+error);
+            });
         })
     })
     .catch((error)=>{
         console.log("Error deleting billing from garage: "+error);
-    })
+    });
     //deletes billing doc
     await billingDB.doc(BillingRef).delete()
     .catch((error)=>{
         console.log("Error deleting billing from billing: "+error);
     });
+    //updates HTML code
+    document.getElementById(BillingRef).remove();
 }
 
 async function setDefaultValues(user){
@@ -570,6 +592,6 @@ async function displayOneBilling(billingRef) {
         billingList.appendChild(newBilling);
     })
     .catch((error) => {
-        console.log("Failed to find vehicle info doc" + error);
+        console.log("Failed to find billing info doc" + error);
     });
 }
