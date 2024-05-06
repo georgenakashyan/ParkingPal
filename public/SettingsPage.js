@@ -329,7 +329,7 @@ async function saveBillingChanges(BillingRef){
     org=document.getElementById("organization").value;
     routingNum=document.getElementById("routingNum").value;
     //error checking
-    if(inputNullOrEmpty(accountNum)){
+    if(inputNullOrEmpty(accountNum) || isNaN(routingNum)){
         errorField.innerHTML = "Please enter a valid account number";
     }
     else if(inputNullOrEmpty(address)){
@@ -338,8 +338,8 @@ async function saveBillingChanges(BillingRef){
     else if(inputNullOrEmpty(org)){
         errorField.innerHTML = "Please enter a valid organization";
     }
-    else if(inputNullOrEmpty(routingNum)){
-        errorField.innerHTML = "Please enter a valid routingNum";
+    else if(inputNullOrEmpty(routingNum) || isNaN(routingNum)){
+        errorField.innerHTML = "Please enter a valid routing number";
     }
     //making doc
     var billingDoc={
@@ -365,9 +365,9 @@ async function removeBilling(BillingRef){
     const user=firebase.auth().currentUser,db=firebase.firestore();
     const billingDB=db.collection("Billing"),managerDB=db.collection("Manager"),garageDB=db.collection("Garage");
     //removes links from relevant docs
-    await managerDB.where('Billing','==',billingLink).get()
-    .then((tempDoc)=>{
-        tempDoc.forEach((doc)=>{
+    await managerDB.where('Billing','array-contains',billingLink).get()
+    .then((querySnapshot)=>{
+        querySnapshot.forEach((doc)=>{
             managerDB.doc(doc)
             .update({
                 Billing: firebase.firestore.FieldValue.arrayRemove(billingLink)
@@ -378,8 +378,8 @@ async function removeBilling(BillingRef){
         console.log("Error deleting billing from manager: "+error);
     })
     await garageDB.where('Billing','==',billingLink).get()
-    .then((tempDoc)=>{
-        tempDoc.forEach((doc)=>{
+    .then((querySnapshot)=>{
+        querySnapshot.forEach((doc)=>{
             garageDB.doc(doc)
             .update({
                 Billing: ""
@@ -517,5 +517,59 @@ async function displayOneVehicle(vehicleRef) {
 }
 
 async function setDefaultBilling(managerRef) {
-    
+    const db = firebase.firestore();
+    const profileInfo = await db.collection('Manager').doc(managerRef);
+    profileInfo.get()
+    .then((doc) => {
+        var data = doc.data();
+        var billingList = data.Billing;
+        billingList.forEach(displayOneBilling);
+    })
+    .catch((error) => {
+        console.log("Failed to find manager doc: " + error);
+    });
+}
+
+async function displayOneBilling(billingRef) {
+    let billingList = document.getElementById('billingList');
+    var newBilling = document.createElement('li');
+    var pOrganization = document.createElement('p');
+    var pAddress = document.createElement('p');
+    var pAccountNum = document.createElement('p');
+    var pRoutingNum = document.createElement('p');
+
+    const db = firebase.firestore();
+    await db.collection('Billing').doc(billingRef.slice(8)).get()
+    .then((doc) => {
+        const data = doc.data();
+        pOrganization.innerHTML = "" + data.Organization;
+        pAddress.innerHTML = "" + "" + data.Address;
+        pAccountNum.innerHTML = "Account: " + data.AccountNum;
+        pRoutingNum.innerHTML = "Routing: " + data.RoutingNum;
+        newBilling.id = doc.id;
+
+        var delBillingButton = document.createElement('button');
+        delBillingButton.className = "text-gray-500 font-bold text-4xl self-center items-center float-right hover:text-red-700 hover:no-underline hover:cursor-pointer";
+        delBillingButton.innerHTML = "&times"
+        delBillingButton.onclick = function() {removeBilling(billingRef.slice(8))};
+        var mainDiv = document.createElement('div');
+        mainDiv.className = "bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl grid grid-cols-2";
+
+        var leftDiv = document.createElement('div');
+        leftDiv.appendChild(pOrganization);
+        leftDiv.appendChild(pAddress);
+        leftDiv.appendChild(pAccountNum);
+        leftDiv.appendChild(pRoutingNum);
+
+        var rightDiv = document.createElement('div');
+        rightDiv.appendChild(delBillingButton);
+
+        mainDiv.appendChild(leftDiv);
+        mainDiv.appendChild(rightDiv);
+        newBilling.appendChild(mainDiv);
+        billingList.appendChild(newBilling);
+    })
+    .catch((error) => {
+        console.log("Failed to find vehicle info doc" + error);
+    });
 }
