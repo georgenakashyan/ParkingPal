@@ -1,32 +1,95 @@
 /**
- * Retrieves a doc.data() for a Garage object
- * @param {*} garageID
+ * Retrieves a doc for a Garage object
+ * @param {*} garageID - The ID of the garage
  */
-async function retrieveGarage(garageID){
-    const db = firebase.firestore();
-    const garageInfo = await db.collection('Garage').doc(garageID);
-    garageInfo.get()
-    .then((doc) => {
-        //TODO
-    })
-    .catch((error) => {
-        console.log("Failed to find garage document: " + error);
+export async function getGarageDoc(garageID){
+    return new Promise(async (resolve, reject) => {
+        const db = firebase.firestore();
+        const garageInfo = await db.collection('Garage').doc(garageID);
+        garageInfo.get()
+        .then((doc) => {
+            resolve(doc);
+        })
+        .catch((error) => {
+            console.log("Failed to find garage document: " + error);
+            reject(null);
+        });
     });
 }
 
 /**
- * Sends back a doc.data() to the collection of garages
- * @param {*} garageID 
+ * Takes inputed information and updates existing object
+ * @param {*} name - The name of the garage
+ * @param {*} address - The address of the garage
+ * @param {*} areaCode - The area code of the garage
+ * @param {*} openTime - The time the garage opens
+ * @param {*} closeTime - The time the garage closes
+ * @param {*} lat - The latitude of the garage
+ * @param {*} lng - The longitude of the garage
  */
-function deliverGarage(garageID){
-    //TODO
+export async function setOldGarageDoc(name, address, areaCode, openTime, closeTime, lat, lng){
+    return new Promise(async (resolve, reject) => {
+        var garageData = {
+            Name: name,
+            Address: address,
+            AreaCode: areaCode,
+            OpenTime: openTime,
+            CloseTime: closeTime,
+            Lat: lat,
+            Lng: lng
+        };
+        resolve(garageData);
+    });
+}
+/**
+ * Takes inputed information and creates new object
+ * @param {*} name - The name of the garage
+ * @param {*} address - The address of the garage
+ * @param {*} areaCode - The area code of the garage
+ * @param {*} openTime - The time the garage opens
+ * @param {*} closeTime - The time the garage closes
+ * @param {*} managerProfile - The manager of the garage
+ * @param {*} lat - The latitude of the garage
+ * @param {*} lng - The longitude of the garage
+ */
+export async function setNewGarageDoc(name, address, areaCode, openTime, closeTime, managerProfile, lat, lng){
+    return new Promise(async (resolve, reject) => {
+        var garageData={
+            Name: name,
+            Address: address,
+            AreaCode: areaCode,
+            OpenTime: openTime,
+            CloseTime: closeTime,
+            Manager: "Manager/" + managerProfile,
+            Reservations: [],
+            Lat: lat,
+            Lng: lng,
+            Spots_Normal: {
+                Price: 0,
+                Total: 0
+            },
+            Spots_EV: {
+                Price: 0,
+                Total: 0
+            },
+            Spots_Handicap: {
+                Price: 0,
+                Total: 0
+            },
+            Spots_Moto: {
+                Price: 0,
+                Total: 0
+            }
+        };
+        resolve(garageData);
+    });
 }
 
 /**
  * Deletes any reference to the current Garage object
- * @param {*} garageID 
+ * @param {*} garageID - The ID of the garage
  */
-async function deleteGarage(garageID){
+export async function deleteGarage(garageID){
     const db = firebase.firestore();
     await db.collection("Garage").doc(garageID).get()
     .then((doc)=>{
@@ -65,34 +128,39 @@ async function deleteGarage(garageID){
 }
 
 /**
- * Retrieves a doc.data() for a Reservation object
- * @param {*} reservationID 
+ * Retrieves a doc for a Reservation object
+ * @param {*} reservationID - The ID of the reservation
  */
-async function retrieveReservation(reservationID){
-    const db = firebase.firestore();
-    const reservationInfo = await db.collection('Reservation').doc(reservationID);
-    reservationInfo.get()
-    .then((doc) => {
-        //TODO
-    })
-    .catch((error) => {
-        console.log("Failed to find reservation document: " + error);
+export async function getReservationDoc(reservationID){
+    return new Promise(async (resolve, reject) => {
+        const db = firebase.firestore();
+        const reservationInfo = await db.collection('Reservation').doc(reservationID);
+        reservationInfo.get()
+        .then((doc) => {
+            resolve(doc);
+        })
+        .catch((error) => {
+            console.log("Failed to find reservation document: " + error);
+            reject(null);
+        });
     });
 }
 
 /**
  * Sends back a doc.data() to the collection of reservations
- * @param {*} reservationID 
+ * @param {*} reservationID - The ID of the reservation
  */
-function deliverReservation(reservationID){
-    //TODO
+export async function setReservationDoc(reservationID){
+    return new Promise(async (resolve, reject) => {
+        //TODO
+    });
 }
 
 /**
  * Deletes any reference to the current Reservation object
- * @param {*} reservationID
+ * @param {*} reservationID - The ID of the reservation
  */
-async function deleteReservation(reservationID){
+export async function deleteReservation(reservationID){
     const db = firebase.firestore();
     await db.collection("Reservation").doc(reservationID).get()
     .then((doc)=>{
@@ -111,34 +179,38 @@ async function deleteReservation(reservationID){
 }
 
 /**
- * Retrieves a doc.data() for a Account object
- * @param {*} accountID 
+ * Retrieves a doc. for a Manager or Customer object depending on Account
+ * @param {*} accountID - The ID of the account
  */
-async function retrieveAccount(accountID){
-    const db = firebase.firestore();
-    const accountInfo = await db.collection('Account').doc(accountID);
-    accountInfo.get()
-    .then((doc) => {
-        //TODO
-    })
-    .catch((error) => {
-        console.log("Failed to find account document: " + error);
+export async function getAccountDoc(accountID){
+    return new Promise(async (resolve, reject) => {
+        const db = firebase.firestore();
+        const accountInfo = await db.collection('Account').doc(accountID);
+        accountInfo.get().then((doc) => {
+            resolve(doc);
+        })
+        .catch((error) => {
+            console.log("Failed to find account document: " + error);
+            reject(null);
+        });
     });
 }
 
 /**
  * Sends back a doc.data() to the collection of accounts
- * @param {*} accountID
+ * @param {*} accountID - The ID of the account
  */
-function deliverAccount(accountID){
-    //TODO
+export async function setAccountDoc(accountID){
+    return new Promise(async (resolve, reject) => {
+        //TODO
+    });
 }
 
 /**
  * Deletes any reference to the current Account object
- * @param {*} accountID 
+ * @param {*} accountID - The ID of the account
  */
-async function deleteAccount(accountID){
+export async function deleteAccount(accountID){
     const db = firebase.firestore();
     await db.collection("Account").doc(accountID).get()
     .then((doc)=>{
@@ -160,33 +232,38 @@ async function deleteAccount(accountID){
 
 /**
  * Retrieves a doc.data() for a Vehicle object
- * @param {*} vehicleID 
+ * @param {*} vehicleID - The ID of the vehicle
  */
-async function retrieveVehicle(vehicleID){
-    const db = firebase.firestore();
-    const vehicleInfo = await db.collection('Vehicle').doc(vehicleID);
-    vehicleInfo.get()
-    .then((doc) => {
-        //TODO
-    })
-    .catch((error) => {
-        console.log("Failed to find vehicle document: " + error);
+export async function getVehicle(vehicleID){
+    return new Promise(async (resolve, reject) => {
+        const db = firebase.firestore();
+        const accountInfo = await db.collection('Vehicle').doc(vehicleID);
+        accountInfo.get()
+        .then((doc) => {
+            resolve(doc);
+        })
+        .catch((error) => {
+            console.log("Failed to find vehicle document: " + error);
+            reject(null);
+        });
     });
 }
 
 /**
  * Sends back a doc.data() to the collection of vehicles
- * @param {*} vehicleID
+ * @param {*} vehicleID - The ID of the vehicle
  */
-function deliverVehicle(vehicleID){
-    //TODO
+export async function setVehicle(vehicleID){
+    return new Promise(async (resolve, reject) => {
+        //TODO
+    });
 }
 
 /**
  * Deletes any reference to the current Vehicle object
- * @param {*} vehicleID 
+ * @param {*} vehicleID - The ID of the vehicle
  */
-async function deleteVehicle(vehicleID){
+export async function deleteVehicle(vehicleID){
     const db = firebase.firestore();
     await db.collection("Vehicle").doc(vehicleID).get()
     .then((doc)=>{
@@ -206,7 +283,7 @@ async function deleteVehicle(vehicleID){
 
 /**
  * Deletes any reference to the current Account object
- * @param {*} managerID 
+ * @param {*} managerLink - The link that connects account and manager
  */
 async function deleteManager(managerLink){
     var managerID = managerLink.slice(7);
@@ -233,7 +310,7 @@ async function deleteManager(managerLink){
 
 /**
  * Deletes any reference to the current Account object
- * @param {*} customerLink 
+ * @param {*} customerLink - The link that connects account and customer
  */
 async function deleteCustomer(customerLink){
     var customerID = customerLink.slice(9);

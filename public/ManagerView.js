@@ -1,6 +1,9 @@
 var resCount = 0;
 var geocoder;
 
+/**
+ * Initializes the page
+ */
 document.addEventListener("DOMContentLoaded", event => {
     geocoder = new google.maps.Geocoder();
     const auth = firebase.auth();
@@ -20,7 +23,8 @@ document.addEventListener("DOMContentLoaded", event => {
 });
 
 /**
- * pulls info from 'Garage' and displays it
+ * Pulls info from 'Garage' and displays it
+ * @param {string} accountDoc - The reference of the account.
  */
 async function displayAllGarages(accountDoc){
     const managerRef = accountDoc.Profile.slice(8);
@@ -37,6 +41,10 @@ async function displayAllGarages(accountDoc){
     });
 }
 
+/**
+ * Displays one gargage
+ * @param {string} garageRef - The reference of the garage.
+ */
 function displayOneGarage(garageRef) {
     let garageList = document.getElementById('GarageList');
     var newGarage = document.createElement('li');
@@ -179,8 +187,8 @@ async function addGarage(){
 }
 
 /**
- * this will delete the garage doc and reference under manager
- * @param {*} garageRef 
+ * This opens the information panel of the garage
+ * @param {string} garageID - The ID of the garage.
  */
 async function deleteGarage(garageID){
     const db = firebase.firestore();
@@ -227,15 +235,26 @@ async function deleteGarage(garageID){
     });
 }
 
+/**
+ * This shows the information panel of the garage
+ * @param {string} garageID - The ID of the garage.
+ */
 function showGarageInfoPanel(garageID) {
     openPopup("editGarage");
     displayEditGarage(garageID);
 }
 
+/**
+ * This hides the information panel of the garage
+ * @param {string} garageID - The ID of the garage.
+ */
 function hideGarageInfoPanel(garageID) {
     closePopup("editGarage");
 }
 
+/**
+ * This hides the information panel of the garage
+ */
 function updateResLabel() {
     const resLabel = document.getElementById("ReservationInfo");
     resLabel.innerHTML = "" + resCount + " active reservation";
@@ -244,6 +263,10 @@ function updateResLabel() {
     }
 }
 
+/**
+ * This will open the selected tab
+ * @param {*} tabName - The name of the tab
+ */
 function openTab(tabName) {
     var i;
     var x = document.getElementsByClassName("editGarageTab");
@@ -256,7 +279,7 @@ function openTab(tabName) {
 /**
  * this will edit the garage besides making the display
  * for making the display refer to displayEditGarage()
- * @param {*} garageID
+ * @param {*} garageID - The ID of the garage
  */
 async function saveGarageChanges(garageID){
     var errorField = document.getElementById("edit-notification-text");
@@ -312,8 +335,8 @@ async function saveGarageChanges(garageID){
 }
 
 /**
- * this is to show all the existing information about the garage that you wish to edit 
- * @param {*} garageID
+ * This is to show all the existing information about the garage that you wish to edit 
+ * @param {*} garageID - The ID of the garage
  */
 async function displayEditGarage(garageID){
     var name,address,areaCode,openTime,closeTime;
@@ -370,6 +393,12 @@ async function displayEditGarage(garageID){
     displayAllReservations(garageID);
 }
 
+/**
+ * This allows us to geocode the address of the garage
+ * @param {*} addr - The address of the garage
+ * @param {*} areacode - The area code of the garage
+ * @param {*} errorField - The error field
+ */
 async function geocodeAddress(addr, areacode, errorField) {
     var address = "" + addr + ", " + areacode 
     var lat, lng = null;
@@ -392,6 +421,10 @@ function changeSpotCount(change, spotType) {
     count.value = (newVal >= 0 ? newVal : 0)
 }
 
+/**
+ * This updates the spot information
+ * @param {*} garageID - The ID of the garage
+ */
 async function updateSpotInfo(garageID) {
     var errorField = document.getElementById("spot-notification-text");
     errorField.innerHTML = "";
@@ -442,6 +475,10 @@ async function updateSpotInfo(garageID) {
     });
 }
 
+/**
+ * This displays parking spots
+ * @param {*} garageID - The ID of the garage
+ */
 async function displayParkingSpots(garageID) {
     var errorField = document.getElementById("spot-notification-text");
     errorField.innerHTML = "";
