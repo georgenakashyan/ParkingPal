@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", event => {
         .then((doc) => {
             document.getElementById("WelcomeName").innerHTML = "Welcome, " + doc.data().FirstName;
             displayAllGarages(doc.data());
+            fillBillingList(user.uid);
         })
         .catch((error) => {
             console.log("Could not find user doc to display name and email");
@@ -66,9 +67,8 @@ function displayOneGarage(garageRef) {
 
 /**
  * this will add garages to the firebase database
- * @param {*} BillingRef
  */
-async function addGarage(BillingRef){
+async function addGarage(){
     var errorField = document.getElementById("add-notification-text");
     errorField.innerHTML = "";
     errorField.style.setProperty("color", "red");
@@ -79,6 +79,7 @@ async function addGarage(BillingRef){
     var name = document.getElementById("addGarageName").value;
     var address = document.getElementById("addGarageAddress").value;
     var areaCode = "" + document.getElementById("addGarageAreaCode").value;
+    var billing = "" + document.getElementById("addBilling").value;
     var openDate = new Date();
     var opentimeParts = document.getElementById("addGarageOpenTime").value.split(":");
     var latlng = await geocodeAddress(address, areaCode, errorField);
@@ -115,6 +116,8 @@ async function addGarage(BillingRef){
         errorField.innerHTML = "Please enter the garage address";
     } else if (inputNullOrEmpty(areaCode)) {
         errorField.innerHTML = "Please enter the garage area code";
+    } else if (inputNullOrEmpty(billing)) {
+        errorField.innerHTML = "Please choose a billing. If you do not have any, add one from your settings page";
     } else if (isNaN(openDate)) {
         errorField.innerHTML = "Please enter the garage opening time";
     } else if (isNaN(closeDate)) {
@@ -135,7 +138,7 @@ async function addGarage(BillingRef){
             CloseTime: closeTime,
             Manager: "Manager/" + managerProfile,
             Reservations: [],
-            Billing: "Billing/"+BillingRef,
+            Billing: "Billing/"+billing,
             Lat: lat,
             Lng: lng,
             Spots_Normal: {
@@ -254,9 +257,8 @@ function openTab(tabName) {
  * this will edit the garage besides making the display
  * for making the display refer to displayEditGarage()
  * @param {*} garageID
- * @param {*} BillingRef 
  */
-async function saveGarageChanges(garageID,BillingRef){
+async function saveGarageChanges(garageID){
     var errorField = document.getElementById("edit-notification-text");
     errorField.innerHTML = "";
     errorField.style.setProperty("color", "red");
@@ -277,12 +279,15 @@ async function saveGarageChanges(garageID,BillingRef){
     var closeTimeHours = closeTimeInput.substr(0,2);
     var closeTimeMinutes = closeTimeInput.substr(3,2);
     closeTime = firebase.firestore.Timestamp.fromDate(new Date(2024,1,1,closeTimeHours,closeTimeMinutes));
+    var billing = "" + document.getElementById("editBilling").value;
     if (inputNullOrEmpty(name)) {
         errorField.innerHTML = "Please enter the garage name";
     } else if (inputNullOrEmpty(address)) {
         errorField.innerHTML = "Please enter the garage address";
     } else if (inputNullOrEmpty(areaCode)) {
         errorField.innerHTML = "Please enter the garage area code";
+    } else if (inputNullOrEmpty(billing)) {
+        errorField.innerHTML = "Please choose a billing. If you do not have any, add one from your settings page";
     } else if (inputNullOrEmpty(openTimeInput)) {
         errorField.innerHTML = "Please enter the garage opening time";
     } else if (inputNullOrEmpty(closeTimeInput)) {
@@ -298,7 +303,7 @@ async function saveGarageChanges(garageID,BillingRef){
             AreaCode: areaCode,
             OpenTime: openTime,
             CloseTime: closeTime,
-            Billing: "Billing/"+BillingRef,
+            Billing: "Billing/"+billing,
             Lat: lat,
             Lng: lng
         };
@@ -312,6 +317,10 @@ async function saveGarageChanges(garageID,BillingRef){
  */
 async function displayEditGarage(garageID){
     var name,address,areaCode,openTime,closeTime;
+    var errorField = document.getElementById("edit-notification-text");
+    errorField.innerHTML = "";
+    errorField.style.setProperty("color", "red");
+
     const db = firebase.firestore();
     await db.collection("Garage").doc(garageID).get()
     .then((doc)=>{
@@ -321,6 +330,7 @@ async function displayEditGarage(garageID){
         areaCode = data.AreaCode;
         openTime = data.OpenTime;
         closeTime = data.CloseTime;
+        billing = data.Billing;
     });
 
     var pName = document.getElementById('editGarageName');
@@ -328,6 +338,7 @@ async function displayEditGarage(garageID){
     var pAreaCode = document.getElementById('editGarageAreaCode');
     var pOpenTime = document.getElementById('editGarageOpenTime');
     var pCloseTime = document.getElementById('editGarageCloseTime');
+    var pBilling = document.getElementById('editBilling');
 
     pName.value = name;
     pAddress.value = address;
@@ -340,6 +351,12 @@ async function displayEditGarage(garageID){
     var closeHours = closeTimeDate.getHours().toString().padStart(2, '0');
     var closeMinutes = closeTimeDate.getMinutes().toString().padStart(2, '0');
     pCloseTime.value = closeHours + ":" + closeMinutes;
+    
+    var billingRef = billing.toString().slice(8)
+    if (billing != "") {
+        pBilling.value = billingRef;
+    }
+    
 
     var saveGarageButton = document.getElementById("editGarageSaveButton")
     saveGarageButton.onclick = function() {saveGarageChanges(garageID)};
@@ -366,8 +383,6 @@ async function geocodeAddress(addr, areacode, errorField) {
             errorField.innerHTML = "Enter a valid address and area code";
         }
     });
-    errorField.style.setProperty("color", "green");
-    errorField.innerHTML = "";
     return [lat, lng];
 }
 
@@ -458,5 +473,44 @@ async function displayParkingSpots(garageID) {
     })
     .catch((error) => {
       console.log("Failed to find parking spot info doc: " + error);
+    });
+}
+
+async function fillBillingList(uid) {
+    const db = firebase.firestore();
+    addBillingList = document.getElementById("addBilling");
+    editBillingList = document.getElementById("editBilling");
+
+    await db.collection("Account").doc(uid).get()
+    .then(async (doc) => {
+        const managerRef = doc.data().Profile.slice(8);
+        await db.collection("Manager").doc(managerRef).get()
+        .then(async (doc) => {
+            var billing = doc.data().Billing;
+            billing.forEach(async (billing) => {
+                var newBilling = document.createElement("option");
+                newBilling.value = billing.slice(8);
+                await db.collection("Billing").doc(billing.slice(8)).get()
+                .then((doc) => {
+                    var data = doc.data();
+                    const billingName = "Account number " + data.AccountNum;
+                    newBilling.innerHTML = billingName;
+                    addBillingList.appendChild(newBilling);
+                    editBillingList.appendChild(newBilling);
+                })
+                .catch((error) => {
+                    console.log("Failed to get billing data: " + error);
+                    return;
+                });
+            });
+        })
+        .catch((error) => {
+            console.log("Failed to get Manager Account");
+            return;
+        });
+    })
+    .catch((error) => {
+        console.log("Failed to get Account");
+        return;
     });
 }
