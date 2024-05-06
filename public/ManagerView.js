@@ -66,8 +66,9 @@ function displayOneGarage(garageRef) {
 
 /**
  * this will add garages to the firebase database
+ * @param {*} BillingRef
  */
-async function addGarage(){
+async function addGarage(BillingRef){
     var errorField = document.getElementById("add-notification-text");
     errorField.innerHTML = "";
     errorField.style.setProperty("color", "red");
@@ -134,6 +135,7 @@ async function addGarage(){
             CloseTime: closeTime,
             Manager: "Manager/" + managerProfile,
             Reservations: [],
+            Billing: "Billing/"+BillingRef,
             Lat: lat,
             Lng: lng,
             Spots_Normal: {
@@ -252,8 +254,9 @@ function openTab(tabName) {
  * this will edit the garage besides making the display
  * for making the display refer to displayEditGarage()
  * @param {*} garageID
+ * @param {*} BillingRef 
  */
-async function saveGarageChanges(garageID){
+async function saveGarageChanges(garageID,BillingRef){
     var errorField = document.getElementById("edit-notification-text");
     errorField.innerHTML = "";
     errorField.style.setProperty("color", "red");
@@ -295,6 +298,7 @@ async function saveGarageChanges(garageID){
             AreaCode: areaCode,
             OpenTime: openTime,
             CloseTime: closeTime,
+            Billing: "Billing/"+BillingRef,
             Lat: lat,
             Lng: lng
         };

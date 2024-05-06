@@ -15,52 +15,45 @@
         <script defer src="/__/firebase/10.8.0/firebase-performance-compat.js"></script>
         <script defer src="/__/firebase/init.js?useEmulator=true"></script>
         <script src="app.js"></script>
-        <script src="SettingsPage.js"></script>
-        <script src="Authentication.js"></script>
-        <title>Parking Pal - Settings</title>
+        <script src="ManagerView.js"></script>
+        <script src="Reservation.js"></script>
+        <title>Parking Pal - Manager Home</title>
         <link rel="icon" type="image/x-icon" href="/images/ParkingPal.png">
+        <script loading=async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrEw4uAP37UWhAS8P9RHrx_PrA-08vutk"></script>
         <link rel="stylesheet" href="output.css"/>
     </head>
 
     <body class="globalFont">
         <div class="bg-PP-dark-blue grid grid-cols-1 grid-rows-10 h-screen w-screen">
             <div class="row-span-1 p-3 flex items-center text-white font-semibold ">
-                <img src="./images/ParkingPal.png" alt="Parking Pal Logo" class="aspect-square h-full min-h-12 max-h-12 block ml-auto mr-auto">
-                <div class="-ml-5 p-3 mr-4 text-3xl text-PP-orange select-none">arkingPal</div>
+                <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none">ParkingPal</div>
                 <div class="grow mr-0 md:mr-4"></div>
                 <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="mainPage()">Return</button></div>
                 <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button onclick="logOut()">Log Out</button></div>
             </div>
 
-            
-
             <div class="pt-8">
                 <div class="bg-gray-700 h-max w-11/12 p-3 rounded-lg flex mx-auto">
                     <div class="w-1/2">
                         <div class="bg-PP-blue h-full mb-6 p-4 w-full">
-                            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none  border-b-2 border-PP-orange mb-8">Account</div>
+                            <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none border-b-2 border-PP-orange mb-8">Personal Information:</div>
                             <div class="flex flex-col mb-8"> 
-                                <label class="text-white">First Name</label>
-                                <input id="accountFirstName" type="text" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
+                                <label class="text-white">First Name:</label>
+                                <input type="text" value="Dave" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
                             </div>
                             <div class="flex flex-col mb-8">
-                                <label class="text-white">Last Name</label>
-                                <input id="accountLastName" type="text" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
+                                <label class="text-white">Last Name:</label>
+                                <input type="text" value="Jones" class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
                             </div>
                             <div class="flex flex-col mb-8">
-                                <label class="text-white">Email Address</label>
-                                <input id="accountEmail" type="text" readonly class="w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
-                            </div>
-                            <div class="grid">
-                                <label id="notification-text" class="notification-text"></label>
+                                <label class="text-white">Email Address:</label>
+                                <input type="text" value="davejones@gmail.com" class= "  w-4/5 bg-PP-blue border-0 border-b-2 border-PP-orange focus:border-orange-600 text-white">
                             </div>
                             <div class="flex flex-col mb-8">
-                                <button type="button" class="long-main-button mt-2 mb-1 text" style="width: 80% !important" onclick="resetPassword(document.getElementById('accountEmail').value)">Reset Password</button>
+                                <button type="button" class="long-main-button mt-2 mb-1 text" onclick="resetPassword()" style="width: 40%  !important; "> Reset Password </button>
                             </div>
-                            <div class="grid">
-                                <label id="account-notification-text" class="notification-text"></label>
-                            </div>
-                            <button id="saveButton" type="button" class="hidden long-main-button mt-1 " style="width: 80% !important" onclick="saveChanges()">Save</button>
+                           
+                            <button id="saveButton" type="button" class="hidden long-main-button mt-1 " onclick="saveChanges()" style="width: 40% !important; "> Save </button>
 
                         </div>
                     </div>
@@ -69,11 +62,40 @@
                     <div class="w-1/2 ml-3 ">
                         <div class="bg-PP-blue h-full mb-6 p-4 w-full">
                             <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none border-b-2 border-PP-orange mb-8">Billing Information:</div>
-                                
-                        </div>
+                                <ul>
+                                    <li id="addBilling" class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400" onclick="openPopup('addBilling')">
+                                        <p class="text-center">Add Billing Account</p>
+                                        <p class="text-center">+</p>
+                                    </li>
+                                </ul>
+-                        </div>
                     </div>
             
                 </div>
+
+                <div class="bg-black bg-opacity-50 absolute hidden top-0 w-full h-full justify-center z-10" id="addBillingPopup">
+                    <div class="grow"></div>
+                    <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
+                        <div class="flex overflow-hidden text-white pl-2 pr-2">
+                            <div class="grow w-80"></div>
+                            <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('addBilling')">&times;</button>
+                        </div>
+                        <div >
+                            <form id="addBillingForm">
+                                <input type="text" id="organization" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Organization's Name"><br>
+                                <input type="text" id="orgAddress" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Organization Address"><br>
+                                <input type="number" id="accountNum" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Account Number"><br>
+                                <input type="number" id="routingNum" class="mb-3 w-4/5 h-8 border rounded-md border-gray-300 pl-1" placeholder="Routing Number"><br>
+                            </form>
+                            <label class="notification-text" id="add-notification-text"></label>
+                        <button class="long-main-button mt-1 mb-6" onclick="addBilling()" style="width: 80% !important;">Add Account</button>
+                        </div>
+                    </div>
+                    <div class="grow"></div>
+                </div>
+
+
+
             </div>
         
         </div>

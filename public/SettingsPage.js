@@ -274,10 +274,10 @@ async function addBilling(ManagerRef){
     const user=firebase.auth().currentUser,db=firebase.firestore();
     const billingDB=db.collection("Billing"),managerDB=db.collection("Manager").doc(ManagerRef);
     //gets data from HTML
-    accountNum=document.getElementById("").value;
-    address=document.getElementById("").value;
-    org=document.getElementById("").value;
-    routingNum=document.getElementById("").value;
+    accountNum=document.getElementById("accountNum").value;
+    address=document.getElementById("orgAddress").value;
+    org=document.getElementById("organization").value;
+    routingNum=document.getElementById("routingNum").value;
     //error checking
     if(inputNullOrEmpty(accountNum)){
         errorField.innerHTML = "Please enter a valid account number";
@@ -302,7 +302,7 @@ async function addBilling(ManagerRef){
     await billingDB.add(billingDoc)
     .then((updateDoc)=>{
         managerDB.update({
-            Billing: "Billing/"+updateDoc.id
+            Billing: firebase.firestore.FieldValue.arrayUnion("Billing/"+updateDoc.id)
         })
         .catch((error)=>{
             console.log("Couldn't find Manager doc: "+error);
@@ -324,10 +324,10 @@ async function saveBillingChanges(BillingRef){
     const user=firebase.auth().currentUser,db=firebase.firestore();
     const billingDB=db.collection("Billing").doc(BillingRef);
     //gets data from HTML
-    accountNum=document.getElementById("").value;
-    address=document.getElementById("").value;
-    org=document.getElementById("").value;
-    routingNum=document.getElementById("").value;
+    accountNum=document.getElementById("accountNum").value;
+    address=document.getElementById("orgAddress").value;
+    org=document.getElementById("organization").value;
+    routingNum=document.getElementById("routingNum").value;
     //error checking
     if(inputNullOrEmpty(accountNum)){
         errorField.innerHTML = "Please enter a valid account number";
@@ -353,40 +353,47 @@ async function saveBillingChanges(BillingRef){
 }
 
 /**
- * checks to see if there is a billing doc
- * if there is a billing doc it will send it to saveBillingChanges(BillingRef)
- * if there is no billing doc it will send it to addBilling()
- */ 
-async function checkBilling(){
+ * This deletes the billing doc
+ * this deletes the reference from the manager doc
+ * this deletes the reference from the garage doc
+ * @param {*} BillingRef 
+ */
+async function removeBilling(BillingRef){
     //variables
-    var managerID,billingID;
-    //links to database
+    var billingLink="Billing/"+BillingRef;
+    //links database
     const user=firebase.auth().currentUser,db=firebase.firestore();
-    //gets manager doc link
-    await db.collection("Account").doc(user.uid).get()
-    .then((userDoc)=>{
-        managerID=userDoc.data().Profile.slice(8);
+    const billingDB=db.collection("Billing"),managerDB=db.collection("Manager"),garageDB=db.collection("Garage");
+    //removes links from relevant docs
+    await managerDB.where('Billing','==',billingLink).get()
+    .then((tempDoc)=>{
+        tempDoc.forEach((doc)=>{
+            managerDB.doc(doc)
+            .update({
+                Billing: firebase.firestore.FieldValue.arrayRemove(billingLink)
+            })
+        })
     })
     .catch((error)=>{
-        console.log("Failed to find Manager doc: "+error);
-    });
-    //gets billing from manager doc
-    await db.collection("Billing").doc(managerID).get()
-    .then((managerDoc)=>{
-        billingID=managerDoc.data().Billing.slice(8);
+        console.log("Error deleting billing from manager: "+error);
+    })
+    await garageDB.where('Billing','==',billingLink).get()
+    .then((tempDoc)=>{
+        tempDoc.forEach((doc)=>{
+            garageDB.doc(doc)
+            .update({
+                Billing: ""
+            })
+        })
     })
     .catch((error)=>{
-        console.log("Failed to find Manager Doc: "+error);
+        console.log("Error deleting billing from garage: "+error);
+    })
+    //deletes billing doc
+    await billingDB.doc(BillingRef).delete()
+    .catch((error)=>{
+        console.log("Error deleting billing from billing: "+error);
     });
-    //sends to approate function
-    if(inputNullOrEmpty(billingID)){
-        await addBilling(managerID);
-        return;
-    }
-    else{
-        await saveBillingChanges(billingID);
-        return;
-    }
 }
 
 async function setDefaultValues(user){
