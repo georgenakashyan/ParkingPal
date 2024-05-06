@@ -14,6 +14,7 @@ async function checkUserPageRequest() {
                 && location.href.indexOf("AccountSetup") == -1 ) {
             mainPage();
         } else if (location.href.indexOf("index.html") > -1 
+                || location.href.indexOf("about.html") > -1 
                 || location.href.indexOf("SignUp.html") > -1 
                 || location.href.indexOf("PasswordReset.html") > -1) {
             mainPage();
