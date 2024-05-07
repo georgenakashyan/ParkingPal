@@ -256,6 +256,7 @@ function displayOneGarage(data, garageID, marker, spotType) {
     bookButton.innerHTML = "Book"
     bookButton.onclick = function() {
         document.getElementById("bookReservationTitle").innerHTML = "Confirm reservation for " + gName;
+        document.getElementById("book-notification-text").innerHTML = "";
         handleBookButton(garageID);
         openPopup("bookReservation");
     };
