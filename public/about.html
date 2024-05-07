@@ -1,61 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-screen overflow-hidden" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parking Pal</title>
+    <script src="app.js"></script>
     <link rel="stylesheet" href="output.css"/>
 </head>
-<body class="globalFont">
-<div class="bg-PP-blue">
-    <header class="bg-PP-dark-blue grid grid-cols-1 grid-rows-5 h-full w-screen">
+<body >
+<div class="bg-PP-blue grid grid-cols-1 grid-rows-10 h-screen w-screen">
+    <header class="bg-PP-dark-blue grid grid-cols-1 grid-rows-1 h-full w-screen">
         <div class="row-span-1 p-3 flex items-center text-white font-semibold">
             <img src="./images/ParkingPal.png" alt="Parking Pal Logo" class="aspect-square h-full min-h-12 max-h-12 block ml-auto mr-auto">
             <div class="-ml-5 p-3 mr-4 text-3xl text-PP-orange select-none">arkingPal</div>
             <div class="grow mr-0 md:mr-4"></div>
-            <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button>Contact Us</button></div>
-            <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button>About Us</button></div>
+            <div class="object-right mr-4 p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button>Sign-up</button></div>
             <div class="object-right p-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button>Log In</button></div>
         </div>
     </header>
 
-<section id="hero">
-    <h1>Welcome to the best pal for Parking</h1>
-    <p>This is a simple landing page for us to build on</p>
-    <a href="#about" class="btn">Learn More</a>
-</section>
 
-<section class = "p-3" id="about">
-    <h2>About Us</h2>
-    <p>We want to be your go to platform to reserve your next parking spot</p>
-</section>
+    <div class="pt-8 relative">
+        <div class="flex w-screen">
+            <!-- Text Section -->
+            <div>
+                <div class="mb-48">
+                    <section  id="hero">       
+                    <h1 class="inline-block text-9xl font-bold italic mb-4 ml-25 text-PP-orange" style="-webkit-text-stroke: 3px rgb(15, 15, 15);">Park Smarter,</h1>
+                    <h2 class="inline-block text-9xl font-bold italic mb-4 ml-32 text-PP-orange" style="-webkit-text-stroke: 3px rgb(15, 15, 15);">Not Harder!</h2>
+                    </section>
+                </div>
+               
 
-<section id="services">
-    <h2>Our Services:</h2>
-    <ul>
-        <li>Reservation</li>
-        <li>Review</li>
-        <li>Rating</li>
-    </ul>
-</section>
+                <div class="bg-PP-dark-blue absolute left-0 h-full w-1/2 p-4 rounded-lg" style="height: 100vh;">
+                    <p class="text-PP-orange text-xl opacity-75">"Discover the convenience of our new book and reserve application! 
+                        We at ParkingPal, are thrilled to introduce an innovative solution to simplify your parking experience. 
+                        Say goodbye to endless searching and uncertainty—our platform ensures you find the perfect parking spot effortlessly, every time. 
+                        Explore now and unlock hassle-free parking at any given moment."
+                    </p>
+                    <button id="saveButton" type="button" style="width: 15% !important" class="hidden long-main-button mt-1" onclick="logOut()">Learn more</button>
+                    <footer class="mt-8">
+                        <p>&copy; 2024 Parking Pal. All rights reserved.</p>
+                    </footer>
+                </div>
+            </div>
+            
 
-<section id="contact">
-    <h2>Contact Us</h2>
-    <form action="#" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" required></textarea>
-        <button type="submit">Send</button>
-    </form>
-</section>
+    
+            <!-- Image Section with Orange and Blue Background -->
+            <div class="relative w-1/2 h-screen flex justify-end items-start mt-[100px]">
+                <div class="bg-PP-orange absolute right-0 h-full w-1/2 p-3 rounded-lg"></div>
+                <!-- New Blue Background div around the image -->
+                <div class="bg-gray-50 mr-32 mt-8 p-3 rounded-lg z-10">
+                    <img src="./images/ParkingPal.png" class="w-[24rem] relative" style="max-width:100%;"> <!-- Adjusted width and max-width -->
+                </div>
 
-<footer>
-    <p>&copy; 2024 Parking Pal. All rights reserved.</p>
-</footer>
-</div>
+            </div>
+        </div>
+        <!-- New bg-PP-dark-blue box in the bottom left corner -->
+        <div class="bg-PP-dark-blue absolute left-0 h-full w-1/2 p-3 rounded-lg"></div>
+        
+    </div>
+
 
 
 </body>
