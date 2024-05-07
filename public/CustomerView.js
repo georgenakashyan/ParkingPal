@@ -485,3 +485,27 @@ async function fillPaymentList(user) {
         }
     });
 }
+
+async function handleShowReservations() {
+    openPopup("openReservation");
+    document.getElementById("reservationBody").innerHTML = "";
+
+    var user = firebase.auth().currentUser;
+    var db = firebase.firestore();
+
+    await db.collection("Account").doc(user.uid).get()
+    .then(async(accountDoc) => {
+        const accountData = accountDoc.data();
+        await db.collection("Customer").doc(accountData.Profile.slice(9)).get()
+        .then((customerDoc) => {
+            var customerData = customerDoc.data();
+            customerData.Reservations.forEach(displayReservation);
+        })
+        .catch((error) => {
+            console.log("Error finding customer doc: " + error);
+        });
+    })
+    .catch((error) => {
+        console.log("Error finding account doc: " + error);
+    });
+}

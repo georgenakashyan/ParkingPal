@@ -22,7 +22,6 @@ async function displayAllReservations(garageID) {
  */
 async function displayReservation(reservationRef) {
     const db = firebase.firestore();
-    let reservationTable = document.getElementById("reservationTable");
     let reservationBody = document.getElementById("reservationBody");
     var newReservation = document.createElement("tr");
     newReservation.className =
@@ -35,34 +34,33 @@ async function displayReservation(reservationRef) {
     const pSpotInfo = document.createElement("td");
     const zeroPad = (num, places) => String(num).padStart(places, '0');
     await db.collection("Reservation").doc(reservationRef.slice(12)).get()
-        .then(async (doc) => {
-            const data = doc.data();
-            var start = data.Start.toDate();
-            var startStr = "" + start.getFullYear() + "-" + zeroPad(parseInt(start.getMonth()) + 1, 2) + "-" + zeroPad(start.getDate(), 2);
-            var today = new Date();
-            var todayStr = "" + today.getFullYear() + "-" + zeroPad(parseInt(today.getMonth()) + 1, 2) + "-" + zeroPad(today.getDate(), 2);
-            if (startStr >= todayStr) {
-                pName.textContent = await getStringFromReservation("Name", data.Customer_ID);
-                pVehID.textContent = await getStringFromReservation("VehicleID", data.Vehicle_ID);
-                pVehPlate.textContent = await getStringFromReservation("VehiclePlate", data.Vehicle_ID);
-                var strStart = await getStringFromReservation("Start", data.Start);
-                pStart.textContent = timeConvert(strStart);
-                var strEnd = await getStringFromReservation("End", data.End);
-                pEnd.textContent = timeConvert(strEnd);
-                pSpotInfo.textContent = await getStringFromReservation("SpotInfo", data.SpotInfo);
-            }
-        })
-        .catch((error) => {
-            console.log("Failed to find reservation info doc: " + error);
-        });
-    newReservation.appendChild(pName);
-    newReservation.appendChild(pVehID);
-    newReservation.appendChild(pVehPlate);
-    newReservation.appendChild(pStart);
-    newReservation.appendChild(pEnd);
-    newReservation.appendChild(pSpotInfo);
-    reservationBody.appendChild(newReservation);
-    reservationTable.appendChild(reservationBody);
+    .then(async (doc) => {
+        const data = doc.data();
+        var start = data.Start.toDate();
+        var startStr = "" + start.getFullYear() + "-" + zeroPad(parseInt(start.getMonth()) + 1, 2) + "-" + zeroPad(start.getDate(), 2);
+        var today = new Date();
+        var todayStr = "" + today.getFullYear() + "-" + zeroPad(parseInt(today.getMonth()) + 1, 2) + "-" + zeroPad(today.getDate(), 2);
+        if (startStr >= todayStr) {
+            pName.textContent = await getStringFromReservation("Name", data.Customer_ID);
+            pVehID.textContent = await getStringFromReservation("VehicleID", data.Vehicle_ID);
+            pVehPlate.textContent = await getStringFromReservation("VehiclePlate", data.Vehicle_ID);
+            var strStart = await getStringFromReservation("Start", data.Start);
+            pStart.textContent = timeConvert(strStart);
+            var strEnd = await getStringFromReservation("End", data.End);
+            pEnd.textContent = timeConvert(strEnd);
+            pSpotInfo.textContent = await getStringFromReservation("SpotInfo", data.SpotInfo);
+            newReservation.appendChild(pName);
+            newReservation.appendChild(pVehID);
+            newReservation.appendChild(pVehPlate);
+            newReservation.appendChild(pStart);
+            newReservation.appendChild(pEnd);
+            newReservation.appendChild(pSpotInfo);
+            reservationBody.appendChild(newReservation);
+        }
+    })
+    .catch((error) => {
+        console.log("Failed to find reservation info doc: " + error);
+    });
 }
 
 /**

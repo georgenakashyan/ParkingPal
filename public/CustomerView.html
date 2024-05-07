@@ -33,7 +33,7 @@
       <div class="-ml-5 p-3 mr-4 text-3xl text-PP-orange select-none">arkingPal</div>
       <div class="grow mr-4"></div>
       <div class="object-right mr-4 p-2 text-outline-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange"><button
-        onclick="logOut()">My Reservations</button></div>
+        onclick="handleShowReservations()">My Reservations</button></div>
       <div
         class="object-right mr-4 p-2 text-outline-2 rounded-3xl bg-PP-light-orange border-4 border-PP-orange hover:bg-PP-orange">
         <button onclick="settingsPage()">Settings</button></div>
@@ -170,70 +170,23 @@
     <div class="grow"></div>
     <div class="w-fit h-fit m-auto z-20 bg-white opacity-100 align-middle rounded-lg text-center items-center grid">
       <div class="flex overflow-hidden bg-PP-blue rounded-md text-white mb-5 pl-2 pr-2">
-        <div class="mr-1 font-bold">
-          <label id="bookReservationTitle" class="p-2 float-left w-auto border-none block outline-none">Confirm reservation for</label>
-        </div>
         <div class="grow w-fit"></div>
-        <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('bookReservation')">&times;</button>
+        <button class="text-gray-400 font-bold mb-3 text-3xl float-right hover:text-black hover:no-underline hover:cursor-pointer" onclick="closePopup('openReservation')">&times;</button>
       </div>
-      <div class="w-full p-4">
-          <div class="bg-white border rounded shadow-md mb-4">
-              <div class="p-4">
-                  <h3 class="text-lg font-bold mb-2">Garage</h3>
-                  <div class="grid grid-cols-2">
-                    <label class="text-left col-span-1 font-semibold">Name</label>
-                    <label id="bookReservationGarageName" class="text-right col-span-1"></label>
-                  </div>
-                  <div class="grid grid-cols-2">
-                    <label class="text-left col-span-1 font-semibold">Address</label>
-                    <label id="bookReservationGarageAddress" class="text-right col-span-1"></label>
-                  </div>
-              </div>
-          </div>
-          <div class="bg-white border rounded shadow-md mb-4">
-              <div class="p-4">
-                  <h3 class="text-lg font-bold mb-2">Details</h3>
-                  <div class="grid grid-cols-2">
-                    <label class="text-left col-span-1 font-semibold">Vehicle</label>
-                    <label id="bookReservationVehicle" class="text-right col-span-1"></label>
-                  </div>
-                  <div class="grid grid-cols-2">
-                    <label class="text-left col-span-1 font-semibold">Spot Type</label>
-                    <label id="bookReservationSpotType" class="text-right col-span-1"></label>
-                  </div>
-                  <div class="grid grid-cols-2">
-                    <label class="text-left col-span-1 font-semibold">Start Time</label>
-                    <label id="bookReservationStartTime" class="text-right col-span-1"></label>
-                  </div>
-                  <div class="grid grid-cols-2">
-                    <label class="text-left col-span-1 font-semibold">End Time</label>
-                    <label id="bookReservationEndTime" class="text-right col-span-1"></label>
-                  </div>
-              </div>
-          </div>
-          <div class="bg-white border rounded shadow-md">
-              <div class="p-4">
-                  <h3 class="text-lg font-bold mb-2">Payment</h3>
-                  <div class="grid grid-cols-2">
-                    <label class="text-left col-span-1 font-semibold">Price per hour</label>
-                    <label id="bookReservationSpotHourlyPrice" class="text-right col-span-1"></label>
-                  </div>
-                  <div class="grid grid-cols-2">
-                    <label class="text-left col-span-1 font-semibold">Total Price</label>
-                    <label id="bookReservationSpotTotalPrice" class="text-right col-span-1"></label>
-                  </div>
-                  <div class="grid grid-cols-3">
-                    <label class="text-left col-span-1 font-semibold">Payment Method</label>
-                    <div class="grow col-span-1"></div>
-                    <select id="bookReservationPayment" class="text-right col-span-1"></select>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <label id="book-notification-text" class="notification-text"></label>
-      <div class="w-full p-4">
-        <button id="finalizeReservationButton" class="long-main-button" style="width:100% !important;">Book Reservation</button>
-      </div>
+      <table id = "reservationTable" class="w-full rounded-xl">
+        <thead class="bg-gray-50 border-b-2 border-gray-200">
+            <tr class="tracking-wide text-left [&>th]:p-3">
+                <th>Name</th>
+                <th>Vehicle</th>
+                <th>Plate</th>
+                <th>Starting Time</th>
+                <th>Ending Time</th>
+                <th>Spot Type</th>
+            </tr>
+        </thead>
+        <tbody id="reservationBody">
+        </tbody>
+    </table>
     </div>
     <div class="grow"></div>
   </div>
