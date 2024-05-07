@@ -379,7 +379,6 @@ async function displayEditGarage(garageID){
     if (billing != "") {
         pBilling.value = billingRef;
     }
-    
 
     var saveGarageButton = document.getElementById("editGarageSaveButton")
     saveGarageButton.onclick = function() {saveGarageChanges(garageID)};
@@ -532,8 +531,9 @@ async function fillBillingList(uid) {
                     var data = doc.data();
                     const billingName = "Account number " + data.AccountNum;
                     newBilling.innerHTML = billingName;
+                    var newBillingClone = newBilling.cloneNode(true);
                     addBillingList.appendChild(newBilling);
-                    editBillingList.appendChild(newBilling);
+                    editBillingList.appendChild(newBillingClone);
                 })
                 .catch((error) => {
                     console.log("Failed to get billing data: " + error);
