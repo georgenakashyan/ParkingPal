@@ -56,6 +56,17 @@ async function fillGarageList() {
     sTypeHandicap.classList.add("hidden");
     sTypeMoto.classList.add("hidden");
 
+    if (inputNullOrEmpty(vehicle)) {
+        var errorField = document.getElementById("vehicleError");
+        errorField.classList.add("flex");
+        errorField.classList.remove("hidden");
+        return;
+    } else {
+        var errorField = document.getElementById("vehicleError");
+        errorField.classList.add("hidden");
+        errorField.classList.remove("flex");
+    }
+
     var FuelType = null;
     var Handicap = false;
     var Moto = false;
@@ -165,6 +176,18 @@ async function fillGarageList() {
                 await addMapMarker(data, doc.id, sTypeSelected);
             }
         });
+    })
+    .then(async () => {
+        await new Promise(r => setTimeout(r, 500));
+        if (garageList.length <= 0) {
+            var errorField = document.getElementById("filterError");
+            errorField.classList.add("flex");
+            errorField.classList.remove("hidden");
+        } else {
+            var errorField = document.getElementById("filterError");
+            errorField.classList.add("hidden");
+            errorField.classList.remove("flex");
+        }
     })
     .catch((error) => {
         console.log("Error getting garages: " + error);
@@ -423,6 +446,7 @@ async function fillPaymentList(user) {
     const paymentList = document.getElementById("bookReservationPayment");
     const db = firebase.firestore();
     var customerID = "";
+    var paymentCount = 0;
     await db.collection("Account").doc(user.uid).get()
     .then((doc) => {
         customerID = doc.data().Profile.slice(9);
@@ -435,6 +459,7 @@ async function fillPaymentList(user) {
             newPayment.value = payment.slice(8);
             await db.collection("Payment").doc(payment.slice(8)).get()
             .then((doc) => {
+                paymentCount++;
                 var data = doc.data();
                 var expDate = data.Expiration.toDate();
                 const paymentName = "Card:" + String(data.CardNum).slice(-4) + ", exp:" + (parseInt(expDate.getMonth()) + 1) + "/" + String(expDate.getFullYear()).slice(2);
@@ -446,5 +471,17 @@ async function fillPaymentList(user) {
                 return;
             });
         });
+    })
+    .then(async() => {
+        await new Promise(r => setTimeout(r, 500));
+        if (paymentCount <= 0) {
+            var errorField = document.getElementById("paymentError");
+            errorField.classList.add("flex");
+            errorField.classList.remove("hidden");
+        } else {
+            var errorField = document.getElementById("paymentError");
+            errorField.classList.add("hidden");
+            errorField.classList.remove("flex");
+        }
     });
 }

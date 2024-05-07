@@ -43,8 +43,8 @@
     <div class="p-0 row-span-9 w-full grid-cols-1 grid-row-4 grid md:grid-cols-4 md:grid-row-1">
       <div
         class="bg-PP-blue min-h-full col-span-full row-span-1 grid p-3 grid-rows-1 gap-3 md:col-span-1 md:row-span-full">
-        <div class="min-h-full">
-          <div>
+        <div class="min-h-full overflow-y-scroll pr-4">
+          <div class="pb-2">
             <div class="p-2">
               <label for="datepicker" class="text-gray-200 font-bold">Date</label>
               <input class="text-black" type="date" id="sDate">
@@ -76,7 +76,19 @@
               </select>
             </div>
           </div>
-          <ul id="GarageList" class="bg-PP-blue pt-3"></ul>
+          <div id="filterError" class="hidden text-yellow-700 bg-yellow-100 rounded-lg p-3 mb-4">
+            <label class="text-3xl m-2">⚠</label>
+            <label>No garages found, change your filters or move to another area.</label>
+          </div>
+          <div id="vehicleError" class="hidden text-yellow-700 bg-yellow-100 rounded-lg p-3 mb-4">
+            <label class="text-3xl m-2">⚠</label>
+            <label>You need at least one vehicle to make a reservation, please go to the settings page to add one.</label>
+          </div>
+          <div id="paymentError" class="hidden text-yellow-700 bg-yellow-100 rounded-lg p-3 mb-4">
+            <label class="text-3xl m-2">⚠</label>
+            <label>You need at least one payment method to make a reservation, please go to the settings page to add one.</label>
+          </div>
+          <ul id="GarageList" class="bg-PP-blue"></ul>
         </div>
       </div>
       <div class="min-h-full col-span-full row-span-3 md:col-span-3 md:row-span-full" id="map">Map</div>
