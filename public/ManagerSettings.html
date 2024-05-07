@@ -24,7 +24,6 @@
 
     <body class="globalFont">
         <div class="bg-PP-dark-blue  grid grid-cols-1 grid-rows-10 h-screen w-screen">
-            
             <div class="row-span-1 p-3 flex items-center text-white font-semibold">
                 <img src="./images/ParkingPal.png" alt="Parking Pal Logo" class="aspect-square h-full min-h-12 max-h-12 block ml-auto mr-auto">
                 <div class="-ml-5 p-3 mr-4 text-3xl text-PP-orange select-none">arkingPal</div>
@@ -62,20 +61,19 @@
                             <button id="saveButton" type="button" style="width: 80% !important" class="hidden long-main-button mt-1 " onclick="saveChanges()">Save</button>
                         </div>
                     </div>
-                
-    
                     <div class="w-1/2 ml-3 ">
-                        <div class="bg-PP-blue h-full mb-6 p-4 w-full">
+                        <div class="bg-PP-blue h-full mb-6 p-4 w-full ">
                             <div class="p-3 mr-4 text-3xl text-PP-light-orange select-none border-b-2 border-PP-orange mb-8">Billing Information:</div>
+                            <div class="overflow-y-scroll">
                                 <ul id="billingList">
                                     <li id="addBilling" class="bg-slate-300 p-3 ml-3 mr-3 mb-3 rounded-xl hover:bg-slate-400" onclick="openPopup('addBilling')">
                                         <p class="text-center">Add Billing Account</p>
                                         <p class="text-center">+</p>
                                     </li>
                                 </ul>
--                        </div>
+                            </div>
+                        </div>
                     </div>
-            
                 </div>
 
                 <div class="bg-black bg-opacity-50 absolute hidden top-0 w-full h-full justify-center z-10" id="addBillingPopup">
@@ -98,11 +96,7 @@
                     </div>
                     <div class="grow"></div>
                 </div>
-
-
-
             </div>
-        
         </div>
     </body>
 </html>
