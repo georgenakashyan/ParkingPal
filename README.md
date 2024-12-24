@@ -1,5 +1,5 @@
 # ParkingPal
-ParkingPal is a web application that helps users find available parking spaces in their area.
+ParkingPal is a web application that helps commuters find availiable parking spaces in busy areas.
 
 ## Features
 
@@ -8,6 +8,11 @@ ParkingPal is a web application that helps users find available parking spaces i
 - Get real-time updates on parking availability.
 - Rate and review parking spaces.
 
-## Submitting Issues
+## Issues
 
-If you encounter any issues or have suggestions for improvement, please submit them on [GitHub](https://github.com/Gevoooo/ParkingPal/issues).
+There is a list of
+[Known Issues](https://github.com/georgenakashyan/ParkingPal/issues) (things
+to be fixed or that aren't yet implemented).
+
+If you found a bug or have a new idea/feature for the program,
+[you can report them](https://github.com/georgenakashyan/ParkingPal/issues).
